@@ -1098,6 +1098,11 @@ html,body{ background:#090102 !important; }
     background:transparent; color:#8E8E93; border:1.5px solid rgba(255,70,80,.45); }
   .pl-d.on{ background:linear-gradient(180deg,#FF3249,#C0001B); color:#fff; border-color:transparent; }
   .pl-d:active{ transform:scale(.93); }
+  .pl-name{ display:flex; align-items:center; }
+  .pl-name .wt-ic{ margin-right:8px; }
+  .pl-name.mod::after{ content:' •'; color:#FF1F3D; margin-left:4px; }
+  .px-line{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+  .px-lab{ font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#9A9AA0; }
   /* ---- léger décalage entre le bord et le logo ---- */
   .page-header .app-logo{ margin-left:10px !important; }
 </style>
@@ -1136,23 +1141,19 @@ html,body{ background:#090102 !important; }
   <div class="prog-overlay" id="progOverlay" onclick="if(event.target===this) closeProg()">
     <div class="prog-card">
       <div class="prog-head"><span>Progression</span><button class="prog-x" onclick="closeProg()" aria-label="Fermer">✕</button></div>
-      <div class="prog-sec first"><span>Jours des exercices</span></div>
-      <div class="prog-sub" style="margin-top:0">Coche les jours où tu veux faire chaque exercice</div>
-      <div id="plList"></div>
-      <button class="wt-reset" onclick="resetPlan()">Remettre le planning d'origine</button>
-      <div class="prog-sec"><span>Poids par exercice</span><span class="wt-saved" id="wtSaved">✓ Enregistré</span></div>
-      <div id="wtList"></div>
-      <button class="wt-reset" onclick="resetWeights()">Remettre les poids d'origine</button>
-      <div class="prog-sec"><span>Récupération</span></div>
+      <div class="prog-sec first"><span>Mes exercices</span><span class="wt-saved" id="wtSaved">✓ Enregistré</span></div>
+      <div class="prog-sub" style="margin-top:0">Pour chaque exo : jours, poids et récupération</div>
       <div class="rc-all">
-        <div class="rc-all-top"><b>Tous les exos</b>
+        <div class="rc-all-top"><b>Récup. tous les exos</b>
           <div class="wt-ctl"><button onclick="stepRestAll(-1)" aria-label="Moins 10 secondes">−</button><span class="rc-val" id="rcAllVal">1:30</span><button onclick="stepRestAll(1)" aria-label="Plus 10 secondes">+</button></div>
         </div>
         <div class="rc-chips" id="rcChips">
           <button onclick="setRestAll(30)" data-s="30">0:30</button><button onclick="setRestAll(60)" data-s="60">1:00</button><button onclick="setRestAll(90)" data-s="90">1:30</button><button onclick="setRestAll(120)" data-s="120">2:00</button>
         </div>
       </div>
-      <div id="rcList"></div>
+      <div id="plList"></div>
+      <button class="wt-reset" onclick="resetPlan()">Remettre les jours d'origine</button>
+      <button class="wt-reset" onclick="resetWeights()">Remettre les poids d'origine</button>
       <button class="wt-reset" onclick="resetRests()">Remettre les récupérations d'origine</button>
       <div class="prog-sec"><span>Progression</span></div>
       <div class="prog-sub" style="margin-top:0">Répétitions par série</div>
@@ -2040,7 +2041,7 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
     });
   }
   function renderWeights(){
-    const box = document.getElementById('wtList'); if(!box) return;
+    const box = document.getElementById('wtList'); if(!box){ renderPlan(); return; }
     box.innerHTML = wtExos().map((ex, i) => {
       const cur = weights[ex.name] != null ? weights[ex.name] : wtNum(ex.load);
       const unit = ex.load.replace(/^[\d.,]+\s*/, '');
@@ -2111,12 +2112,13 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
     rcApply();
   }
   function renderRests(){
-    const box = document.getElementById('rcList'); if(!box) return;
+    const box = document.getElementById('rcList');
     const all = rcAllIds().map(o => restOf(o.id, o.ex));
     const same = all.length && all.every(v => v === all[0]);
     const val = document.getElementById('rcAllVal');
     if(val) val.textContent = same ? fmtMS(all[0]) : 'Mixte';
     document.querySelectorAll('#rcChips button').forEach(b => b.classList.toggle('on', same && +b.dataset.s === all[0]));
+    if(!box){ renderPlan(); return; }
     box.innerHTML = rcExos().map((g, i) => {
       const cur = restOf(g.ids[0], g.ex), mod = g.ids.some(id => restPrefs[id] != null && restPrefs[id] !== g.ex.rest);
       return `<div class="wt-row${mod ? ' mod' : ''}"><i class="wt-ic ${exType(g.ex)}"></i><b>${shortName(g.ex.name)}</b>
@@ -2129,18 +2131,53 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
   }
   // ---------- planning : cases L M M J V S D par exercice ----------
   const PL_LETTERS = [['lun','L','Lundi'],['mar','M','Mardi'],['mer','M','Mercredi'],['jeu','J','Jeudi'],['ven','V','Vendredi'],['sam','S','Samedi'],['dim','D','Dimanche']];
+  const pxRestId = name => { const d = DAYS.find(d => d.exercises.some(e => e.name === name)); return (d ? d.key : (ORIG_DAYS[name] || ['lun'])[0]) + '|' + name; };
+  const pxCurW = i => { const ex = EXO_MASTER[i]; return weights[ex.name] != null ? weights[ex.name] : wtNum(ex.load); };
+  const pxHasW = ex => ex.load && !/PDC/.test(ex.load);
+  function pxMod(i){
+    const ex = EXO_MASTER[i], rid = pxRestId(ex.name);
+    const m = weights[ex.name] != null || (restPrefs[rid] != null && restPrefs[rid] !== ex.rest);
+    const el = document.getElementById('pxn' + i); if(el) el.classList.toggle('mod', m);
+    return m;
+  }
   function renderPlan(){
     const box = document.getElementById('plList'); if(!box) return;
     box.innerHTML = EXO_MASTER.map((ex, i) => {
-      const on = planDays(ex.name);
-      return `<div class="pl-row"><div class="pl-name">${shortName(ex.name)}</div><div class="pl-days">` +
+      const on = planDays(ex.name), rid = pxRestId(ex.name);
+      const unit = pxHasW(ex) ? ex.load.replace(/^[\d.,]+\s*/, '') : '';
+      const mod = weights[ex.name] != null || (restPrefs[rid] != null && restPrefs[rid] !== ex.rest);
+      const wLine = pxHasW(ex) ? `<div class="px-line"><span class="px-lab">Poids</span><div class="wt-ctl">
+          <button onclick="pxStepW(${i},-1)" aria-label="Moins">−</button>
+          <input id="pxw${i}" type="text" inputmode="decimal" value="${wtFmt(pxCurW(i))}" oninput="pxTypeW(${i},this)" onblur="this.value=wtFmt(pxCurW(${i}))" aria-label="Poids ${shortName(ex.name)}">
+          <button onclick="pxStepW(${i},1)" aria-label="Plus">+</button><span>${unit}</span></div></div>` : '';
+      return `<div class="pl-row"><div class="pl-name${mod ? ' mod' : ''}" id="pxn${i}"><i class="wt-ic ${exType(ex)}"></i>${shortName(ex.name)}</div>
+        <div class="pl-days">` +
         PL_LETTERS.map(([k, l, full]) => `<button class="pl-d${on.includes(k) ? ' on' : ''}" onclick="togglePlan(${i},'${k}')" aria-label="${shortName(ex.name)} le ${full}" aria-pressed="${on.includes(k)}">${l}</button>`).join('') +
-        `</div></div>`;
+        `</div>${wLine}
+        <div class="px-line"><span class="px-lab">Récup.</span><div class="wt-ctl">
+          <button onclick="pxStepR(${i},-1)" aria-label="Moins 10 secondes">−</button><span class="rc-val">${fmtMS(restOf(rid, ex))}</span><button onclick="pxStepR(${i},1)" aria-label="Plus 10 secondes">+</button></div></div>
+      </div>`;
     }).join('');
+  }
+  function pxSaveW(i, v){
+    const ex = EXO_MASTER[i]; v = Math.round(v * 10) / 10;
+    if(!(v > 0) || v > 999) return false;
+    if(v === wtNum(ex.load)) delete weights[ex.name]; else weights[ex.name] = v;
+    try{ localStorage.setItem(WT_KEY, JSON.stringify(weights)); }catch(e){}
+    pxMod(i); wtRefreshRows(); wtFlash(); return true;
+  }
+  function pxStepW(i, dir){
+    if(pxSaveW(i, pxCurW(i) + dir)){ const inp = document.getElementById('pxw' + i); if(inp) inp.value = wtFmt(pxCurW(i)); }
+  }
+  function pxTypeW(i, inp){ const v = wtNum(inp.value); if(v > 0) pxSaveW(i, v); }
+  function pxStepR(i, dir){
+    const ex = EXO_MASTER[i], v = rcClamp(restOf(pxRestId(ex.name), ex) + dir * 10);
+    DAYS.forEach(d => { restPrefs[d.key + '|' + ex.name] = v; });
+    rcApply();
   }
   function planRefresh(){
     try{ localStorage.setItem(PLAN_KEY, JSON.stringify(planPrefs)); }catch(e){}
-    applyPlan(); renderPlan(); renderWeights(); renderRests();
+    applyPlan(); renderRests();
     renderDateStrip(); renderFeatured(); showDetail(selectedKey);
   }
   function togglePlan(i, key){
@@ -2157,7 +2194,7 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
     try{ localStorage.removeItem(PLAN_KEY); }catch(e){}
     planRefresh();
   }
-  function openProg(){ renderPlan(); renderWeights(); renderRests(); document.getElementById('progOverlay').classList.add('show'); }
+  function openProg(){ renderRests(); document.getElementById('progOverlay').classList.add('show'); }
   function closeProg(){ document.getElementById('progOverlay').classList.remove('show'); }
 </script>
 
