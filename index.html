@@ -1108,6 +1108,7 @@ html,body{ background:#090102 !important; }
   .pl-d.on{ background:linear-gradient(180deg,#FF3249,#C0001B); color:#fff; border-color:transparent; }
   .pl-d:active{ transform:scale(.93); }
   .pl-name{ display:flex; align-items:center; }
+  .pl-play{ flex:0 0 18px; width:18px; margin-right:8px; text-align:center; font-size:11px; color:#FF1F3D; }
   .pl-name .wt-ic{ margin-right:8px; }
   .pl-name.mod::after{ content:' •'; color:#FF1F3D; margin-left:4px; }
   .px-line{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
@@ -1322,16 +1323,26 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
   // ---------- planning modifiable : quel exercice quel jour ----------
   const PLAN_KEY = 'bb9-plan';
   const EXO_MASTER = [], ORIG_EX = {}, ORIG_LABEL = {}, ORIG_DAYS = {};
+  const VID_MASTER = [], ORIG_VIDS = {}, ORIG_VDAYS = {}, ORIG_ADAYS = [];
+  let ABDO_MASTER = null;
   DAYS.forEach(d=>{
     ORIG_EX[d.key] = d.exercises.slice(); ORIG_LABEL[d.key] = d.label;
     d.exercises.forEach(ex=>{
       if(!ORIG_DAYS[ex.name]){ ORIG_DAYS[ex.name] = []; EXO_MASTER.push(ex); }
       ORIG_DAYS[ex.name].push(d.key);
     });
+    ORIG_VIDS[d.key] = (d.videos || []).slice();
+    (d.videos || []).forEach(v=>{
+      if(!ORIG_VDAYS[v.title]){ ORIG_VDAYS[v.title] = []; VID_MASTER.push(v); }
+      ORIG_VDAYS[v.title].push(d.key);
+    });
+    if(d.video){ if(!ABDO_MASTER) ABDO_MASTER = d.video; ORIG_ADAYS.push(d.key); }
   });
   let planPrefs = {};
   try{ planPrefs = JSON.parse(localStorage.getItem(PLAN_KEY)) || {}; }catch(e){ planPrefs = {}; }
-  const planDays = name => planPrefs[name] || ORIG_DAYS[name] || [];
+  // clés du planning : nom d'exo | 'vid:Titre' | 'abdo'
+  const origOf = pk => pk === 'abdo' ? ORIG_ADAYS : pk.indexOf('vid:') === 0 ? (ORIG_VDAYS[pk.slice(4)] || []) : (ORIG_DAYS[pk] || []);
+  const planDays = pk => planPrefs[pk] || origOf(pk);
   function applyPlan(){
     DAYS.forEach(d=>{
       const orig = ORIG_EX[d.key];
@@ -1340,6 +1351,13 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
       d.exercises = kept.concat(added);
       const same = d.exercises.length === orig.length && d.exercises.every(ex => orig.some(o => o.name === ex.name));
       if(same) d.label = ORIG_LABEL[d.key]; else delete d.label;
+      // vidéos
+      const ov = ORIG_VIDS[d.key];
+      const vk = ov.filter(v => planDays('vid:' + v.title).includes(d.key));
+      const va = VID_MASTER.filter(m => planDays('vid:' + m.title).includes(d.key) && !ov.some(o => o.title === m.title));
+      d.videos = vk.concat(va);
+      // vidéo d'abdos
+      if(ABDO_MASTER){ if(planDays('abdo').includes(d.key)) d.video = ABDO_MASTER; else delete d.video; }
     });
   }
   applyPlan();
@@ -2166,7 +2184,17 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
         <div class="px-line"><span class="px-lab">Récup.</span><div class="wt-ctl">
           <button onclick="pxStepR(${i},-1)" aria-label="Moins 10 secondes">−</button><span class="rc-val">${fmtMS(restOf(rid, ex))}</span><button onclick="pxStepR(${i},1)" aria-label="Plus 10 secondes">+</button></div></div>
       </div>`;
-    }).join('');
+    }).join('') + plVideosHTML();
+  }
+  function plDaysHTML(pk, label, fn){
+    const on = planDays(pk);
+    return '<div class="pl-days">' + PL_LETTERS.map(([k, l, full]) => `<button class="pl-d${on.includes(k) ? ' on' : ''}" onclick="${fn},'${k}')" aria-label="${label} le ${full}" aria-pressed="${on.includes(k)}">${l}</button>`).join('') + '</div>';
+  }
+  function plVideosHTML(){
+    let h = '<div class="prog-sec"><span>Abdos &amp; vidéos</span></div><div class="prog-sub" style="margin-top:0">Choisis les jours où chaque vidéo apparaît</div>';
+    if(ABDO_MASTER) h += `<div class="pl-row"><div class="pl-name"><span class="pl-play">▶</span>${ABDO_MASTER.title}</div>${plDaysHTML('abdo', ABDO_MASTER.title, 'toggleVid(-1')}</div>`;
+    VID_MASTER.forEach((v, i) => { h += `<div class="pl-row"><div class="pl-name"><span class="pl-play">▶</span>${v.title}</div>${plDaysHTML('vid:' + v.title, v.title, 'toggleVid(' + i)}</div>`; });
+    return h;
   }
   function pxSaveW(i, v){
     const ex = EXO_MASTER[i]; v = Math.round(v * 10) / 10;
@@ -2189,12 +2217,14 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
     applyPlan(); renderRests();
     renderDateStrip(); renderFeatured(); showDetail(selectedKey);
   }
-  function togglePlan(i, key){
-    const name = EXO_MASTER[i].name, cur = planDays(name).slice();
+  function toggleVid(i, key){ togglePlanKey(i < 0 ? 'abdo' : 'vid:' + VID_MASTER[i].title, key); }
+  function togglePlan(i, key){ togglePlanKey(EXO_MASTER[i].name, key); }
+  function togglePlanKey(name, key){
+    const cur = planDays(name).slice();
     const at = cur.indexOf(key);
     if(at >= 0) cur.splice(at, 1); else cur.push(key);
     cur.sort((a, b) => PL_LETTERS.findIndex(x => x[0] === a) - PL_LETTERS.findIndex(x => x[0] === b));
-    const orig = ORIG_DAYS[name] || [];
+    const orig = origOf(name);
     if(cur.length === orig.length && cur.every(k => orig.includes(k))) delete planPrefs[name]; else planPrefs[name] = cur;
     planRefresh();
   }
