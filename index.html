@@ -1081,11 +1081,13 @@ html,body{ background:#090102 !important; }
 .day-card::before,.day-card::after,.day-card.active::before,.day-card.active::after{ display:none !important; }
 </style>
 <style>
-  /* ---- 2 pilules séparées : chrono + réglages (engrenage) ---- */
-  .top-duo{ overflow:visible !important; border-radius:0 !important; gap:8px !important; }
-  .top-duo .tb-bubble{ border-radius:999px !important; }
-  .top-duo .prog-btn{ width:28px !important; height:28px !important; padding:0 !important; border-radius:50% !important; }
-  .top-duo .prog-btn svg{ width:16px !important; height:16px !important; }
+  /* ---- bouton du haut (chrono + progression) : plus grand ---- */
+  .top-duo{ height:36px !important; }
+  .top-duo .tb-bubble{ height:36px !important; padding:0 13px 0 14px !important; gap:6px !important; font-size:15px !important; }
+  .top-duo .tb-bubble svg{ width:19px !important; height:19px !important; }
+  .top-duo .prog-btn{ height:36px !important; width:44px !important; padding:0 4px 0 0 !important; }
+  .top-duo .prog-btn svg{ width:19px !important; height:19px !important; }
+  .tb-panel{ top:calc(52px + env(safe-area-inset-top,0px)) !important; }
 </style>
 </head>
 <body>
@@ -1103,8 +1105,8 @@ html,body{ background:#090102 !important; }
   <svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5M9.5 2.5h5M12 2.5v3.5"/></svg>
   <span class="tb-bt" id="tbBt">1:30</span>
 </button>
-      <button class="prog-btn" onclick="openProg()" aria-label="Réglages">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <button class="prog-btn" onclick="openProg()" aria-label="Progression">
+        <svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L20 7"/></svg>
       </button>
       </div>
     </div>
