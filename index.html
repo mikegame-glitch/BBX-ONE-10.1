@@ -1090,6 +1090,12 @@ html,body{ background:#090102 !important; }
   .tb-panel{ top:calc(52px + env(safe-area-inset-top,0px)) !important; }
   /* ---- plus d'écart entre le bouton du haut et les jours ---- */
   .top-sticky .page-header{ margin:9px 0 13px -8px !important; }
+  /* ---- menu courbe : plein écran ---- */
+  .prog-overlay{ padding:0 !important; align-items:stretch !important; justify-content:stretch !important; }
+  .prog-card{ width:100% !important; max-width:none !important; height:100% !important; max-height:none !important; border-radius:0 !important; border:none !important;
+    padding:calc(16px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px)) !important; box-sizing:border-box; overflow-y:auto; }
+  .prog-head{ top:calc(-16px - env(safe-area-inset-top,0px)) !important; padding-top:calc(16px + env(safe-area-inset-top,0px)) !important; margin-top:calc(-16px - env(safe-area-inset-top,0px)) !important; margin-left:-20px; margin-right:-20px; padding-left:20px !important; padding-right:20px !important; padding-bottom:8px !important; background:#1A0207 !important; z-index:5; }
+  .prog-x{ width:36px; height:36px; font-size:14px; }
   /* ---- chrono de pause : ancré à droite, taille adaptée à l'écran, jamais coupé ---- */
   .ex-row.resting:not(.abdo) .rt-left{ left:auto !important; right:0 !important; width:max-content; max-width:none; white-space:nowrap; text-align:right;
     padding-right:4px; font-size:clamp(30px, 11vw, 44px) !important; }
