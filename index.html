@@ -1090,6 +1090,9 @@ html,body{ background:#090102 !important; }
   .tb-panel{ top:calc(52px + env(safe-area-inset-top,0px)) !important; }
   /* ---- plus d'écart entre le bouton du haut et les jours ---- */
   .top-sticky .page-header{ margin:9px 0 13px -8px !important; }
+  /* ---- chrono de pause : ancré à droite, taille adaptée à l'écran, jamais coupé ---- */
+  .ex-row.resting:not(.abdo) .rt-left{ left:auto !important; right:0 !important; width:max-content; max-width:none; white-space:nowrap; text-align:right;
+    padding-right:4px; font-size:clamp(30px, 11vw, 44px) !important; }
   /* ---- planning des exercices (ronds L M M J V S D) ---- */
   .pl-row{ padding:9px 0 10px; border-top:1px solid #2E2E30; }
   .pl-name{ font-size:12px; font-weight:700; color:#fff; margin-bottom:7px; line-height:1.25; }
