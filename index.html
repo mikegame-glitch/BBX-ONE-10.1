@@ -1090,6 +1090,14 @@ html,body{ background:#090102 !important; }
   .tb-panel{ top:calc(52px + env(safe-area-inset-top,0px)) !important; }
   /* ---- plus d'écart entre le bouton du haut et les jours ---- */
   .top-sticky .page-header{ margin:9px 0 13px -8px !important; }
+  /* ---- planning des exercices (ronds L M M J V S D) ---- */
+  .pl-row{ padding:9px 0 10px; border-top:1px solid #2E2E30; }
+  .pl-name{ font-size:12px; font-weight:700; color:#fff; margin-bottom:7px; line-height:1.25; }
+  .pl-days{ display:flex; justify-content:space-between; gap:4px; }
+  .pl-d{ flex:1 1 0; max-width:36px; aspect-ratio:1; min-width:0; border-radius:50%; padding:0; font:inherit; font-size:12px; font-weight:800; cursor:pointer;
+    background:transparent; color:#8E8E93; border:1.5px solid rgba(255,70,80,.45); }
+  .pl-d.on{ background:linear-gradient(180deg,#FF3249,#C0001B); color:#fff; border-color:transparent; }
+  .pl-d:active{ transform:scale(.93); }
   /* ---- léger décalage entre le bord et le logo ---- */
   .page-header .app-logo{ margin-left:10px !important; }
 </style>
@@ -1128,7 +1136,11 @@ html,body{ background:#090102 !important; }
   <div class="prog-overlay" id="progOverlay" onclick="if(event.target===this) closeProg()">
     <div class="prog-card">
       <div class="prog-head"><span>Progression</span><button class="prog-x" onclick="closeProg()" aria-label="Fermer">✕</button></div>
-      <div class="prog-sec first"><span>Poids par exercice</span><span class="wt-saved" id="wtSaved">✓ Enregistré</span></div>
+      <div class="prog-sec first"><span>Jours des exercices</span></div>
+      <div class="prog-sub" style="margin-top:0">Coche les jours où tu veux faire chaque exercice</div>
+      <div id="plList"></div>
+      <button class="wt-reset" onclick="resetPlan()">Remettre le planning d'origine</button>
+      <div class="prog-sec"><span>Poids par exercice</span><span class="wt-saved" id="wtSaved">✓ Enregistré</span></div>
       <div id="wtList"></div>
       <button class="wt-reset" onclick="resetWeights()">Remettre les poids d'origine</button>
       <div class="prog-sec"><span>Récupération</span></div>
@@ -1296,6 +1308,31 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
       exercises:[]},
   ];
 
+
+  // ---------- planning modifiable : quel exercice quel jour ----------
+  const PLAN_KEY = 'bb9-plan';
+  const EXO_MASTER = [], ORIG_EX = {}, ORIG_LABEL = {}, ORIG_DAYS = {};
+  DAYS.forEach(d=>{
+    ORIG_EX[d.key] = d.exercises.slice(); ORIG_LABEL[d.key] = d.label;
+    d.exercises.forEach(ex=>{
+      if(!ORIG_DAYS[ex.name]){ ORIG_DAYS[ex.name] = []; EXO_MASTER.push(ex); }
+      ORIG_DAYS[ex.name].push(d.key);
+    });
+  });
+  let planPrefs = {};
+  try{ planPrefs = JSON.parse(localStorage.getItem(PLAN_KEY)) || {}; }catch(e){ planPrefs = {}; }
+  const planDays = name => planPrefs[name] || ORIG_DAYS[name] || [];
+  function applyPlan(){
+    DAYS.forEach(d=>{
+      const orig = ORIG_EX[d.key];
+      const kept = orig.filter(ex => planDays(ex.name).includes(d.key));
+      const added = EXO_MASTER.filter(m => planDays(m.name).includes(d.key) && !orig.some(o => o.name === m.name)).map(m => Object.assign({}, m));
+      d.exercises = kept.concat(added);
+      const same = d.exercises.length === orig.length && d.exercises.every(ex => orig.some(o => o.name === ex.name));
+      if(same) d.label = ORIG_LABEL[d.key]; else delete d.label;
+    });
+  }
+  applyPlan();
 
   const JS_DAY_TO_KEY = ['dim','lun','mar','mer','jeu','ven','sam'];
   const todayKey = JS_DAY_TO_KEY[new Date().getDay()];
@@ -2090,7 +2127,37 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
         </div></div>`;
     }).join('');
   }
-  function openProg(){ renderWeights(); renderRests(); document.getElementById('progOverlay').classList.add('show'); }
+  // ---------- planning : cases L M M J V S D par exercice ----------
+  const PL_LETTERS = [['lun','L','Lundi'],['mar','M','Mardi'],['mer','M','Mercredi'],['jeu','J','Jeudi'],['ven','V','Vendredi'],['sam','S','Samedi'],['dim','D','Dimanche']];
+  function renderPlan(){
+    const box = document.getElementById('plList'); if(!box) return;
+    box.innerHTML = EXO_MASTER.map((ex, i) => {
+      const on = planDays(ex.name);
+      return `<div class="pl-row"><div class="pl-name">${shortName(ex.name)}</div><div class="pl-days">` +
+        PL_LETTERS.map(([k, l, full]) => `<button class="pl-d${on.includes(k) ? ' on' : ''}" onclick="togglePlan(${i},'${k}')" aria-label="${shortName(ex.name)} le ${full}" aria-pressed="${on.includes(k)}">${l}</button>`).join('') +
+        `</div></div>`;
+    }).join('');
+  }
+  function planRefresh(){
+    try{ localStorage.setItem(PLAN_KEY, JSON.stringify(planPrefs)); }catch(e){}
+    applyPlan(); renderPlan(); renderWeights(); renderRests();
+    renderDateStrip(); renderFeatured(); showDetail(selectedKey);
+  }
+  function togglePlan(i, key){
+    const name = EXO_MASTER[i].name, cur = planDays(name).slice();
+    const at = cur.indexOf(key);
+    if(at >= 0) cur.splice(at, 1); else cur.push(key);
+    cur.sort((a, b) => PL_LETTERS.findIndex(x => x[0] === a) - PL_LETTERS.findIndex(x => x[0] === b));
+    const orig = ORIG_DAYS[name] || [];
+    if(cur.length === orig.length && cur.every(k => orig.includes(k))) delete planPrefs[name]; else planPrefs[name] = cur;
+    planRefresh();
+  }
+  function resetPlan(){
+    planPrefs = {};
+    try{ localStorage.removeItem(PLAN_KEY); }catch(e){}
+    planRefresh();
+  }
+  function openProg(){ renderPlan(); renderWeights(); renderRests(); document.getElementById('progOverlay').classList.add('show'); }
   function closeProg(){ document.getElementById('progOverlay').classList.remove('show'); }
 </script>
 
