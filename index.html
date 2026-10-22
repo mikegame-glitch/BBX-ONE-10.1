@@ -1103,6 +1103,15 @@ html,body{ background:#090102 !important; }
   .mus-row{ display:flex; gap:8px; }
   .mus-row input{ flex:1; min-width:0; height:40px; border-radius:12px; border:1px solid rgba(255,70,80,.3); background:#111; color:#fff; padding:0 12px; font:inherit; font-size:13px; }
   .mus-row button{ height:40px; padding:0 14px; border:none; border-radius:12px; font:inherit; font-size:13px; font-weight:800; color:#fff; cursor:pointer; background:linear-gradient(180deg,#FF3249,#C0001B); }
+  .mus-ctl{ display:flex; align-items:center; justify-content:center; gap:18px; margin:2px 0 12px; }
+  .mus-c{ display:flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.07); border:1px solid rgba(255,70,80,.28); text-decoration:none; }
+  .mus-c.big{ width:64px; height:64px; background:linear-gradient(180deg,#FF3249,#C0001B); border-color:transparent; box-shadow:0 8px 20px -6px rgba(240,20,47,.7); }
+  .mus-c svg{ width:22px; height:22px; fill:#fff; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .mus-c.big svg{ width:26px; height:26px; }
+  .mus-c:active{ transform:scale(.92); }
+  .mus-help{ display:none; font-size:12px; line-height:1.5; color:#C9C9CE; background:rgba(255,255,255,.05); border-radius:12px; padding:10px 12px; margin:0 0 10px; }
+  .mus-help.show{ display:block; }
+  .mus-help ol{ margin:6px 0 8px 18px; padding:0; }
   .mus-hint{ font-size:11px; line-height:1.4; color:#9A9AA0; margin:8px 2px 10px; }
   .mus-err{ font-size:12px; color:#FF6B7A; margin:0 2px 8px; display:none; }
   .mus-frame{ margin-top:2px; }
@@ -2275,6 +2284,21 @@ document.addEventListener('click', function(e){
 </script>
 <div class="mus-panel" id="musPanel" role="dialog" aria-label="Apple Music">
   <div class="mus-head"><span>Apple Music</span><button class="mus-x" onclick="toggleMusic(false)" aria-label="Fermer">✕</button></div>
+  <div class="mus-ctl">
+    <a class="mus-c" id="musPrev" href="#" aria-label="Titre précédent"><svg viewBox="0 0 24 24"><path d="M6 5v14M19 5v14L9 12z"/></svg></a>
+    <a class="mus-c big" id="musPlay" href="#" aria-label="Lecture / Pause"><svg viewBox="0 0 24 24"><path d="M7 4.5l12 7.5-12 7.5z"/></svg></a>
+    <a class="mus-c" id="musNext" href="#" aria-label="Titre suivant"><svg viewBox="0 0 24 24"><path d="M18 5v14M5 5v14l10-7z"/></svg></a>
+  </div>
+  <div class="mus-hint" style="margin-top:-2px">Commande la musique de l'iPhone (n'importe quelle appli). <a href="#" onclick="document.getElementById('musHelp').classList.toggle('show');return false" style="color:#FF4655">Configurer les boutons</a></div>
+  <div class="mus-help" id="musHelp">
+    <b>À faire une seule fois, dans l'appli Raccourcis :</b>
+    <ol>
+      <li>Crée un raccourci avec l'action de <b>lecture/pause</b> et nomme-le exactement <b>BBX Play</b>.</li>
+      <li>Crée-en un avec l'action <b>titre suivant</b> : <b>BBX Next</b>.</li>
+      <li>Crée-en un avec l'action <b>titre précédent</b> : <b>BBX Prev</b>.</li>
+    </ol>
+    Astuce : dans la recherche d'actions, tape « suivant », « précédent » ou « lecture ». L'appli Raccourcis s'ouvre une seconde puis te ramène ici.
+  </div>
   <div class="mus-row"><input id="musInput" type="url" inputmode="url" placeholder="Colle un lien Apple Music" autocomplete="off" autocapitalize="off" spellcheck="false"><button onclick="musLoad()">Charger</button></div>
   <div class="mus-hint">Dans Apple Music : ••• → Partager → Copier le lien (playlist, album ou titre). Pour écouter les titres en entier, sois connecté à Apple Music dans ce navigateur.</div>
   <div class="mus-err" id="musErr">Lien non reconnu : colle un lien qui commence par music.apple.com</div>
@@ -2327,6 +2351,11 @@ document.addEventListener('click', function(e){
     if(p.contains(e.target) || e.target.closest('#musBtn')) return;
     p.classList.remove('open');
   });
+  (function(){
+    const back=encodeURIComponent(location.href.split('#')[0]);
+    const link=n=>'shortcuts://x-callback-url/run-shortcut?name='+encodeURIComponent(n)+'&x-success='+back+'&x-cancel='+back+'&x-error='+back;
+    $('musPrev').href=link('BBX Prev'); $('musPlay').href=link('BBX Play'); $('musNext').href=link('BBX Next');
+  })();
   if(url){ const x=embedOf(url); if(x){ $('musInput').value=url.replace('embed.music.apple.com','music.apple.com'); show(x); } }
 })();
 </script>
