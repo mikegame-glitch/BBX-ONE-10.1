@@ -1090,6 +1090,20 @@ html,body{ background:#090102 !important; }
   .tb-panel{ top:calc(52px + env(safe-area-inset-top,0px)) !important; }
   /* ---- plus d'écart entre le bouton du haut et les jours ---- */
   .top-sticky .page-header{ margin:9px 0 13px -8px !important; }
+  /* ---- abdos : 45 s d'exercice = vert, 15 s de pause = ROUGE ---- */
+  .ex-row.resting.abdo:not(.ab-rest):not(.ab-prep){ box-shadow:0 0 0 1.5px rgba(48,209,88,.55) !important; }
+  .ex-row.resting.abdo:not(.ab-rest):not(.ab-prep) .rt-bar i{ background:#30D158 !important; }
+  .ex-row.resting.abdo:not(.ab-rest):not(.ab-prep) .ex-go.skip{ background:#30D158 !important; }
+  .ex-row.resting.abdo:not(.ab-rest):not(.ab-prep) .ex-dots .set-label{ color:#30D158 !important; font-weight:800; }
+  .ex-row.resting.abdo.ab-rest{ box-shadow:0 0 0 2px #FF2D3F, 0 0 24px -4px rgba(255,45,63,.65) !important; }
+  .ex-row.resting.abdo.ab-rest .ab-cd b{ color:#FF2D3F !important; text-shadow:0 0 14px rgba(255,45,63,.7) !important; }
+  .ex-row.resting.abdo.ab-rest .ab-cd em{ color:#FF2D3F !important; }
+  .ex-row.resting.abdo.ab-rest .rt-bar i{ background:#FF2D3F !important; }
+  .ex-row.resting.abdo.ab-rest .ex-go.skip{ background:#FF2D3F !important; }
+  .ex-row.resting.abdo.ab-rest .ex-dots .set-label{ color:#FF2D3F !important; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  /* ---- pause entre les séries : compteur actif en rouge ---- */
+  .ex-row.resting:not(.abdo) .rt-left{ color:#FF2D3F !important; text-shadow:0 0 14px rgba(255,45,63,.55) !important; }
+  .ex-row.resting:not(.abdo) .rt-bar i{ background:#FF2D3F !important; }
   .top-duo .mus-btn{ padding:0 !important; }
   .top-duo .mus-btn.live svg{ filter:drop-shadow(0 0 5px rgba(255,31,61,.9)); }
   /* ---- lecteur Apple Music ---- */
