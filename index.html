@@ -1198,6 +1198,9 @@ html,body{ background:#090102 !important; }
 .ml-ck span{ display:grid; place-items:center; width:28px; height:28px; border-radius:50%; border:1.5px solid rgba(255,70,80,.5); background:transparent; color:transparent; font-size:15px; font-weight:800; transition:.15s; }
 .ml-ck span::after{ content:"✓"; }
 .ml-ck input:checked + span{ background:linear-gradient(180deg,#FF3249,#C0001B); border-color:transparent; color:#fff; box-shadow:0 4px 12px -3px rgba(240,20,47,.8); }
+.ml-all{ grid-column:auto; grid-row:auto; align-self:center; margin-left:4px; flex:none; }
+.ml-ck input:indeterminate + span{ border-color:#FF2D3F; color:#FF2D3F; }
+.ml-ck input:indeterminate + span::after{ content:"–"; }
 .ml-row{ grid-column:2/4; grid-row:2; display:flex; align-items:center; gap:8px; margin-top:6px; min-width:0; }
 .ml-row > .ml-u{ flex:1 1 0; min-width:0; overflow:hidden; text-overflow:ellipsis; }
 .ml-st{ display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.06); border-radius:999px; padding:3px; }
@@ -2478,7 +2481,7 @@ document.addEventListener('click', function(e){
   const save=()=>{ try{ localStorage.setItem(SK,JSON.stringify(S)); }catch(e){} };
   const key=(m,i)=>m+'-'+i, W=(m,i,it)=>S.w[key(m,i)]??it[2]*it[3];
   function build(){
-    $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="ml-card"><div class="ml-mh"><div class="ml-mi">${ic}</div><div><b>${t}</b><span>${items.length} aliments</span></div><div class="ml-mk"><span id="mlmk${m}"></span><small id="mlmp${m}"></small></div></div>`+
+    $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="ml-card"><div class="ml-mh"><div class="ml-mi">${ic}</div><div><b>${t}</b><span>${items.length} aliments</span></div><div class="ml-mk"><span id="mlmk${m}"></span><small id="mlmp${m}"></small></div><label class="ml-ck ml-all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
       items.map((it,i)=>`<div class="ml-it" id="mlit${m}-${i}"><div class="ml-em">${it[7]}</div><div><div class="ml-nm">${it[0]}</div><div class="ml-mt" id="mlmt${m}-${i}"></div></div><label class="ml-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label>
         <div class="ml-row"><div class="ml-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="ml-u">${it[1]}</span>
         <div class="ml-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="ml-u">${it[6]}</span></div></div></div>`).join('')+`</section>`).join('');
@@ -2490,6 +2493,13 @@ document.addEventListener('click', function(e){
       c.parentNode.querySelectorAll('button').forEach(b=>b.onclick=()=>setN((parseFloat(c.value)||0)+step*b.dataset.d));
       $('mlk'+m+'-'+i).onchange=e=>{ S.d[key(m,i)]=e.target.checked; calc(); save(); };
     }));
+    MEALS.forEach(([t,ic,items],m)=>{
+      $('mlall'+m).onchange=e=>{
+        const on=e.target.checked;
+        items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; });
+        calc(); save();
+      };
+    });
     $('mlKg').value=S.kg; $('mlPg').value=S.pg;
     $('mlKg').oninput=e=>{ S.kg=Math.max(1,+e.target.value||1); calc(); save(); };
     $('mlPg').oninput=e=>{ S.pg=Math.max(1,+e.target.value||1); calc(); save(); };
@@ -2502,7 +2512,9 @@ document.addEventListener('click', function(e){
       items.forEach((it,i)=>{ const f=W(m,i,it)/(it[2]*it[3]), ik=it[4]*f, ip=it[5]*f; mk+=ik; mp+=ip; const dn=!!S.d[key(m,i)];
         $('mlit'+m+'-'+i).classList.toggle('done',dn); if(dn){ K+=ik; P+=ip; } TK+=ik; TP+=ip;
         $('mlmt'+m+'-'+i).textContent=r(ik)+' kcal · '+r1(ip)+' g protéines'; });
-      $('mlmk'+m).textContent=r(mk)+' kcal'; $('mlmp'+m).textContent=r(mp)+' g prot.'; });
+      $('mlmk'+m).textContent=r(mk)+' kcal'; $('mlmp'+m).textContent=r(mp)+' g prot.';
+      const nd=items.filter((it,i)=>S.d[key(m,i)]).length, all=$('mlall'+m);
+      all.checked=nd===items.length; all.indeterminate=nd>0&&nd<items.length; });
     $('mlKt').textContent=r(K); $('mlPt').textContent=r(P);
     const kp=K/S.kg*100, pp=P/S.pg*100;
     ring('mlKf',kp); ring('mlPf',pp); $('mlKp').textContent=r(kp)+'%'; $('mlPp').textContent=r(pp)+'%';
