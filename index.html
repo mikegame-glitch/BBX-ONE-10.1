@@ -1158,6 +1158,76 @@ html,body{ background:#090102 !important; }
   /* ---- léger décalage entre le bord et le logo ---- */
   .page-header .app-logo{ margin-left:10px !important; }
 </style>
+<style>
+/* ===== Pilule du bas : Sport | Manger ===== */
+.nav-pill{ position:absolute; left:50%; bottom:calc(12px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); z-index:45; display:flex; gap:4px; padding:4px; border-radius:999px;
+  background:rgba(14,1,4,.9); border:1px solid rgba(255,70,80,.3); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 10px 30px -8px rgba(0,0,0,.9), 0 0 24px -8px rgba(240,20,47,.6); }
+.nav-pill button{ display:flex; align-items:center; gap:8px; height:46px; padding:0 22px; border:0; border-radius:999px; background:transparent; color:#9A9AA0;
+  font:800 13px/1 Montserrat,-apple-system,BlinkMacSystemFont,sans-serif; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:background .2s, color .2s; }
+.nav-pill button svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.nav-pill button.on{ color:#fff; background:linear-gradient(180deg,#FF3249,#C0001B); box-shadow:0 6px 16px -4px rgba(240,20,47,.7); }
+.screens{ padding-bottom:110px !important; }
+
+/* ===== Page Manger ===== */
+#mealView{ position:absolute; inset:0; z-index:20; display:none; overflow-y:auto; box-sizing:border-box; color:#fff;
+  padding:calc(14px + env(safe-area-inset-top,0px)) 16px 270px;
+  background:linear-gradient(180deg,#090102 0,#090102 100px,rgba(9,1,2,0) 230px), radial-gradient(520px 380px at 100% 42%, rgba(150,0,18,.42), transparent 70%), radial-gradient(460px 340px at 0% 100%, rgba(120,0,14,.42), transparent 70%), #090102; }
+#mealView.show{ display:block; }
+#mealView::-webkit-scrollbar{ display:none; }
+.ml-head{ display:flex; align-items:center; justify-content:space-between; margin:0 0 6px 10px; }
+.ml-head .app-logo{ height:28px; width:80px; object-fit:contain; }
+.ml-date{ display:block; font-size:12px; font-weight:700; letter-spacing:.06em; color:#9A9AA0; padding-right:4px; }
+.ml-date::first-letter{ text-transform:uppercase; }
+.ml-title{ font-size:25px; font-weight:900; margin:8px 0 10px; letter-spacing:-0.02em; font-family:"Arial Black",Impact,"Helvetica Neue",Arial,sans-serif; font-style:italic; text-transform:uppercase; }
+.ml-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.ml-chip{ font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#fff; padding:6px 12px; border-radius:999px; background:rgba(255,31,61,.14); border:1px solid rgba(255,70,80,.3); }
+.ml-card{ background:linear-gradient(160deg,rgba(40,4,12,.85),rgba(12,2,5,.92)); border:1px solid rgba(255,70,80,.2); border-radius:24px; margin-bottom:16px; overflow:hidden; box-shadow:0 14px 30px -18px rgba(0,0,0,.9); }
+.ml-mh{ display:flex; align-items:center; gap:12px; padding:14px 16px; }
+.ml-mi{ width:44px; height:44px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:linear-gradient(180deg,#FF3249,#C0001B); box-shadow:0 6px 16px -6px rgba(240,20,47,.8); }
+.ml-mh b{ display:block; font-size:15px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
+.ml-mh span{ color:#9A9AA0; font-size:12px; font-weight:600; }
+.ml-mk{ margin-left:auto; text-align:right; font-weight:800; font-size:17px; font-style:italic; color:#fff; }
+.ml-mk small{ display:block; font-style:normal; font-weight:700; font-size:11.5px; color:#FF9F0A; }
+.ml-it{ display:grid; grid-template-columns:34px 1fr 30px; grid-template-rows:auto auto; gap:4px 12px; padding:12px 16px; border-top:1px solid rgba(255,255,255,.08); }
+.ml-em{ grid-row:1/3; align-self:center; grid-column:1; text-align:center; font-size:25px; }
+.ml-nm{ font-weight:700; font-size:14px; line-height:1.25; }
+.ml-mt{ color:#9A9AA0; font-size:12px; font-weight:600; }
+.ml-ck{ grid-column:3; grid-row:1; align-self:start; cursor:pointer; display:block; }
+.ml-ck input{ display:none; }
+.ml-ck span{ display:grid; place-items:center; width:28px; height:28px; border-radius:50%; border:1.5px solid rgba(255,70,80,.5); background:transparent; color:transparent; font-size:15px; font-weight:800; transition:.15s; }
+.ml-ck span::after{ content:"✓"; }
+.ml-ck input:checked + span{ background:linear-gradient(180deg,#FF3249,#C0001B); border-color:transparent; color:#fff; box-shadow:0 4px 12px -3px rgba(240,20,47,.8); }
+.ml-row{ grid-column:2/4; grid-row:2; display:flex; align-items:center; gap:8px; margin-top:6px; min-width:0; }
+.ml-row > .ml-u{ flex:1 1 0; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+.ml-st{ display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.06); border-radius:999px; padding:3px; }
+.ml-st button{ width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,70,80,.28); background:rgba(255,255,255,.07); color:#fff; font:800 17px/1 inherit; cursor:pointer; padding:0; }
+.ml-st button:active{ transform:scale(.92); }
+.ml-st input, .ml-wf input{ width:40px; border:0; background:transparent; color:#fff; font:800 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Montserrat,sans-serif; font-style:italic; text-align:center; padding:4px 0; outline:0; }
+.ml-wf{ display:flex; align-items:center; flex:none; background:rgba(255,255,255,.06); border-radius:999px; padding:3px 12px 3px 8px; }
+.ml-wf input{ width:48px; text-align:right; }
+.ml-u{ color:#9A9AA0; font-size:12px; font-weight:600; white-space:nowrap; }
+.ml-it.done{ background:rgba(255,255,255,.03); }
+.ml-it.done .ml-em{ filter:grayscale(1); opacity:.5; }
+.ml-it.done .ml-nm{ text-decoration:line-through; color:#9A9AA0; }
+.ml-it.done .ml-mt, .ml-it.done .ml-row{ opacity:.5; }
+/* bandeau objectifs */
+#mealBar{ position:absolute; z-index:44; display:none; left:12px; right:12px; bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
+#mealBar.show{ display:block; }
+.ml-panel{ display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 12px; border-radius:24px; background:rgba(14,1,4,.92); border:1px solid rgba(255,70,80,.3); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 10px 30px -8px rgba(0,0,0,.9), 0 0 24px -10px rgba(240,20,47,.5); }
+.ml-gz{ display:flex; align-items:center; gap:8px; min-width:0; }
+.ml-ring{ position:relative; width:56px; height:56px; flex:none; }
+.ml-ring svg{ width:56px; height:56px; transform:rotate(-90deg); }
+.ml-ring circle{ fill:none; stroke-width:8; stroke-linecap:round; }
+.ml-ring .t{ stroke:rgba(255,255,255,.1); }
+.ml-ring .v{ transition:stroke-dashoffset .4s; }
+.ml-ring b{ position:absolute; inset:0; display:grid; place-items:center; font-size:13px; font-weight:800; font-style:italic; }
+.ml-gt{ min-width:0; font-size:11px; font-weight:600; color:#9A9AA0; }
+.ml-gt strong{ display:block; font-size:17px; font-weight:800; font-style:italic; color:#fff; line-height:1.1; }
+.ml-gt .go{ display:flex; align-items:center; gap:3px; margin-top:2px; }
+.ml-gt input{ width:54px; min-width:0; border:1px solid rgba(255,70,80,.3); border-radius:8px; background:rgba(255,255,255,.06); color:#fff; font:700 12px -apple-system,sans-serif; padding:3px 3px; text-align:right; }
+.ml-gt em{ font-style:normal; font-weight:700; display:block; margin-top:2px; }
+</style>
 </head>
 <body>
 
@@ -2371,6 +2441,98 @@ document.addEventListener('click', function(e){
     $('musPrev').href=link('BBX Prev'); $('musPlay').href=link('BBX Play'); $('musNext').href=link('BBX Next');
   })();
   if(url){ const x=embedOf(url); if(x){ $('musInput').value=url.replace('embed.music.apple.com','music.apple.com'); show(x); } }
+})();
+</script>
+
+<!-- ===== MANGER : page nutrition + pilule du bas ===== -->
+<div id="mealView" aria-label="Manger">
+  <div class="ml-head"><img class="app-logo" id="mlLogo" alt="BBX"><span class="ml-date" id="mlDate"></span></div>
+  <h1 class="ml-title">Manger</h1>
+  <div class="ml-chips"><span class="ml-chip">🔥 Prise de masse</span><span class="ml-chip">🥗 4 repas</span><span class="ml-chip">🎯 Objectifs</span></div>
+  <div id="mlMeals"></div>
+</div>
+<div id="mealBar"><div class="ml-panel">
+  <div class="ml-gz"><div class="ml-ring"><svg viewBox="0 0 64 64"><circle class="t" cx="32" cy="32" r="27"/><circle class="v" id="mlKf" cx="32" cy="32" r="27" stroke="#FF2D3F"/></svg><b id="mlKp"></b></div>
+    <div class="ml-gt"><strong><span id="mlKt">0</span> kcal</strong><span class="go">objectif <input id="mlKg" type="number" inputmode="numeric" min="0"></span><em id="mlKr" style="color:#FF2D3F"></em></div></div>
+  <div class="ml-gz"><div class="ml-ring"><svg viewBox="0 0 64 64"><circle class="t" cx="32" cy="32" r="27"/><circle class="v" id="mlPf" cx="32" cy="32" r="27" stroke="#FF9F0A"/></svg><b id="mlPp"></b></div>
+    <div class="ml-gt"><strong><span id="mlPt">0</span> g prot.</strong><span class="go">objectif <input id="mlPg" type="number" inputmode="numeric" min="0"> g</span><em id="mlPr" style="color:#FF9F0A"></em></div></div>
+</div></div>
+<div class="nav-pill" role="tablist" aria-label="Navigation">
+  <button id="navSport" class="on" onclick="BBXNav.set('sport')" role="tab" aria-label="Sport"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Sport</button>
+  <button id="navMeal" onclick="BBXNav.set('meal')" role="tab" aria-label="Manger"><svg viewBox="0 0 24 24"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.2 1.2-3.5 3.7-3.5 7v3H17"/></svg>Manger</button>
+</div>
+<script>
+(function(){
+  const $=id=>document.getElementById(id), r=n=>Math.round(n), r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+  // [nom, unité, poids d'une unité, nb d'unités de base, kcal de base, protéines de base (g, estimées), g ou ml, emoji]
+  const MEALS=[
+  ["Petit-déjeuner","🥣",[["Banane","banane",105,1,100,1.2,"g","🍌"],["Date Deglet Noor","datte",7,5,99,.7,"g","🌴"],["Flocons d’avoine complets bio (Bjorg)","tasse",166.7,.6,217,7.6,"g","🌾"],["Beurre de cacahuète 100 % (Menguy’s)","portion de 100 g",100,.6,366,16,"g","🥜"],["Yaourt nature (Deli Light)","pot",125,2,113,9,"g","🥛"]]],
+  ["Déjeuner","🍗",[["Banane","banane",105,1,100,1.2,"g","🍌"],["Blanc de poulet –25 % de sel (Fleury Michon)","portion",40,2,82,8,"g","🍗"],["Riz basmati (Picard)","portion",225,1,297,7,"g","🍚"],["Skyr (Danone)","portion",140,1,80,15,"g","🥣"]]],
+  ["Dîner","🥩",[["Carré frais (Elle & Vire)","portion",25,1,48,1.8,"g","🧀"],["Haricots verts extra-fins (Cora)","portion",100,2,70,4,"g","🫛"],["Pomme Golden","pomme",100,1,54,.3,"g","🍏"],["Skyr myrtilles (Arma)","pot",100,1,72,9,"g","🫐"],["Steak haché 5 %","steak",120,1,156,24,"g","🥩"],["Wasa Proteins+","tranche",14.2,2,113,6,"g","🍞"]]],
+  ["Snack","🍫",[["Chocolat 90 % excellence (Lindt)","carré",10,1,59,1.2,"g","🍫"],["Lait demi-écrémé","verre",160,1.5,166,8,"ml","🥛"],["Sablés citron yuzu sans sucres (Gerblé)","sablé",11,4,187,3.5,"g","🍪"],["Whey vanille (Decathlon)","mesure",30,1,116,24,"g","💪"]]]];
+  const SK='bb9-meals', CI=2*Math.PI*27;
+  const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+  let S={w:{},d:{},kg:2500,pg:140,day:today()};
+  try{ const x=JSON.parse(localStorage.getItem(SK)||'null'); if(x) S=Object.assign(S,x); }catch(e){}
+  if(S.day!==today()){ S.d={}; S.day=today(); }   // les coches repartent à zéro chaque jour
+  const save=()=>{ try{ localStorage.setItem(SK,JSON.stringify(S)); }catch(e){} };
+  const key=(m,i)=>m+'-'+i, W=(m,i,it)=>S.w[key(m,i)]??it[2]*it[3];
+  function build(){
+    $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="ml-card"><div class="ml-mh"><div class="ml-mi">${ic}</div><div><b>${t}</b><span>${items.length} aliments</span></div><div class="ml-mk"><span id="mlmk${m}"></span><small id="mlmp${m}"></small></div></div>`+
+      items.map((it,i)=>`<div class="ml-it" id="mlit${m}-${i}"><div class="ml-em">${it[7]}</div><div><div class="ml-nm">${it[0]}</div><div class="ml-mt" id="mlmt${m}-${i}"></div></div><label class="ml-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label>
+        <div class="ml-row"><div class="ml-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="ml-u">${it[1]}</span>
+        <div class="ml-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="ml-u">${it[6]}</span></div></div></div>`).join('')+`</section>`).join('');
+    MEALS.forEach(([t,ic,items],m)=>items.forEach((it,i)=>{
+      const c=$('mlc'+m+'-'+i), w=$('mlw'+m+'-'+i), step=Number.isInteger(it[3])?1:.5;
+      const setN=n=>{ n=Math.max(0,n); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); c.value=r2(n); calc(); save(); };
+      c.oninput=()=>{ const n=Math.max(0,parseFloat(c.value)||0); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); calc(); save(); };
+      w.oninput=()=>{ const n=Math.max(0,parseFloat(w.value)||0); S.w[key(m,i)]=n; c.value=r2(n/it[2]); calc(); save(); };
+      c.parentNode.querySelectorAll('button').forEach(b=>b.onclick=()=>setN((parseFloat(c.value)||0)+step*b.dataset.d));
+      $('mlk'+m+'-'+i).onchange=e=>{ S.d[key(m,i)]=e.target.checked; calc(); save(); };
+    }));
+    $('mlKg').value=S.kg; $('mlPg').value=S.pg;
+    $('mlKg').oninput=e=>{ S.kg=Math.max(1,+e.target.value||1); calc(); save(); };
+    $('mlPg').oninput=e=>{ S.pg=Math.max(1,+e.target.value||1); calc(); save(); };
+    try{ $('mlDate').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); }catch(e){}
+  }
+  function ring(id,pct){ const c=$(id); c.style.strokeDasharray=CI; c.style.strokeDashoffset=CI*(1-Math.min(1,pct/100)); }
+  function calc(){
+    let K=0,P=0,TK=0,TP=0;
+    MEALS.forEach(([t,ic,items],m)=>{ let mk=0,mp=0;
+      items.forEach((it,i)=>{ const f=W(m,i,it)/(it[2]*it[3]), ik=it[4]*f, ip=it[5]*f; mk+=ik; mp+=ip; const dn=!!S.d[key(m,i)];
+        $('mlit'+m+'-'+i).classList.toggle('done',dn); if(dn){ K+=ik; P+=ip; } TK+=ik; TP+=ip;
+        $('mlmt'+m+'-'+i).textContent=r(ik)+' kcal · '+r1(ip)+' g protéines'; });
+      $('mlmk'+m).textContent=r(mk)+' kcal'; $('mlmp'+m).textContent=r(mp)+' g prot.'; });
+    $('mlKt').textContent=r(K); $('mlPt').textContent=r(P);
+    const kp=K/S.kg*100, pp=P/S.pg*100;
+    ring('mlKf',kp); ring('mlPf',pp); $('mlKp').textContent=r(kp)+'%'; $('mlPp').textContent=r(pp)+'%';
+    $('mlKr').textContent=(K>=S.kg?'Objectif atteint ✓':'Reste '+r(S.kg-K))+' · prévu '+r(TK);
+    $('mlPr').textContent=(P>=S.pg?'Objectif atteint ✓':'Reste '+r(S.pg-P)+' g')+' · prévu '+r(TP);
+  }
+  // ---- navigation Sport | Manger ----
+  function setView(v){
+    const meal=v==='meal';
+    $('mealView').classList.toggle('show',meal); $('mealBar').classList.toggle('show',meal);
+    $('navSport').classList.toggle('on',!meal); $('navMeal').classList.toggle('on',meal);
+    $('navSport').setAttribute('aria-selected',String(!meal)); $('navMeal').setAttribute('aria-selected',String(meal));
+    try{ localStorage.setItem('bb9-view',v); }catch(e){}
+  }
+  // à partir de 17 h, chaque jour : la page Sport s'affiche en premier (avant 17 h : Manger)
+  function autoView(){
+    const now=new Date(), pm=now.getHours()>=17, per=today()+'|'+(pm?'pm':'am');
+    let last='', v='sport';
+    try{ last=localStorage.getItem('bb9-auto')||''; v=localStorage.getItem('bb9-view')||'sport'; }catch(e){}
+    if(last!==per){ setView(pm?'sport':'meal'); try{ localStorage.setItem('bb9-auto',per); }catch(e){} }
+    else setView(v);
+  }
+  window.BBXNav={ set:setView, auto:autoView };
+  const lg=document.querySelector('.page-header .app-logo'); if(lg) $('mlLogo').src=lg.src;
+  build(); calc(); autoView();
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden) return;
+    if(S.day!==today()){ S.d={}; S.day=today(); save(); build(); calc(); }
+    autoView();
+  });
 })();
 </script>
 </body>
