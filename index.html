@@ -2553,16 +2553,16 @@ document.addEventListener('click', function(e){
   const MEALS=[
   ["Petit-déjeuner","🥣",[["Flocons d’avoine complets bio (Bjorg)","tasse",166.7,.36,130,4.6,"g","🌾"],["Yaourt nature (Deli Light)","pot",125,2,113,9,"g","🥛"],["Beurre de cacahuète 100 % (Menguy’s)","portion de 100 g",100,.6,366,16,"g","🥜"],["Date Deglet Noor","datte",7,5,99,.7,"g","🌴"]]],
   ["Déjeuner","🍗",[["Blanc de poulet –25 % de sel (Fleury Michon)","portion",40,2,82,8,"g","🍗"],["Riz basmati (Picard)","portion",225,1,297,7,"g","🍚"],["Skyr (Danone)","portion",140,1,80,15,"g","🥣"],["Banane","banane",105,1,100,1.2,"g","🍌"]]],
-  ["Dîner","🥩",[["Haricots verts extra-fins (Cora)","portion",100,2,70,4,"g","🫛"],["Steak haché 5 %","steak",120,1,156,24,"g","🥩"],["Carré frais (Elle & Vire)","portion",25,1,48,1.8,"g","🧀"],["Wasa Proteins+","tranche",14.2,2,113,6,"g","🍞"],["Skyr myrtilles (Arma)","pot",100,1,72,9,"g","🫐"],["Pomme Golden","pomme",100,1,54,.3,"g","🍏"],["Chocolat 90 % excellence (Lindt)","carré",10,1,59,1.2,"g","🍫"]]],
   ["Snack","🍫",[["Banane","banane",105,1.2381,124,1.5,"g","🍌"],["Sablés citron yuzu sans sucres (Gerblé)","sablé",11,4,187,3.5,"g","🍪"]]],
-  ["Shaker","🥤",[["Lait demi-écrémé","verre",160,1.5,166,8,"ml","🥛"],["Whey vanille (Decathlon)","mesure",30,1,116,24,"g","💪"],["Créatine","dose de 3 g",3,1,0,0,"g","⚡"]]]];
+  ["Shaker","🥤",[["Lait demi-écrémé","verre",160,1.5,166,8,"ml","🥛"],["Whey vanille (Decathlon)","mesure",30,1,116,24,"g","💪"],["Créatine","dose de 3 g",3,1,0,0,"g","⚡"]]],
+  ["Dîner","🥩",[["Haricots verts extra-fins (Cora)","portion",100,2,70,4,"g","🫛"],["Steak haché 5 %","steak",120,1,156,24,"g","🥩"],["Carré frais (Elle & Vire)","portion",25,1,48,1.8,"g","🧀"],["Wasa Proteins+","tranche",14.2,2,113,6,"g","🍞"],["Skyr myrtilles (Arma)","pot",100,1,72,9,"g","🫐"],["Pomme Golden","pomme",100,1,54,.3,"g","🍏"],["Chocolat 90 % excellence (Lindt)","carré",10,1,59,1.2,"g","🍫"]]]];
   const SK='bb9-meals', CI=2*Math.PI*52;
   const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
   let S={w:{},d:{},kg:2500,pg:140,day:today()};
   try{ const x=JSON.parse(localStorage.getItem(SK)||'null'); if(x) S=Object.assign(S,x); }catch(e){}
   if(S.day!==today()){ S.d={}; S.day=today(); }   // les coches repartent à zéro chaque jour
   const save=()=>{ try{ localStorage.setItem(SK,JSON.stringify(S)); }catch(e){} };
-  const key=(m,i)=>m+'-'+MEALS[m][2][i][0], W=(m,i,it)=>S.w[key(m,i)]??it[2]*it[3];
+  const key=(m,i)=>MEALS[m][0]+'|'+MEALS[m][2][i][0], W=(m,i,it)=>S.w[key(m,i)]??it[2]*it[3];
   // migration : avant, les quantités et coches étaient rangées par position (0-2…). On les range par nom pour que l'ordre puisse changer.
   if(!S.v){
     const OLD=[["Banane","Date Deglet Noor","Flocons d’avoine complets bio (Bjorg)","Beurre de cacahuète 100 % (Menguy’s)","Yaourt nature (Deli Light)"],["Banane","Blanc de poulet –25 % de sel (Fleury Michon)","Riz basmati (Picard)","Skyr (Danone)"],["Carré frais (Elle & Vire)","Haricots verts extra-fins (Cora)","Pomme Golden","Skyr myrtilles (Arma)","Steak haché 5 %","Wasa Proteins+"],["Chocolat 90 % excellence (Lindt)","Lait demi-écrémé","Sablés citron yuzu sans sucres (Gerblé)","Whey vanille (Decathlon)"]];
@@ -2576,6 +2576,11 @@ document.addEventListener('click', function(e){
   if(S.v<4){   // le chocolat est passé du Snack (3) au Dîner (2)
     ['w','d'].forEach(f=>{ const k='3-Chocolat 90 % excellence (Lindt)'; if(S[f] && k in S[f]){ S[f]['2-Chocolat 90 % excellence (Lindt)']=S[f][k]; delete S[f][k]; } });
     S.v=4; save();
+  }
+  if(S.v<5){   // les clés passent de « numéro de repas » à « nom du repas » (l'ordre des repas est libre)
+    const T=['Petit-déjeuner','Déjeuner','Dîner','Snack','Shaker'];
+    ['w','d'].forEach(f=>{ const n={}; Object.keys(S[f]||{}).forEach(k=>{ const mm=k.match(/^(\d+)-(.+)$/); if(mm && T[+mm[1]]) n[T[+mm[1]]+'|'+mm[2]]=S[f][k]; else n[k]=S[f][k]; }); S[f]=n; });
+    S.v=5; save();
   }
   function build(){
     $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="my-card"><div class="my-mh"><div class="my-mi">${ic}</div><div><b>${t}</b><span id="mymp${m}"></span></div><div class="my-mk"><b id="mymk${m}"></b><small>kcal</small></div><label class="my-ck all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
