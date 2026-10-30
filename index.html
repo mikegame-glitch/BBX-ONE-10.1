@@ -2551,7 +2551,7 @@ document.addEventListener('click', function(e){
   const $=id=>document.getElementById(id), r=n=>Math.round(n), r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
   // [nom, unité, poids d'une unité, nb d'unités de base, kcal de base, protéines de base (g, estimées), g ou ml, emoji]
   const MEALS=[
-  ["Petit-déjeuner","🥣",[["Banane","banane",105,1,100,1.2,"g","🍌"],["Date Deglet Noor","datte",7,5,99,.7,"g","🌴"],["Flocons d’avoine complets bio (Bjorg)","tasse",166.7,.6,217,7.6,"g","🌾"],["Beurre de cacahuète 100 % (Menguy’s)","portion de 100 g",100,.6,366,16,"g","🥜"],["Yaourt nature (Deli Light)","pot",125,2,113,9,"g","🥛"]]],
+  ["Petit-déjeuner","🥣",[["Flocons d’avoine complets bio (Bjorg)","tasse",166.7,.36,130,4.6,"g","🌾"],["Yaourt nature (Deli Light)","pot",125,2,113,9,"g","🥛"],["Beurre de cacahuète 100 % (Menguy’s)","portion de 100 g",100,.6,366,16,"g","🥜"],["Date Deglet Noor","datte",7,5,99,.7,"g","🌴"]]],
   ["Déjeuner","🍗",[["Banane","banane",105,1,100,1.2,"g","🍌"],["Blanc de poulet –25 % de sel (Fleury Michon)","portion",40,2,82,8,"g","🍗"],["Riz basmati (Picard)","portion",225,1,297,7,"g","🍚"],["Skyr (Danone)","portion",140,1,80,15,"g","🥣"]]],
   ["Dîner","🥩",[["Carré frais (Elle & Vire)","portion",25,1,48,1.8,"g","🧀"],["Haricots verts extra-fins (Cora)","portion",100,2,70,4,"g","🫛"],["Pomme Golden","pomme",100,1,54,.3,"g","🍏"],["Skyr myrtilles (Arma)","pot",100,1,72,9,"g","🫐"],["Steak haché 5 %","steak",120,1,156,24,"g","🥩"],["Wasa Proteins+","tranche",14.2,2,113,6,"g","🍞"]]],
   ["Snack","🍫",[["Chocolat 90 % excellence (Lindt)","carré",10,1,59,1.2,"g","🍫"],["Lait demi-écrémé","verre",160,1.5,166,8,"ml","🥛"],["Sablés citron yuzu sans sucres (Gerblé)","sablé",11,4,187,3.5,"g","🍪"],["Whey vanille (Decathlon)","mesure",30,1,116,24,"g","💪"]]]];
@@ -2561,7 +2561,13 @@ document.addEventListener('click', function(e){
   try{ const x=JSON.parse(localStorage.getItem(SK)||'null'); if(x) S=Object.assign(S,x); }catch(e){}
   if(S.day!==today()){ S.d={}; S.day=today(); }   // les coches repartent à zéro chaque jour
   const save=()=>{ try{ localStorage.setItem(SK,JSON.stringify(S)); }catch(e){} };
-  const key=(m,i)=>m+'-'+i, W=(m,i,it)=>S.w[key(m,i)]??it[2]*it[3];
+  const key=(m,i)=>m+'-'+MEALS[m][2][i][0], W=(m,i,it)=>S.w[key(m,i)]??it[2]*it[3];
+  // migration : avant, les quantités et coches étaient rangées par position (0-2…). On les range par nom pour que l'ordre puisse changer.
+  if(!S.v){
+    const OLD=[["Banane","Date Deglet Noor","Flocons d’avoine complets bio (Bjorg)","Beurre de cacahuète 100 % (Menguy’s)","Yaourt nature (Deli Light)"],["Banane","Blanc de poulet –25 % de sel (Fleury Michon)","Riz basmati (Picard)","Skyr (Danone)"],["Carré frais (Elle & Vire)","Haricots verts extra-fins (Cora)","Pomme Golden","Skyr myrtilles (Arma)","Steak haché 5 %","Wasa Proteins+"],["Chocolat 90 % excellence (Lindt)","Lait demi-écrémé","Sablés citron yuzu sans sucres (Gerblé)","Whey vanille (Decathlon)"]];
+    ['w','d'].forEach(f=>{ const n={}; Object.keys(S[f]||{}).forEach(k=>{ const mm=k.match(/^(\d+)-(\d+)$/); if(mm && OLD[+mm[1]] && OLD[+mm[1]][+mm[2]]) n[mm[1]+'-'+OLD[+mm[1]][+mm[2]]]=S[f][k]; else n[k]=S[f][k]; }); S[f]=n; });
+    S.v=2; save();
+  }
   function build(){
     $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="my-card"><div class="my-mh"><div class="my-mi">${ic}</div><div><b>${t}</b><span id="mymp${m}"></span></div><div class="my-mk"><b id="mymk${m}"></b><small>kcal</small></div><label class="my-ck all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
       items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
