@@ -1169,67 +1169,80 @@ html,body{ background:#090102 !important; }
 .nav-pill button.on{ color:#fff; background:linear-gradient(180deg,#FF3249,#C0001B); box-shadow:0 6px 16px -4px rgba(240,20,47,.7); }
 .screens{ padding-bottom:110px !important; }
 
-/* ===== Page Manger ===== */
+/* ===== Page Meal (style Yazio) ===== */
 #mealView{ position:absolute; inset:0; z-index:20; display:none; overflow-y:auto; box-sizing:border-box; color:#fff;
-  padding:calc(14px + env(safe-area-inset-top,0px)) 16px 270px;
-  background:linear-gradient(180deg,#090102 0,#090102 100px,rgba(9,1,2,0) 230px), radial-gradient(520px 380px at 100% 42%, rgba(150,0,18,.42), transparent 70%), radial-gradient(460px 340px at 0% 100%, rgba(120,0,14,.42), transparent 70%), #090102; }
+  padding:calc(14px + env(safe-area-inset-top,0px)) 16px 120px;
+  background:linear-gradient(180deg,#090102 0,#090102 100px,rgba(9,1,2,0) 230px), radial-gradient(520px 380px at 100% 42%, rgba(150,0,18,.38), transparent 70%), radial-gradient(460px 340px at 0% 100%, rgba(120,0,14,.38), transparent 70%), #090102; }
 #mealView.show{ display:block; }
 #mealView::-webkit-scrollbar{ display:none; }
-.ml-head{ display:flex; align-items:center; justify-content:space-between; margin:0 0 6px 10px; }
-.ml-head .app-logo{ height:28px; width:80px; object-fit:contain; }
-.ml-date{ display:block; font-size:12px; font-weight:700; letter-spacing:.06em; color:#9A9AA0; padding-right:4px; }
-.ml-date::first-letter{ text-transform:uppercase; }
-.ml-title{ font-size:25px; font-weight:900; margin:8px 0 10px; letter-spacing:-0.02em; font-family:"Arial Black",Impact,"Helvetica Neue",Arial,sans-serif; font-style:italic; text-transform:uppercase; }
-.ml-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
-.ml-chip{ font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#fff; padding:6px 12px; border-radius:999px; background:rgba(255,31,61,.14); border:1px solid rgba(255,70,80,.3); }
-.ml-card{ background:linear-gradient(160deg,rgba(40,4,12,.85),rgba(12,2,5,.92)); border:1px solid rgba(255,70,80,.2); border-radius:24px; margin-bottom:16px; overflow:hidden; box-shadow:0 14px 30px -18px rgba(0,0,0,.9); }
-.ml-mh{ display:flex; align-items:center; gap:12px; padding:14px 16px; }
-.ml-mi{ width:44px; height:44px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:linear-gradient(180deg,#FF3249,#C0001B); box-shadow:0 6px 16px -6px rgba(240,20,47,.8); }
-.ml-mh b{ display:block; font-size:15px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
-.ml-mh span{ color:#9A9AA0; font-size:12px; font-weight:600; }
-.ml-mk{ margin-left:auto; text-align:right; font-weight:800; font-size:17px; font-style:italic; color:#fff; }
-.ml-mk small{ display:block; font-style:normal; font-weight:700; font-size:11.5px; color:#FF9F0A; }
-.ml-it{ display:grid; grid-template-columns:34px 1fr 30px; grid-template-rows:auto auto; gap:4px 12px; padding:12px 16px; border-top:1px solid rgba(255,255,255,.08); }
-.ml-em{ grid-row:1/3; align-self:center; grid-column:1; text-align:center; font-size:25px; }
-.ml-nm{ font-weight:700; font-size:14px; line-height:1.25; }
-.ml-mt{ color:#9A9AA0; font-size:12px; font-weight:600; }
-.ml-ck{ grid-column:3; grid-row:1; align-self:start; cursor:pointer; display:block; }
-.ml-ck input{ display:none; }
-.ml-ck span{ display:grid; place-items:center; width:28px; height:28px; border-radius:50%; border:1.5px solid rgba(255,70,80,.5); background:transparent; color:transparent; font-size:15px; font-weight:800; transition:.15s; }
-.ml-ck span::after{ content:"✓"; }
-.ml-ck input:checked + span{ background:linear-gradient(180deg,#FF3249,#C0001B); border-color:transparent; color:#fff; box-shadow:0 4px 12px -3px rgba(240,20,47,.8); }
-.ml-all{ grid-column:auto; grid-row:auto; align-self:center; margin-left:4px; flex:none; }
-.ml-ck input:indeterminate + span{ border-color:#FF2D3F; color:#FF2D3F; }
-.ml-ck input:indeterminate + span::after{ content:"–"; }
-.ml-row{ grid-column:2/4; grid-row:2; display:flex; align-items:center; gap:8px; margin-top:6px; min-width:0; }
-.ml-row > .ml-u{ flex:1 1 0; min-width:0; overflow:hidden; text-overflow:ellipsis; }
-.ml-st{ display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.06); border-radius:999px; padding:3px; }
-.ml-st button{ width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,70,80,.28); background:rgba(255,255,255,.07); color:#fff; font:800 17px/1 inherit; cursor:pointer; padding:0; }
-.ml-st button:active{ transform:scale(.92); }
-.ml-st input, .ml-wf input{ width:40px; border:0; background:transparent; color:#fff; font:800 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Montserrat,sans-serif; font-style:italic; text-align:center; padding:4px 0; outline:0; }
-.ml-wf{ display:flex; align-items:center; flex:none; background:rgba(255,255,255,.06); border-radius:999px; padding:3px 12px 3px 8px; }
-.ml-wf input{ width:48px; text-align:right; }
-.ml-u{ color:#9A9AA0; font-size:12px; font-weight:600; white-space:nowrap; }
-.ml-it.done{ background:rgba(255,255,255,.03); }
-.ml-it.done .ml-em{ filter:grayscale(1); opacity:.5; }
-.ml-it.done .ml-nm{ text-decoration:line-through; color:#9A9AA0; }
-.ml-it.done .ml-mt, .ml-it.done .ml-row{ opacity:.5; }
-/* bandeau objectifs */
-#mealBar{ position:absolute; z-index:44; display:none; left:12px; right:12px; bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
-#mealBar.show{ display:block; }
-.ml-panel{ display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 12px; border-radius:24px; background:rgba(14,1,4,.92); border:1px solid rgba(255,70,80,.3); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 10px 30px -8px rgba(0,0,0,.9), 0 0 24px -10px rgba(240,20,47,.5); }
-.ml-gz{ display:flex; align-items:center; gap:8px; min-width:0; }
-.ml-ring{ position:relative; width:56px; height:56px; flex:none; }
-.ml-ring svg{ width:56px; height:56px; transform:rotate(-90deg); }
-.ml-ring circle{ fill:none; stroke-width:8; stroke-linecap:round; }
-.ml-ring .t{ stroke:rgba(255,255,255,.1); }
-.ml-ring .v{ transition:stroke-dashoffset .4s; }
-.ml-ring b{ position:absolute; inset:0; display:grid; place-items:center; font-size:13px; font-weight:800; font-style:italic; }
-.ml-gt{ min-width:0; font-size:11px; font-weight:600; color:#9A9AA0; }
-.ml-gt strong{ display:block; font-size:17px; font-weight:800; font-style:italic; color:#fff; line-height:1.1; }
-.ml-gt .go{ display:flex; align-items:center; gap:3px; margin-top:2px; }
-.ml-gt input{ width:54px; min-width:0; border:1px solid rgba(255,70,80,.3); border-radius:8px; background:rgba(255,255,255,.06); color:#fff; font:700 12px -apple-system,sans-serif; padding:3px 3px; text-align:right; }
-.ml-gt em{ font-style:normal; font-weight:700; display:block; margin-top:2px; }
+.my-head{ display:flex; align-items:center; justify-content:space-between; margin:0 0 4px 10px; }
+.my-head .app-logo{ height:28px; width:80px; object-fit:contain; }
+.my-date{ display:block; font-size:12px; font-weight:700; letter-spacing:.06em; color:#9A9AA0; padding-right:4px; }
+.my-date::first-letter{ text-transform:uppercase; }
+.my-title{ font-size:25px; font-weight:900; margin:8px 0 14px; letter-spacing:-0.02em; font-family:"Arial Black",Impact,"Helvetica Neue",Arial,sans-serif; font-style:italic; text-transform:uppercase; }
+/* résumé du jour */
+.my-sum{ background:linear-gradient(160deg,rgba(46,5,15,.92),rgba(14,2,6,.96)); border:1px solid rgba(255,70,80,.24); border-radius:28px; padding:18px 14px 16px; margin-bottom:12px; box-shadow:0 18px 36px -20px rgba(0,0,0,.9), 0 0 30px -14px rgba(240,20,47,.5); }
+.my-top{ display:flex; align-items:center; justify-content:space-between; }
+.my-stat{ width:80px; text-align:center; }
+.my-stat b, .my-stat input{ display:block; width:100%; font-size:21px; font-weight:800; font-style:italic; color:#fff; line-height:1.1; font-family:inherit; }
+.my-stat input{ background:transparent; border:0; border-bottom:1px dashed rgba(255,255,255,.28); border-radius:0; text-align:center; padding:0 0 2px; outline:0; }
+.my-stat span{ display:block; margin-top:4px; font-size:10.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#9A9AA0; }
+.my-ring{ position:relative; width:150px; height:150px; flex:none; }
+.my-ring svg{ width:150px; height:150px; transform:rotate(-90deg); }
+.my-ring circle{ fill:none; stroke-width:10; stroke-linecap:round; }
+.my-ring .t{ stroke:rgba(255,255,255,.1); }
+.my-ring .v{ stroke:#FF2D3F; transition:stroke-dashoffset .45s; filter:drop-shadow(0 0 6px rgba(255,45,63,.55)); }
+.my-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.my-center strong{ font-size:32px; font-weight:900; font-style:italic; line-height:1; }
+.my-center span{ margin-top:5px; font-size:11px; font-weight:700; color:#9A9AA0; }
+.my-macro{ margin-top:18px; padding:0 4px; }
+.my-mrow{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; font-weight:700; }
+.my-mrow em{ font-style:normal; color:#FF9F0A; font-weight:800; letter-spacing:.06em; text-transform:uppercase; font-size:11.5px; }
+.my-mrow input{ width:46px; background:transparent; border:0; border-bottom:1px dashed rgba(255,255,255,.28); color:#fff; font:800 13px inherit; font-family:inherit; text-align:right; padding:0 2px; outline:0; }
+.my-bar{ height:9px; border-radius:99px; background:rgba(255,255,255,.1); margin-top:8px; overflow:hidden; }
+.my-bar i{ display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,#FF9F0A,#FFC04D); transition:width .45s; }
+.my-plan{ font-size:11.5px; color:#9A9AA0; font-weight:600; margin-top:9px; }
+.my-hint{ font-size:11.5px; color:#9A9AA0; font-weight:600; margin:0 6px 12px; }
+/* repas */
+.my-card{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:22px; margin-bottom:14px; overflow:hidden; }
+.my-mh{ display:flex; align-items:center; gap:12px; padding:14px 14px 12px; }
+.my-mi{ width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; background:rgba(255,31,61,.18); flex:none; }
+.my-mh b{ display:block; font-size:16px; font-weight:800; }
+.my-mh span{ font-size:12px; color:#9A9AA0; font-weight:600; }
+.my-mk{ margin-left:auto; text-align:right; }
+.my-mk b{ font-size:18px; font-weight:800; font-style:italic; }
+.my-mk small{ display:block; font-size:10.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#9A9AA0; }
+.my-it{ border-top:1px solid rgba(255,255,255,.07); }
+.my-row{ display:flex; align-items:center; gap:12px; padding:11px 14px; cursor:pointer; }
+.my-th{ width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,.07); display:grid; place-items:center; font-size:23px; flex:none; }
+.my-nm{ flex:1; min-width:0; }
+.my-nm b{ display:block; font-size:14px; font-weight:700; line-height:1.25; }
+.my-nm span{ font-size:12px; color:#9A9AA0; font-weight:600; }
+.my-kc{ text-align:right; flex:none; }
+.my-kc b{ font-size:15px; font-weight:800; font-style:italic; }
+.my-kc small{ display:block; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#9A9AA0; }
+.my-ck{ cursor:pointer; display:block; flex:none; }
+.my-ck input{ display:none; }
+.my-ck span{ display:grid; place-items:center; width:28px; height:28px; border-radius:50%; border:1.5px solid rgba(255,70,80,.5); color:transparent; font-size:15px; font-weight:800; transition:.15s; }
+.my-ck span::after{ content:"✓"; }
+.my-ck input:checked + span{ background:linear-gradient(180deg,#FF3249,#C0001B); border-color:transparent; color:#fff; box-shadow:0 4px 12px -3px rgba(240,20,47,.8); }
+.my-ck input:indeterminate + span{ border-color:#FF2D3F; color:#FF2D3F; }
+.my-ck input:indeterminate + span::after{ content:"–"; }
+.my-ck.all{ margin-left:2px; }
+.my-edit{ display:none; align-items:center; gap:8px; padding:0 14px 12px 68px; }
+.my-it.open .my-edit{ display:flex; }
+.my-it.open .my-row{ padding-bottom:8px; }
+.my-st{ display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.06); border-radius:999px; padding:3px; flex:none; }
+.my-st button{ width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,70,80,.28); background:rgba(255,255,255,.07); color:#fff; font:800 17px/1 inherit; cursor:pointer; padding:0; }
+.my-st button:active{ transform:scale(.92); }
+.my-st input, .my-wf input{ width:40px; border:0; background:transparent; color:#fff; font:800 14px inherit; font-style:italic; text-align:center; padding:4px 0; outline:0; }
+.my-wf{ display:flex; align-items:center; flex:none; margin-left:auto; background:rgba(255,255,255,.06); border-radius:999px; padding:3px 12px 3px 8px; }
+.my-wf input{ width:48px; text-align:right; }
+.my-u{ color:#9A9AA0; font-size:12px; font-weight:600; white-space:nowrap; }
+.my-edit > .my-u{ flex:1 1 0; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+.my-it.done .my-th{ filter:grayscale(1); opacity:.5; }
+.my-it.done .my-nm b{ text-decoration:line-through; color:#9A9AA0; }
+.my-it.done .my-kc{ opacity:.5; }
 </style>
 </head>
 <body>
@@ -2447,22 +2460,29 @@ document.addEventListener('click', function(e){
 })();
 </script>
 
-<!-- ===== MANGER : page nutrition + pilule du bas ===== -->
-<div id="mealView" aria-label="Manger">
-  <div class="ml-head"><img class="app-logo" id="mlLogo" alt="BBX"><span class="ml-date" id="mlDate"></span></div>
-  <h1 class="ml-title">Manger</h1>
-  <div class="ml-chips"><span class="ml-chip">🔥 Prise de masse</span><span class="ml-chip">🥗 4 repas</span><span class="ml-chip">🎯 Objectifs</span></div>
+<!-- ===== MEAL : page nutrition (style Yazio) + pilule du bas ===== -->
+<div id="mealView" aria-label="Meal">
+  <div class="my-head"><img class="app-logo" id="mlLogo" alt="BBX"><span class="my-date" id="mlDate"></span></div>
+  <h1 class="my-title">Meal</h1>
+  <div class="my-sum">
+    <div class="my-top">
+      <div class="my-stat"><b id="myEat">0</b><span>Mangé</span></div>
+      <div class="my-ring"><svg viewBox="0 0 120 120"><circle class="t" cx="60" cy="60" r="52"/><circle class="v" id="myKf" cx="60" cy="60" r="52"/></svg>
+        <div class="my-center"><strong id="myRem">0</strong><span id="myRemLab">kcal restantes</span></div></div>
+      <div class="my-stat"><input id="mlKg" type="number" inputmode="numeric" min="0" aria-label="Objectif calories"><span>Objectif</span></div>
+    </div>
+    <div class="my-macro">
+      <div class="my-mrow"><em>Protéines</em><span><b id="myPt">0</b> / <input id="mlPg" type="number" inputmode="numeric" min="0" aria-label="Objectif protéines"> g</span></div>
+      <div class="my-bar"><i id="myPbar"></i></div>
+      <div class="my-plan" id="myPlan"></div>
+    </div>
+  </div>
+  <div class="my-hint">Touche un aliment pour modifier sa quantité. Coche ce que tu as mangé.</div>
   <div id="mlMeals"></div>
 </div>
-<div id="mealBar"><div class="ml-panel">
-  <div class="ml-gz"><div class="ml-ring"><svg viewBox="0 0 64 64"><circle class="t" cx="32" cy="32" r="27"/><circle class="v" id="mlKf" cx="32" cy="32" r="27" stroke="#FF2D3F"/></svg><b id="mlKp"></b></div>
-    <div class="ml-gt"><strong><span id="mlKt">0</span> kcal</strong><span class="go">objectif <input id="mlKg" type="number" inputmode="numeric" min="0"></span><em id="mlKr" style="color:#FF2D3F"></em></div></div>
-  <div class="ml-gz"><div class="ml-ring"><svg viewBox="0 0 64 64"><circle class="t" cx="32" cy="32" r="27"/><circle class="v" id="mlPf" cx="32" cy="32" r="27" stroke="#FF9F0A"/></svg><b id="mlPp"></b></div>
-    <div class="ml-gt"><strong><span id="mlPt">0</span> g prot.</strong><span class="go">objectif <input id="mlPg" type="number" inputmode="numeric" min="0"> g</span><em id="mlPr" style="color:#FF9F0A"></em></div></div>
-</div></div>
 <div class="nav-pill" role="tablist" aria-label="Navigation">
   <button id="navSport" class="on" onclick="BBXNav.set('sport')" role="tab" aria-label="Sport"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Sport</button>
-  <button id="navMeal" onclick="BBXNav.set('meal')" role="tab" aria-label="Manger"><svg viewBox="0 0 24 24"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.2 1.2-3.5 3.7-3.5 7v3H17"/></svg>Manger</button>
+  <button id="navMeal" onclick="BBXNav.set('meal')" role="tab" aria-label="Meal"><svg viewBox="0 0 24 24"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.2 1.2-3.5 3.7-3.5 7v3H17"/></svg>Meal</button>
 </div>
 <script>
 (function(){
@@ -2473,7 +2493,7 @@ document.addEventListener('click', function(e){
   ["Déjeuner","🍗",[["Banane","banane",105,1,100,1.2,"g","🍌"],["Blanc de poulet –25 % de sel (Fleury Michon)","portion",40,2,82,8,"g","🍗"],["Riz basmati (Picard)","portion",225,1,297,7,"g","🍚"],["Skyr (Danone)","portion",140,1,80,15,"g","🥣"]]],
   ["Dîner","🥩",[["Carré frais (Elle & Vire)","portion",25,1,48,1.8,"g","🧀"],["Haricots verts extra-fins (Cora)","portion",100,2,70,4,"g","🫛"],["Pomme Golden","pomme",100,1,54,.3,"g","🍏"],["Skyr myrtilles (Arma)","pot",100,1,72,9,"g","🫐"],["Steak haché 5 %","steak",120,1,156,24,"g","🥩"],["Wasa Proteins+","tranche",14.2,2,113,6,"g","🍞"]]],
   ["Snack","🍫",[["Chocolat 90 % excellence (Lindt)","carré",10,1,59,1.2,"g","🍫"],["Lait demi-écrémé","verre",160,1.5,166,8,"ml","🥛"],["Sablés citron yuzu sans sucres (Gerblé)","sablé",11,4,187,3.5,"g","🍪"],["Whey vanille (Decathlon)","mesure",30,1,116,24,"g","💪"]]]];
-  const SK='bb9-meals', CI=2*Math.PI*27;
+  const SK='bb9-meals', CI=2*Math.PI*52;
   const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
   let S={w:{},d:{},kg:2500,pg:140,day:today()};
   try{ const x=JSON.parse(localStorage.getItem(SK)||'null'); if(x) S=Object.assign(S,x); }catch(e){}
@@ -2481,55 +2501,50 @@ document.addEventListener('click', function(e){
   const save=()=>{ try{ localStorage.setItem(SK,JSON.stringify(S)); }catch(e){} };
   const key=(m,i)=>m+'-'+i, W=(m,i,it)=>S.w[key(m,i)]??it[2]*it[3];
   function build(){
-    $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="ml-card"><div class="ml-mh"><div class="ml-mi">${ic}</div><div><b>${t}</b><span>${items.length} aliments</span></div><div class="ml-mk"><span id="mlmk${m}"></span><small id="mlmp${m}"></small></div><label class="ml-ck ml-all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
-      items.map((it,i)=>`<div class="ml-it" id="mlit${m}-${i}"><div class="ml-em">${it[7]}</div><div><div class="ml-nm">${it[0]}</div><div class="ml-mt" id="mlmt${m}-${i}"></div></div><label class="ml-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label>
-        <div class="ml-row"><div class="ml-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="ml-u">${it[1]}</span>
-        <div class="ml-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="ml-u">${it[6]}</span></div></div></div>`).join('')+`</section>`).join('');
-    MEALS.forEach(([t,ic,items],m)=>items.forEach((it,i)=>{
-      const c=$('mlc'+m+'-'+i), w=$('mlw'+m+'-'+i), step=Number.isInteger(it[3])?1:.5;
-      const setN=n=>{ n=Math.max(0,n); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); c.value=r2(n); calc(); save(); };
-      c.oninput=()=>{ const n=Math.max(0,parseFloat(c.value)||0); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); calc(); save(); };
-      w.oninput=()=>{ const n=Math.max(0,parseFloat(w.value)||0); S.w[key(m,i)]=n; c.value=r2(n/it[2]); calc(); save(); };
-      c.parentNode.querySelectorAll('button').forEach(b=>b.onclick=()=>setN((parseFloat(c.value)||0)+step*b.dataset.d));
-      $('mlk'+m+'-'+i).onchange=e=>{ S.d[key(m,i)]=e.target.checked; calc(); save(); };
-    }));
+    $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="my-card"><div class="my-mh"><div class="my-mi">${ic}</div><div><b>${t}</b><span id="mymp${m}"></span></div><div class="my-mk"><b id="mymk${m}"></b><small>kcal</small></div><label class="my-ck all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
+      items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
+        <div class="my-edit"><div class="my-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="my-u">${it[1]}</span>
+        <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div></div></div>`).join('')+`</section>`).join('');
     MEALS.forEach(([t,ic,items],m)=>{
-      $('mlall'+m).onchange=e=>{
-        const on=e.target.checked;
-        items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; });
-        calc(); save();
-      };
+      $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; }); calc(); save(); };
+      items.forEach((it,i)=>{
+        const c=$('mlc'+m+'-'+i), w=$('mlw'+m+'-'+i), step=Number.isInteger(it[3])?1:.5;
+        const setN=n=>{ n=Math.max(0,n); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); c.value=r2(n); calc(); save(); };
+        c.oninput=()=>{ const n=Math.max(0,parseFloat(c.value)||0); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); calc(); save(); };
+        w.oninput=()=>{ const n=Math.max(0,parseFloat(w.value)||0); S.w[key(m,i)]=n; c.value=r2(n/it[2]); calc(); save(); };
+        c.parentNode.querySelectorAll('button').forEach(b=>b.onclick=()=>setN((parseFloat(c.value)||0)+step*b.dataset.d));
+        $('mlk'+m+'-'+i).onchange=e=>{ S.d[key(m,i)]=e.target.checked; calc(); save(); };
+        $('myit'+m+'-'+i).querySelector('.my-row').onclick=e=>{ if(e.target.closest('label')) return; $('myit'+m+'-'+i).classList.toggle('open'); };
+      });
     });
     $('mlKg').value=S.kg; $('mlPg').value=S.pg;
     $('mlKg').oninput=e=>{ S.kg=Math.max(1,+e.target.value||1); calc(); save(); };
     $('mlPg').oninput=e=>{ S.pg=Math.max(1,+e.target.value||1); calc(); save(); };
     try{ $('mlDate').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); }catch(e){}
   }
-  function ring(id,pct){ const c=$(id); c.style.strokeDasharray=CI; c.style.strokeDashoffset=CI*(1-Math.min(1,pct/100)); }
   function calc(){
     let K=0,P=0,TK=0,TP=0;
-    MEALS.forEach(([t,ic,items],m)=>{ let mk=0,mp=0;
+    MEALS.forEach(([t,ic,items],m)=>{ let mk=0,mp=0,nd=0;
       items.forEach((it,i)=>{ const f=W(m,i,it)/(it[2]*it[3]), ik=it[4]*f, ip=it[5]*f; mk+=ik; mp+=ip; const dn=!!S.d[key(m,i)];
-        $('mlit'+m+'-'+i).classList.toggle('done',dn); if(dn){ K+=ik; P+=ip; } TK+=ik; TP+=ip;
-        $('mlmt'+m+'-'+i).textContent=r(ik)+' kcal · '+r1(ip)+' g protéines'; });
-      $('mlmk'+m).textContent=r(mk)+' kcal'; $('mlmp'+m).textContent=r(mp)+' g prot.';
-      const nd=items.filter((it,i)=>S.d[key(m,i)]).length, all=$('mlall'+m);
-      all.checked=nd===items.length; all.indeterminate=nd>0&&nd<items.length; });
-    $('mlKt').textContent=r(K); $('mlPt').textContent=r(P);
-    const kp=K/S.kg*100, pp=P/S.pg*100;
-    ring('mlKf',kp); ring('mlPf',pp); $('mlKp').textContent=r(kp)+'%'; $('mlPp').textContent=r(pp)+'%';
-    $('mlKr').textContent=(K>=S.kg?'Objectif atteint ✓':'Reste '+r(S.kg-K))+' · prévu '+r(TK);
-    $('mlPr').textContent=(P>=S.pg?'Objectif atteint ✓':'Reste '+r(S.pg-P)+' g')+' · prévu '+r(TP);
+        $('myit'+m+'-'+i).classList.toggle('done',dn); if(dn){ K+=ik; P+=ip; nd++; } TK+=ik; TP+=ip;
+        $('mykc'+m+'-'+i).textContent=r(ik); $('mymt'+m+'-'+i).textContent=r2(W(m,i,it)/it[2])+' '+it[1]+' · '+r(W(m,i,it))+' '+it[6]+' · '+r1(ip)+' g prot.'; });
+      $('mymk'+m).textContent=r(mk); $('mymp'+m).textContent=items.length+' aliments · '+r(mp)+' g prot.';
+      const all=$('mlall'+m); all.checked=nd===items.length; all.indeterminate=nd>0&&nd<items.length; });
+    $('myEat').textContent=r(K);
+    const rem=S.kg-K; $('myRem').textContent=r(Math.abs(rem)); $('myRemLab').textContent=rem>=0?'kcal restantes':'kcal en trop';
+    const c=$('myKf'); c.style.strokeDasharray=CI; c.style.strokeDashoffset=CI*(1-Math.min(1,K/S.kg));
+    $('myPt').textContent=r(P); $('myPbar').style.width=Math.min(100,P/S.pg*100)+'%';
+    $('myPlan').textContent='Prévu aujourd’hui : '+r(TK)+' kcal · '+r(TP)+' g de protéines';
   }
-  // ---- navigation Sport | Manger ----
+  // ---- navigation Sport | Meal ----
   function setView(v){
     const meal=v==='meal';
-    $('mealView').classList.toggle('show',meal); $('mealBar').classList.toggle('show',meal);
+    $('mealView').classList.toggle('show',meal);
     $('navSport').classList.toggle('on',!meal); $('navMeal').classList.toggle('on',meal);
     $('navSport').setAttribute('aria-selected',String(!meal)); $('navMeal').setAttribute('aria-selected',String(meal));
     try{ localStorage.setItem('bb9-view',v); }catch(e){}
   }
-  // à partir de 17 h, chaque jour : la page Sport s'affiche en premier (avant 17 h : Manger)
+  // à partir de 17 h, chaque jour : la page Sport s'affiche en premier (avant 17 h : Meal)
   function autoView(){
     const now=new Date(), pm=now.getHours()>=17, per=today()+'|'+(pm?'pm':'am');
     let last='', v='sport';
