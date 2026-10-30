@@ -1142,6 +1142,11 @@ html,body{ background:#090102 !important; }
   .ex-row.resting:not(.abdo) .rt-left{ left:auto !important; right:0 !important; width:max-content; max-width:none; white-space:nowrap; text-align:right;
     padding-right:4px; font-size:clamp(30px, 11vw, 44px) !important; }
   /* ---- planning des exercices (ronds L M M J V S D) ---- */
+  .bk-box{ width:100%; box-sizing:border-box; margin:6px 0 8px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,70,80,.3); background:#111; color:#fff; font:12px/1.35 ui-monospace,Menlo,monospace; resize:vertical; }
+  .bk-btns{ display:flex; gap:8px; }
+  .bk-btns button{ flex:1; height:42px; border:none; border-radius:12px; font:800 13px inherit; color:#fff; cursor:pointer; background:linear-gradient(180deg,#FF3249,#C0001B); }
+  .bk-btns button + button{ background:rgba(255,255,255,.08); border:1px solid rgba(255,70,80,.3); }
+  .bk-msg{ font-size:12px; font-weight:700; margin:8px 2px 0; min-height:16px; color:#9A9AA0; }
   .pl-row{ padding:9px 0 10px; border-top:1px solid #2E2E30; }
   .pl-name{ font-size:12px; font-weight:700; color:#fff; margin-bottom:7px; line-height:1.25; }
   .pl-days{ display:flex; justify-content:space-between; gap:4px; }
@@ -1303,6 +1308,11 @@ body:has(#mealView.show) .nav-pill{ background:rgba(20,10,14,.94); box-shadow:0 
       <button class="wt-reset" onclick="resetSets()">Remettre les séries d'origine</button>
       <button class="wt-reset" onclick="resetWeights()">Remettre les poids d'origine</button>
       <button class="wt-reset" onclick="resetRests()">Remettre les récupérations d'origine</button>
+      <div class="prog-sec"><span>Sauvegarde</span><span class="wt-saved show" style="opacity:1">✓ Enregistré sur cet appareil</span></div>
+      <div class="prog-sub" style="margin-top:0">Tes réglages (jours, séries, poids, récups, repas) sont gardés automatiquement. Copie ta sauvegarde dans Notes pour pouvoir tout remettre si ton navigateur efface les données.</div>
+      <textarea id="bkBox" class="bk-box" rows="3" placeholder="Ta sauvegarde apparaît ici. Pour restaurer : colle-la ici, puis touche Restaurer." spellcheck="false" autocapitalize="off"></textarea>
+      <div class="bk-btns"><button onclick="bkCopy()">Copier ma sauvegarde</button><button onclick="bkRestore()">Restaurer</button></div>
+      <div class="bk-msg" id="bkMsg"></div>
       <div class="prog-sec"><span>Progression</span></div>
       <div class="prog-sub" style="margin-top:0">Répétitions par série</div>
       <div class="prog-row prog-cols"><span></span><span>S1</span><span>S2</span><span>S3</span><span>S4</span></div>
@@ -2349,6 +2359,31 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
     applyPlan(); pxMod(i);
     const el = document.getElementById('pxs' + i); if(el) el.textContent = v;
     renderDateStrip(); renderFeatured(); showDetail(selectedKey);
+  }
+  // stockage persistant demandé au navigateur (évite l'effacement automatique quand c'est accepté)
+  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  function bkData(){
+    const o = {};
+    try{ for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if(k && k.indexOf('bb9') === 0) o[k] = localStorage.getItem(k); } }catch(e){}
+    return JSON.stringify({ app:'BBX', v:1, data:o });
+  }
+  function bkCopy(){
+    const box = document.getElementById('bkBox'), msg = document.getElementById('bkMsg');
+    box.value = bkData();
+    const done = ok => { msg.textContent = ok ? '✓ Sauvegarde copiée. Colle-la dans Notes.' : 'Sélectionne le texte ci-dessus et copie-le dans Notes.'; };
+    const fallback = () => { let ok = false; try{ box.focus(); box.select(); ok = document.execCommand('copy'); }catch(e){} done(ok); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(box.value).then(() => done(true), fallback); }
+    else fallback();
+  }
+  function bkRestore(){
+    const box = document.getElementById('bkBox'), msg = document.getElementById('bkMsg');
+    try{
+      const j = JSON.parse(box.value.trim());
+      if(!j || j.app !== 'BBX' || !j.data) throw 0;
+      Object.keys(j.data).forEach(k => { if(k.indexOf('bb9') === 0) localStorage.setItem(k, j.data[k]); });
+      msg.textContent = '✓ Restauré. Rechargement…';
+      setTimeout(() => location.reload(), 600);
+    }catch(e){ msg.textContent = 'Sauvegarde non reconnue : colle exactement le texte copié.'; }
   }
   function resetSets(){
     setsPrefs = {}; try{ localStorage.removeItem(SETS_KEY); }catch(e){}
