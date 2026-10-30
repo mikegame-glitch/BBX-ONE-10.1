@@ -1155,6 +1155,7 @@ html,body{ background:#090102 !important; }
   .pl-d.on{ background:linear-gradient(180deg,#FF3249,#C0001B); color:#fff; border-color:transparent; }
   .pl-d:active{ transform:scale(.93); }
   .pl-name{ display:flex; align-items:center; }
+  .rep-in{ width:70px; height:34px; border:0; border-radius:10px; background:#1C1C1E; color:#fff; font:800 17px inherit; font-style:italic; text-align:center; outline:0; }
   .pl-play{ flex:0 0 18px; width:18px; margin-right:8px; text-align:center; font-size:11px; color:#FF1F3D; }
   .pl-name .wt-ic{ margin-right:8px; }
   .pl-name.mod::after{ content:' •'; color:#FF1F3D; margin-left:4px; }
@@ -1306,7 +1307,7 @@ body:has(#mealView.show) .nav-pill{ background:rgba(20,10,14,.94); box-shadow:0 
       </div>
       <div id="plList"></div>
       <button class="wt-reset" onclick="resetPlan()">Remettre les jours d'origine</button>
-      <button class="wt-reset" onclick="resetSets()">Remettre les séries d'origine</button>
+      <button class="wt-reset" onclick="resetSets()">Remettre séries et répétitions d'origine</button>
       <button class="wt-reset" onclick="resetWeights()">Remettre les poids d'origine</button>
       <button class="wt-reset" onclick="resetRests()">Remettre les récupérations d'origine</button>
       <div class="prog-sec"><span>Sauvegarde</span><span class="wt-saved show" style="opacity:1">✓ Enregistré sur cet appareil</span></div>
@@ -1476,6 +1477,10 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
   let setsPrefs = {};
   try{ setsPrefs = JSON.parse(localStorage.getItem(SETS_KEY)) || {}; }catch(e){ setsPrefs = {}; }
   const withSets = (str, n) => n + String(str).slice(String(str).indexOf('×'));
+  const REPS_KEY = 'bb9-reps';
+  let repsPrefs = {};
+  try{ repsPrefs = JSON.parse(localStorage.getItem(REPS_KEY)) || {}; }catch(e){ repsPrefs = {}; }
+  const repsOf0 = ex => String(ex._s0).slice(String(ex._s0).indexOf('×') + 1);
   const EXO_MASTER = [], ORIG_EX = {}, ORIG_LABEL = {}, ORIG_DAYS = {};
   const VID_MASTER = [], ORIG_VIDS = {}, ORIG_VDAYS = {}, ORIG_ADAYS = [];
   let ABDO_MASTER = null;
@@ -1503,7 +1508,10 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
       const kept = orig.filter(ex => planDays(ex.name).includes(d.key));
       const added = EXO_MASTER.filter(m => planDays(m.name).includes(d.key) && !orig.some(o => o.name === m.name)).map(m => Object.assign({}, m));
       d.exercises = kept.concat(added);
-      d.exercises.forEach(ex => { const n = setsPrefs[ex.name]; ex.sets = n ? withSets(ex._s0, n) : ex._s0; });
+      d.exercises.forEach(ex => {
+        const sn = setsPrefs[ex.name], rp = repsPrefs[ex.name];
+        ex.sets = (sn || rp) ? (sn || parseInt(ex._s0) || 1) + '×' + (rp || repsOf0(ex)) : ex._s0;
+      });
       const same = d.exercises.length === orig.length && d.exercises.every(ex => orig.some(o => o.name === ex.name));
       if(same) d.label = ORIG_LABEL[d.key]; else delete d.label;
       // vidéos
@@ -2318,7 +2326,7 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
   const pxHasW = ex => ex.load && !/PDC/.test(ex.load);
   function pxMod(i){
     const ex = EXO_MASTER[i], rid = pxRestId(ex.name);
-    const m = weights[ex.name] != null || setsPrefs[ex.name] != null || (restPrefs[rid] != null && restPrefs[rid] !== ex.rest);
+    const m = weights[ex.name] != null || setsPrefs[ex.name] != null || repsPrefs[ex.name] != null || (restPrefs[rid] != null && restPrefs[rid] !== ex.rest);
     const el = document.getElementById('pxn' + i); if(el) el.classList.toggle('mod', m);
     return m;
   }
@@ -2327,16 +2335,17 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
     box.innerHTML = EXO_MASTER.map((ex, i) => {
       const on = planDays(ex.name), rid = pxRestId(ex.name);
       const unit = pxHasW(ex) ? ex.load.replace(/^[\d.,]+\s*/, '') : '';
-      const mod = weights[ex.name] != null || setsPrefs[ex.name] != null || (restPrefs[rid] != null && restPrefs[rid] !== ex.rest);
+      const mod = weights[ex.name] != null || setsPrefs[ex.name] != null || repsPrefs[ex.name] != null || (restPrefs[rid] != null && restPrefs[rid] !== ex.rest);
       const wLine = pxHasW(ex) ? `<div class="px-line"><span class="px-lab">Poids</span><div class="wt-ctl">
           <button onclick="pxStepW(${i},-1)" aria-label="Moins">−</button>
           <input id="pxw${i}" type="text" inputmode="decimal" value="${wtFmt(pxCurW(i))}" oninput="pxTypeW(${i},this)" onblur="this.value=wtFmt(pxCurW(${i}))" aria-label="Poids ${shortName(ex.name)}">
           <button onclick="pxStepW(${i},1)" aria-label="Plus">+</button><span>${unit}</span></div></div>` : '';
       const sLine = `<div class="px-line"><span class="px-lab">Séries</span><div class="wt-ctl"><button onclick="pxStepS(${i},-1)" aria-label="Moins une série">−</button><span class="rc-val" id="pxs${i}">${pxCurS(i)}</span><button onclick="pxStepS(${i},1)" aria-label="Plus une série">+</button></div></div>`;
+      const rLine = `<div class="px-line"><span class="px-lab">Répét.</span><div class="wt-ctl"><button onclick="pxStepRep(${i},-1)" aria-label="Moins une répétition">−</button><input id="pxrep${i}" class="rep-in" type="text" inputmode="numeric" value="${pxCurRep(i)}" oninput="pxTypeRep(${i},this)" onblur="this.value=pxCurRep(${i})" aria-label="Répétitions ${shortName(ex.name)}"><button onclick="pxStepRep(${i},1)" aria-label="Plus une répétition">+</button></div></div>`;
       return `<div class="pl-row"><div class="pl-name${mod ? ' mod' : ''}" id="pxn${i}"><i class="wt-ic ${exType(ex)}"></i>${shortName(ex.name)}</div>
         <div class="pl-days">` +
         PL_LETTERS.map(([k, l, full]) => `<button class="pl-d${on.includes(k) ? ' on' : ''}" onclick="togglePlan(${i},'${k}')" aria-label="${shortName(ex.name)} le ${full}" aria-pressed="${on.includes(k)}">${l}</button>`).join('') +
-        `</div>${sLine}${wLine}
+        `</div>${sLine}${rLine}${wLine}
         <div class="px-line"><span class="px-lab">Récup.</span><div class="wt-ctl">
           <button onclick="pxStepR(${i},-1)" aria-label="Moins 10 secondes">−</button><span class="rc-val">${fmtMS(restOf(rid, ex))}</span><button onclick="pxStepR(${i},1)" aria-label="Plus 10 secondes">+</button></div></div>
       </div>`;
@@ -2386,8 +2395,29 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
       setTimeout(() => location.reload(), 600);
     }catch(e){ msg.textContent = 'Sauvegarde non reconnue : colle exactement le texte copié.'; }
   }
+  const pxCurRep = i => repsPrefs[EXO_MASTER[i].name] || repsOf0(EXO_MASTER[i]);
+  function normReps(v){
+    v = String(v).trim().replace(/\s*(?:-|—|–|à)\s*/g, '–');
+    const m = v.match(/^(\d{1,3})(?:–(\d{1,3}))?$/); if(!m) return null;
+    const a = +m[1], b = m[2] != null ? +m[2] : null;
+    if(a < 1 || (b != null && b < a)) return null;
+    return b != null ? a + '–' + b : String(a);
+  }
+  function pxSetRep(i, v){
+    const ex = EXO_MASTER[i], n = normReps(v); if(!n) return false;
+    if(n === repsOf0(ex)) delete repsPrefs[ex.name]; else repsPrefs[ex.name] = n;
+    try{ localStorage.setItem(REPS_KEY, JSON.stringify(repsPrefs)); }catch(e){}
+    applyPlan(); pxMod(i);
+    renderDateStrip(); renderFeatured(); showDetail(selectedKey);
+    return true;
+  }
+  function pxStepRep(i, dir){
+    const nv = pxCurRep(i).split('–').map(x => Math.max(1, (+x || 1) + dir)).join('–');
+    if(pxSetRep(i, nv)){ const el = document.getElementById('pxrep' + i); if(el) el.value = nv; }
+  }
+  function pxTypeRep(i, inp){ if(normReps(inp.value)) pxSetRep(i, inp.value); }
   function resetSets(){
-    setsPrefs = {}; try{ localStorage.removeItem(SETS_KEY); }catch(e){}
+    setsPrefs = {}; repsPrefs = {}; try{ localStorage.removeItem(SETS_KEY); localStorage.removeItem(REPS_KEY); }catch(e){}
     planRefresh();
   }
   function pxSaveW(i, v){
