@@ -1254,8 +1254,10 @@ body:has(#progOverlay.show) .nav-pill{ opacity:0; pointer-events:none; }
 .my-it.done .my-nm b{ text-decoration:line-through; color:#9CA3AF; }
 .my-it.done .my-nm span{ color:#B4BAC4; }
 .my-it.done .my-kc{ opacity:.45; }
-/* la pilule du bas reste lisible sur fond clair */
-body:has(#mealView.show) .nav-pill{ background:rgba(20,10,14,.94); box-shadow:0 12px 30px -10px rgba(20,24,40,.55), 0 0 22px -8px rgba(240,20,47,.5); }
+/* pilule du bas : thème clair quand on est sur la page Meal */
+body:has(#mealView.show) .nav-pill{ background:rgba(255,255,255,.95); border-color:#E1E4EA; box-shadow:0 14px 30px -14px rgba(20,24,40,.4), 0 0 0 1px rgba(255,255,255,.6) inset; }
+body:has(#mealView.show) .nav-pill button{ color:#6B7280; }
+body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-gradient(180deg,#FF3249,#D1001F); box-shadow:0 6px 14px -4px rgba(229,23,58,.55); }
 /* ===== Réglages Meal / formulaire / scanner ===== */
 .my-hr{ display:flex; align-items:center; gap:10px; }
 .my-cfg{ width:40px; height:40px; border-radius:50%; border:1px solid #E1E4EA; background:#fff; display:grid; place-items:center; cursor:pointer; box-shadow:0 4px 12px -6px rgba(20,24,40,.35); padding:0; }
@@ -1302,6 +1304,25 @@ body:has(#mealView.show) .nav-pill{ background:rgba(20,10,14,.94); box-shadow:0 
 #msStatus{ text-align:center; font-size:14px; font-weight:700; margin-bottom:12px; }
 .ms-row{ display:flex; gap:8px; } .ms-row input{ flex:1; height:44px; border-radius:12px; border:0; padding:0 12px; font:700 15px inherit; color:#111; }
 .ms-row button{ width:64px; height:44px; border-radius:12px; border:0; background:#E5173A; color:#fff; font:800 15px inherit; cursor:pointer; }
+/* ===== Bouton ＋ sous chaque repas + recherche ===== */
+.my-add{ padding:10px 14px 14px; border-top:1px solid var(--ln); }
+.my-plus{ width:100%; height:44px; border-radius:14px; border:1.5px dashed var(--mc,#E5173A); background:var(--mt); color:var(--tx); font:800 14px inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+.my-plus span{ width:24px; height:24px; border-radius:50%; background:var(--mc,#E5173A); color:#fff; display:grid; place-items:center; font-size:16px; line-height:1; }
+.my-addmenu{ display:none; gap:8px; margin-top:10px; }
+.my-addmenu.open{ display:flex; }
+.my-addmenu button{ flex:1; height:42px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font:800 13px inherit; cursor:pointer; padding:0 4px; }
+.my-addmenu button:first-child{ background:var(--mc,#E5173A); border-color:transparent; color:#fff; }
+.mc-search{ z-index:9150; }
+.sr-bar{ display:flex; gap:8px; margin-bottom:8px; }
+.sr-bar input{ flex:1; min-width:0; height:46px; border-radius:14px; border:1px solid #DDE0E6; background:#fff; padding:0 14px; font:700 16px inherit; color:#15171C; }
+.sr-bar button{ height:46px; padding:0 16px; border:0; border-radius:14px; color:#fff; font:800 14px inherit; background:linear-gradient(180deg,#FF3249,#D1001F); cursor:pointer; }
+.sr-meal{ font-size:12px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#6B7280; margin:4px 2px 10px; }
+.sr-sec{ font-size:11.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#6B7280; margin:14px 2px 6px; }
+.sr-note{ font-size:13px; font-weight:600; color:#6B7280; margin:12px 4px; }
+.sr-it{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:#fff; border:1px solid #EAECF0; border-radius:14px; padding:9px 12px; margin-bottom:8px; cursor:pointer; font:inherit; color:#15171C; }
+.sr-th{ width:36px; height:36px; border-radius:10px; background:#F3F4F6; display:grid; place-items:center; font-size:19px; flex:none; }
+.sr-nm{ flex:1; min-width:0; } .sr-nm b{ display:block; font-size:13.5px; font-weight:700; line-height:1.25; } .sr-nm span{ font-size:11.5px; color:#6B7280; font-weight:600; }
+.sr-go{ width:30px; height:30px; border-radius:50%; background:#E5173A; color:#fff; display:grid; place-items:center; font-size:18px; font-weight:800; flex:none; }
 </style>
 </head>
 <body>
@@ -2623,11 +2644,18 @@ document.addEventListener('click', function(e){
   <div class="mc-head"><b>Réglages Meal</b><button class="mc-x" onclick="BBXMeal.closeCfg()" aria-label="Fermer">✕</button></div>
   <div class="mc-add">
     <button class="mc-big red" onclick="BBXMeal.scan(null)">📷 Scanner un code-barres</button>
-    <button class="mc-big" onclick="BBXMeal.add(null)">＋ Ajouter un produit</button>
+    <button class="mc-big" onclick="BBXMeal.search(null)">🔍 Rechercher un produit</button>
+    <button class="mc-big" onclick="BBXMeal.add(null)">＋ Ajouter à la main</button>
   </div>
   <div class="mc-hint">Change les produits de chaque repas : ▲▼ pour l’ordre, ✎ pour modifier ou changer de repas, 🗑 pour supprimer.</div>
   <div id="mcList"></div>
   <button class="mc-reset" onclick="BBXMeal.resetDef()">Remettre les repas d’origine</button>
+</div>
+<div id="mealSearch" class="mc-ov mc-search" aria-label="Rechercher un produit">
+  <div class="mc-head"><b>Rechercher</b><button class="mc-x" onclick="BBXMeal.closeSearch()" aria-label="Fermer">✕</button></div>
+  <div class="sr-bar"><input id="srQ" type="search" autocomplete="off" autocapitalize="off" placeholder="Ex : skyr, poulet, riz…" enterkeyhint="search"><button onclick="BBXMeal.doSearch()">Chercher</button></div>
+  <div class="sr-meal" id="srMeal"></div>
+  <div id="srList"></div>
 </div>
 <div id="mealForm" class="mc-ov mc-sheet" aria-label="Produit">
   <div class="mc-head"><b id="mfTitle">Ajouter un produit</b><button class="mc-x" onclick="BBXMeal.closeForm()" aria-label="Fermer">✕</button></div>
@@ -2664,6 +2692,7 @@ document.addEventListener('click', function(e){
   try{ const c=JSON.parse(localStorage.getItem('bb9-mealdef')||'null'); if(Array.isArray(c)&&c.length&&c.every(x=>Array.isArray(x)&&x.length>=3&&Array.isArray(x[2]))) MEALS=c; }catch(e){}
   const MC={'Petit-déjeuner':['#F59E0B','rgba(245,158,11,.15)'],'Déjeuner':['#16A34A','rgba(22,163,74,.13)'],'Snack':['#8B5CF6','rgba(139,92,246,.13)'],'Shaker':['#0EA5E9','rgba(14,165,233,.14)'],'Dîner':['#E5173A','rgba(229,23,58,.11)']};
   const mcol=t=>MC[t]||['#E5173A','rgba(229,23,58,.11)'];
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const SK='bb9-meals', CI=2*Math.PI*52;
   const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
   let S={w:{},d:{},kg:2500,pg:140,day:today()};
@@ -2694,7 +2723,7 @@ document.addEventListener('click', function(e){
     $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="my-card" style="--mc:${mcol(t)[0]};--mt:${mcol(t)[1]}"><div class="my-mh"><div class="my-mi">${ic}</div><div><b>${t}</b><span id="mymp${m}"></span></div><div class="my-mk"><b id="mymk${m}"></b><small>kcal</small></div><label class="my-ck all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
       items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
         <div class="my-edit"><div class="my-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="my-u">${it[1]}</span>
-        <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div></div></div>`).join('')+`</section>`).join('');
+        <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div></div></div>`).join('')+`<div class="my-add"><button class="my-plus" onclick="BBXMeal.addMenu(${m})" aria-label="Ajouter un produit à ${esc(t)}" aria-expanded="false"><span>＋</span> Ajouter un produit</button><div class="my-addmenu" id="myam${m}"><button onclick="BBXMeal.scan(${m})">📷 Scanner</button><button onclick="BBXMeal.search(${m})">🔍 Rechercher</button><button onclick="BBXMeal.add(${m})">✎ Manuel</button></div></div></section>`).join('');
     MEALS.forEach(([t,ic,items],m)=>{
       $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; }); calc(); save(); };
       items.forEach((it,i)=>{
@@ -2745,7 +2774,6 @@ document.addEventListener('click', function(e){
   // ---------- Réglages Meal : modifier / ajouter / scanner ----------
   const DEFKEY='bb9-mealdef';
   const saveDef=()=>{ try{ localStorage.setItem(DEFKEY,JSON.stringify(MEALS)); }catch(e){} };
-  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const per100=it=>{ const g=it[2]*it[3]; return g>0?{k:it[4]/g*100,p:it[5]/g*100}:{k:0,p:0}; };
   const num=v=>parseFloat(String(v).replace(',','.'));
   function refresh(){ saveDef(); save(); build(); calc(); renderCfg(); }
@@ -2802,7 +2830,7 @@ document.addEventListener('click', function(e){
       if(mt===fm.m){ MEALS[mt][2][fm.i]=it; } else { MEALS[fm.m][2].splice(fm.i,1); MEALS[mt][2].push(it); }
       if(wasDone) S.d[MEALS[mt][0]+'|'+nm]=true;
     }else MEALS[mt][2].push(it);
-    $('mealForm').classList.remove('show'); refresh();
+    $('mealForm').classList.remove('show'); $('mealSearch').classList.remove('show'); refresh();
   }
   // --- scanner de code-barres ---
   const sc={stream:null,timer:0,done:false};
@@ -2873,11 +2901,57 @@ document.addEventListener('click', function(e){
   }
   const manual=()=>{ const c=$('msCode').value.replace(/\D/g,''); if(c.length<6){ st('Code trop court : tape les chiffres sous le code-barres.'); return; } sc.done=false; onCode(c); };
   ['mfKcal','mfProt','mfQty'].forEach(id=>$(id).addEventListener('input',fmPrev)); $('mfUnit').addEventListener('change',fmPrev);
+  // --- menu ＋ sous chaque repas ---
+  function addMenu(m){
+    document.querySelectorAll('.my-addmenu').forEach(el=>{ if(el.id!=='myam'+m) el.classList.remove('open'); });
+    const el=$('myam'+m); if(!el) return; const on=el.classList.toggle('open');
+    const b=el.parentNode.querySelector('.my-plus'); if(b) b.setAttribute('aria-expanded',String(on));
+  }
+  // --- recherche de produit ---
+  const sr={target:null,list:[],n:0};
+  function srOpen(m){
+    sr.target=(m==null)?0:m; sr.list=[]; sr.n++;
+    $('srMeal').textContent='Ajout dans : '+MEALS[sr.target][0];
+    $('srList').innerHTML='<div class="sr-note">Tape le nom d’un produit. Tes produits déjà utilisés s’affichent en premier.</div>';
+    $('srQ').value=''; $('mealSearch').classList.add('show'); setTimeout(()=>{ try{ $('srQ').focus(); }catch(e){} },150);
+  }
+  const normS=t=>String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  function localMatches(q){
+    const seen={}, out=[]; const nq=normS(q);
+    MEALS.forEach(([t,ic,items])=>items.forEach(it=>{ if(seen[it[0]]) return; if(normS(it[0]).indexOf(nq)<0) return; seen[it[0]]=1; const k=per100(it); out.push({name:it[0],kcal:k.k,prot:k.p,serving:0,emoji:it[7],local:true,unit:it[6]}); }));
+    return out;
+  }
+  function srRender(){
+    const L=sr.list; const sec=(title,arr)=>arr.length?`<div class="sr-sec">${title}</div>`+arr.map(x=>`<button class="sr-it" onclick="BBXMeal.pick(${x._i})"><span class="sr-th">${esc(x.emoji||'🛒')}</span><span class="sr-nm"><b>${esc(x.name)}</b><span>${x.kcal!=null?r(x.kcal)+' kcal':'kcal ?'} · ${x.prot!=null?r1(x.prot):'?'} g prot. / 100 ${x.unit||'g'}</span></span><span class="sr-go">＋</span></button>`).join(''):'';
+    L.forEach((x,i)=>{ x._i=i; });
+    $('srList').innerHTML=sec('Déjà dans tes repas',L.filter(x=>x.local))+sec('Open Food Facts',L.filter(x=>!x.local))||'<div class="sr-note">Aucun résultat.</div>';
+  }
+  async function doSearch(){
+    const q=$('srQ').value.trim(); if(q.length<2){ $('srList').innerHTML='<div class="sr-note">Tape au moins 2 lettres.</div>'; return; }
+    const my=++sr.n; sr.list=localMatches(q); srRender();
+    const box=$('srList'); box.insertAdjacentHTML('beforeend','<div class="sr-note" id="srWait">Recherche sur Open Food Facts…</div>');
+    try{
+      const ctrl=new AbortController(), to=setTimeout(()=>ctrl.abort(),10000);
+      const resp=await fetch('https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(q)+'&search_simple=1&action=process&json=1&page_size=20&sort_by=unique_scans_n&fields=code,product_name,product_name_fr,brands,nutriments,serving_quantity',{signal:ctrl.signal});
+      clearTimeout(to); const j=await resp.json(); if(my!==sr.n) return;
+      const net=(j.products||[]).map(pr=>{ const n=pr.nutriments||{}; let kcal=n['energy-kcal_100g']; if(kcal==null&&n['energy_100g']!=null) kcal=n['energy_100g']/4.184;
+        const nm=(pr.product_name_fr||pr.product_name||'').trim(), br=(pr.brands||'').split(',')[0].trim();
+        return {name:nm+(br&&nm.toLowerCase().indexOf(br.toLowerCase())<0?' ('+br+')':''),kcal:kcal,prot:n.proteins_100g,serving:parseFloat(pr.serving_quantity)||0,emoji:'🛒',_nm:nm}; }).filter(x=>x._nm&&x.kcal!=null);
+      sr.list=sr.list.concat(net); srRender();
+      if(!sr.list.length) $('srList').innerHTML='<div class="sr-note">Aucun résultat pour « '+esc(q)+' ». Essaie un autre mot, ou ajoute-le à la main.</div>';
+    }catch(e){ if(my!==sr.n) return; const w=$('srWait'); if(w) w.remove(); box.insertAdjacentHTML('beforeend','<div class="sr-note">Pas de connexion pour chercher plus de produits.'+(sr.list.length?'':' Ajoute-le à la main.')+'</div>'); }
+  }
+  function pick(i){
+    const x=sr.list[i]; if(!x) return;
+    openForm('add',sr.target,null,{name:x.name,kcal:x.kcal,prot:x.prot,serving:x.serving,emoji:x.emoji,info:(x.local?'Produit de tes repas.':'Produit Open Food Facts.')+' Vérifie les valeurs, indique la quantité puis valide.'+(x.kcal==null?' Les calories ne sont pas renseignées : complète-les.':'')});
+  }
+  ['srQ'].forEach(id=>$(id).addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); doSearch(); } }));
   window.BBXMeal={
     openCfg:()=>{ renderCfg(); $('mealCfg').classList.add('show'); }, closeCfg:()=>$('mealCfg').classList.remove('show'),
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
-    scan:scanOpen, closeScan:closeScan, manual:manual
+    scan:scanOpen, closeScan:closeScan, manual:manual,
+    addMenu:addMenu, search:srOpen, closeSearch:()=>$('mealSearch').classList.remove('show'), doSearch:doSearch, pick:pick
   };
   window.BBXNav={ set:setView, auto:autoView };
   const lg=document.querySelector('.page-header .app-logo'); if(lg) $('mlLogo').src=lg.src;
