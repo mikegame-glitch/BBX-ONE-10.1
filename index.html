@@ -1387,6 +1387,14 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .my-addb{ flex:0 0 54px; width:54px; padding:0; display:grid; place-items:center; }
 .my-addb svg{ width:24px; height:24px; fill:none; stroke:var(--mc,#E5173A); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .my-addb.plus svg{ stroke:#fff; }
+/* ===== Repas : ajout, suppression, déplacement ===== */
+.my-delmeal{ margin-right:auto; align-self:center; background:none; border:0; padding:6px 2px; font-family:inherit; font-size:12px; font-weight:700; color:#9CA3AF; cursor:pointer; text-align:left; }
+.my-addmeal{ width:100%; height:56px; margin:2px 0 22px; border-radius:18px; border:2px dashed #C4C9D2; background:rgba(255,255,255,.6); color:#4B5563; font-family:inherit; font-weight:800; font-size:15px; cursor:pointer; }
+.my-mh{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+.my-card.dragging{ position:relative; z-index:30; box-shadow:0 26px 44px -14px rgba(20,24,40,.55); outline:2px solid var(--mc,#E5173A); opacity:.98; }
+#mealView.drag-on{ -webkit-user-select:none; user-select:none; }
+.mc-sm{ width:34px; height:34px; border-radius:50%; border:1px solid #DDE0E6; background:#fff; font-size:14px; cursor:pointer; padding:0; margin-right:2px; }
+.mc-sm.del{ border-color:#F5C2CB; }
 </style>
 </head>
 <body>
@@ -2701,8 +2709,9 @@ document.addEventListener('click', function(e){
     </div>
     <div class="my-plan" id="myPlan"></div>
   </div>
-  <div class="my-hint">Touche un aliment pour modifier sa quantité. Coche ce que tu as mangé.</div>
+  <div class="my-hint">Touche un aliment pour modifier sa quantité. Maintiens le titre d’un repas appuyé pour le déplacer.</div>
   <div id="mlMeals"></div>
+  <button class="my-addmeal" onclick="BBXMeal.addMeal()">＋ Ajouter un repas</button>
 </div>
 <div id="mealCfg" class="mc-ov" aria-label="Réglages Meal">
   <div class="mc-head"><b>Réglages Meal</b><button class="mc-x" onclick="BBXMeal.closeCfg()" aria-label="Fermer">✕</button></div>
@@ -2713,6 +2722,7 @@ document.addEventListener('click', function(e){
   </div>
   <div class="mc-hint">Change les produits de chaque repas : ▲▼ pour l’ordre, ✎ pour modifier ou changer de repas, 🗑 pour supprimer.</div>
   <div id="mcList"></div>
+  <button class="mc-big" style="margin-top:6px" onclick="BBXMeal.addMeal()">＋ Ajouter un repas</button>
   <button class="mc-reset" onclick="BBXMeal.resetDef()">Remettre les repas d’origine</button>
 </div>
 <div id="mealSearch" class="mc-ov mc-search" aria-label="Rechercher un produit">
@@ -2720,6 +2730,13 @@ document.addEventListener('click', function(e){
   <div class="sr-bar"><input id="srQ" type="search" autocomplete="off" autocapitalize="off" placeholder="Ex : skyr, poulet, riz…" enterkeyhint="search"><button onclick="BBXMeal.doSearch()">Chercher</button></div>
   <div class="sr-meal" id="srMeal"></div>
   <div id="srList"></div>
+</div>
+<div id="mealName" class="mc-ov mc-sheet" aria-label="Repas">
+  <div class="mc-head"><b id="mnTitle">Nouveau repas</b><button class="mc-x" onclick="BBXMeal.closeName()" aria-label="Fermer">✕</button></div>
+  <div class="mf-sec">Nom du repas</div>
+  <div class="mf-name"><input id="mnEmoji" type="text" maxlength="4" placeholder="🍽️" aria-label="Emoji"><input id="mnName" type="text" autocomplete="off" placeholder="Ex : Collation, Brunch…" aria-label="Nom du repas"></div>
+  <div class="mf-info err" id="mnInfo"></div>
+  <div class="mf-btns" style="margin-top:20px"><button class="mc-big red" onclick="BBXMeal.saveName()" id="mnOk">Créer le repas</button><button class="mc-big" onclick="BBXMeal.closeName()">Annuler</button></div>
 </div>
 <div id="mealForm" class="mc-ov mc-sheet" aria-label="Produit">
   <div class="mc-head"><b id="mfTitle">Ajouter un produit</b><button class="mc-x" onclick="BBXMeal.closeForm()" aria-label="Fermer">✕</button></div>
@@ -2764,7 +2781,8 @@ document.addEventListener('click', function(e){
   let MEALS=JSON.parse(JSON.stringify(DEF_MEALS));
   try{ const c=JSON.parse(localStorage.getItem('bb9-mealdef')||'null'); if(Array.isArray(c)&&c.length&&c.every(x=>Array.isArray(x)&&x.length>=3&&Array.isArray(x[2]))) MEALS=c; }catch(e){}
   const MC={'Petit-déjeuner':['#F59E0B','rgba(245,158,11,.15)'],'Déjeuner':['#16A34A','rgba(22,163,74,.13)'],'Snack':['#8B5CF6','rgba(139,92,246,.13)'],'Shaker':['#0EA5E9','rgba(14,165,233,.14)'],'Dîner':['#E5173A','rgba(229,23,58,.11)']};
-  const mcol=t=>MC[t]||['#E5173A','rgba(229,23,58,.11)'];
+  const PAL=[['#0D9488','rgba(13,148,136,.13)'],['#DB2777','rgba(219,39,119,.12)'],['#4F46E5','rgba(79,70,229,.12)'],['#65A30D','rgba(101,163,13,.14)'],['#EA580C','rgba(234,88,12,.13)'],['#0891B2','rgba(8,145,178,.13)']];
+  const mcol=t=>{ const m=MEALS.find(x=>x[0]===t); if(m&&m[3]!=null) return Array.isArray(m[3])?m[3]:PAL[m[3]%PAL.length]; return MC[t]||PAL[0]; };
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const SK='bb9-meals', CI=2*Math.PI*52;
   const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
@@ -2793,11 +2811,11 @@ document.addEventListener('click', function(e){
     S.v=5; save();
   }
   function build(){
-    $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="my-card" style="--mc:${mcol(t)[0]};--mt:${mcol(t)[1]}"><div class="my-mh"><div class="my-mi">${ic}</div><div><b>${t}</b><span id="mymp${m}"></span></div><div class="my-mk"><b id="mymk${m}"></b><small>kcal</small></div><label class="my-ck all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
+    $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="my-card" data-m="${m}" style="--mc:${mcol(t)[0]};--mt:${mcol(t)[1]}"><div class="my-mh"><div class="my-mi">${ic}</div><div><b>${t}</b><span id="mymp${m}"></span></div><div class="my-mk"><b id="mymk${m}"></b><small>kcal</small></div><label class="my-ck all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
       items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
         <div class="my-edit"><div class="my-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="my-u">${it[1]}</span>
         <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div>
-        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-addb plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à la main dans ${esc(t)}">＋</button><button class="my-addb" onclick="BBXMeal.scan(${m})" aria-label="Scanner un code-barres"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M7 12h10"/></svg></button><button class="my-addb" onclick="BBXMeal.search(${m})" aria-label="Rechercher un produit"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button></div></section>`).join('');
+        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-delmeal" onclick="BBXMeal.delMeal(${m})">🗑 Supprimer le repas</button><button class="my-addb plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à la main dans ${esc(t)}">＋</button><button class="my-addb" onclick="BBXMeal.scan(${m})" aria-label="Scanner un code-barres"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M7 12h10"/></svg></button><button class="my-addb" onclick="BBXMeal.search(${m})" aria-label="Rechercher un produit"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button></div></section>`).join('');
     MEALS.forEach(([t,ic,items],m)=>{
       $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; }); calc(); save(); };
       items.forEach((it,i)=>{
@@ -2853,7 +2871,7 @@ document.addEventListener('click', function(e){
   const num=v=>parseFloat(String(v).replace(',','.'));
   function refresh(){ saveDef(); save(); build(); calc(); renderCfg(); }
   function renderCfg(){
-    $('mcList').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="mc-meal" style="--mc:${mcol(t)[0]};--mt:${mcol(t)[1]}"><div class="mc-mh"><span class="mc-mi">${esc(ic)}</span><b>${esc(t)}</b><button class="mc-plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à ${esc(t)}">＋</button></div>`+
+    $('mcList').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="mc-meal" style="--mc:${mcol(t)[0]};--mt:${mcol(t)[1]}"><div class="mc-mh"><span class="mc-mi">${esc(ic)}</span><b>${esc(t)}</b><button class="mc-sm" onclick="BBXMeal.renameMeal(${m})" aria-label="Renommer ${esc(t)}">✎</button><button class="mc-sm del" onclick="BBXMeal.delMeal(${m})" aria-label="Supprimer le repas ${esc(t)}">🗑</button><button class="mc-plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à ${esc(t)}">＋</button></div>`+
       (items.length?items.map((it,i)=>{ const q=per100(it); return `<div class="mc-it"><span class="mc-th">${esc(it[7])}</span><div class="mc-nm"><b>${esc(it[0])}</b><span>${r(q.k)} kcal · ${r1(q.p)} g prot. / 100 ${it[6]}</span></div><div class="mc-acts"><button onclick="BBXMeal.move(${m},${i},-1)" ${i===0?'disabled':''} aria-label="Monter">▲</button><button onclick="BBXMeal.move(${m},${i},1)" ${i===items.length-1?'disabled':''} aria-label="Descendre">▼</button><button onclick="BBXMeal.edit(${m},${i})" aria-label="Modifier">✎</button><button class="del" onclick="BBXMeal.del(${m},${i})" aria-label="Supprimer">🗑</button></div></div>`; }).join(''):'<div class="mc-empty">Aucun produit dans ce repas</div>')+`</section>`).join('');
   }
   function dropState(m,i){ const k=key(m,i); delete S.w[k]; delete S.d[k]; }
@@ -3153,11 +3171,89 @@ document.addEventListener('click', function(e){
   $('srQ').addEventListener('input',liveSearch);
   $('srQ').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); doSearch(); } });
   window.addEventListener('pagehide',releaseCam);
+  // ---------- repas : créer / renommer / supprimer / déplacer ----------
+  const mn={mode:'add',m:0};
+  function openName(mode,m){
+    mn.mode=mode; mn.m=m; $('mnInfo').textContent='';
+    if(mode==='edit'){ $('mnTitle').textContent='Renommer le repas'; $('mnOk').textContent='Enregistrer'; $('mnName').value=MEALS[m][0]; $('mnEmoji').value=MEALS[m][1]; }
+    else{ $('mnTitle').textContent='Nouveau repas'; $('mnOk').textContent='Créer le repas'; $('mnName').value=''; $('mnEmoji').value=''; }
+    $('mealName').classList.add('show'); setTimeout(()=>{ try{ $('mnName').focus(); }catch(e){} },200);
+  }
+  function saveName(){
+    const name=$('mnName').value.trim(), emoji=$('mnEmoji').value.trim()||'🍽️';
+    const err=t=>{ $('mnInfo').textContent=t; };
+    if(!name) return err('Donne un nom au repas.');
+    if(MEALS.some((x,i)=>x[0].toLowerCase()===name.toLowerCase()&&!(mn.mode==='edit'&&i===mn.m))) return err('Un repas porte déjà ce nom.');
+    if(mn.mode==='edit'){
+      const old=MEALS[mn.m][0];
+      if(old!==name){
+        if(MEALS[mn.m][3]==null) MEALS[mn.m][3]=mcol(old);          // le repas garde sa couleur
+        MEALS[mn.m][2].forEach(it=>{ ['w','d'].forEach(f=>{ const k=old+'|'+it[0]; if(k in S[f]){ S[f][name+'|'+it[0]]=S[f][k]; delete S[f][k]; } }); });
+        MEALS[mn.m][0]=name;
+      }
+      MEALS[mn.m][1]=emoji;
+    }else{
+      MEALS.push([name,emoji,[],MEALS.length%PAL.length]);
+    }
+    $('mealName').classList.remove('show'); refresh();
+  }
+  function delMeal(m){
+    const mm=MEALS[m]; if(!mm) return;
+    const n=mm[2].length;
+    if(!confirm('Supprimer le repas « '+mm[0]+' »'+(n?' et ses '+n+' produit'+(n>1?'s':''):'')+' ?')) return;
+    mm[2].forEach((it,i)=>dropState(m,i)); MEALS.splice(m,1); refresh();
+  }
+  // déplacer un repas : rester appuyé sur son titre, puis glisser
+  (function(){
+    const box=$('mlMeals'), view=$('mealView'); let d=null;
+    const pt=e=>(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;
+    function begin(e){
+      const h=e.target.closest&&e.target.closest('.my-mh'); if(!h||e.target.closest('label,button,input')) return;
+      const card=h.closest('.my-card'); if(!card) return; const p=pt(e);
+      d={card:card,x:p.clientX,y:p.clientY,lastY:p.clientY,on:false,raf:0,timer:setTimeout(start,450)};
+    }
+    function start(){
+      if(!d) return; d.on=true; const r=d.card.getBoundingClientRect(); d.grab=d.lastY-r.top;
+      d.card.classList.add('dragging'); view.classList.add('drag-on'); try{ if(navigator.vibrate) navigator.vibrate(12); }catch(e){}
+      const loop=()=>{ if(!d||!d.on) return; const vr=view.getBoundingClientRect();
+        if(d.lastY<vr.top+80) view.scrollTop-=12; else if(d.lastY>vr.bottom-120) view.scrollTop+=12;
+        place(); d.raf=requestAnimationFrame(loop); };
+      loop();
+    }
+    function place(){
+      const c=d.card; c.style.transform='none';
+      const sib=[...box.children].filter(x=>x!==c); let before=null;
+      for(const x of sib){ const r=x.getBoundingClientRect(); if(d.lastY<r.top+r.height/2){ before=x; break; } }
+      if(c.nextElementSibling!==before) box.insertBefore(c,before);
+      const nat=c.getBoundingClientRect().top;
+      c.style.transform='translateY('+(d.lastY-d.grab-nat)+'px)';
+    }
+    function move(e){
+      if(!d) return; const p=pt(e);
+      if(!d.on){ if(Math.abs(p.clientX-d.x)>8||Math.abs(p.clientY-d.y)>8){ clearTimeout(d.timer); d=null; } return; }
+      if(e.cancelable) e.preventDefault(); d.lastY=p.clientY; place();
+    }
+    function end(){
+      if(!d) return; clearTimeout(d.timer); const was=d.on; cancelAnimationFrame(d.raf);
+      if(was){
+        d.card.classList.remove('dragging'); d.card.style.transform=''; view.classList.remove('drag-on');
+        const order=[...box.children].map(x=>+x.dataset.m);
+        if(order.some((v,i)=>v!==i)){ MEALS=order.map(i=>MEALS[i]); d=null; refresh(); return; }
+      }
+      d=null;
+    }
+    box.addEventListener('touchstart',begin,{passive:true});
+    document.addEventListener('touchmove',move,{passive:false});
+    document.addEventListener('touchend',end); document.addEventListener('touchcancel',end);
+    box.addEventListener('mousedown',begin); document.addEventListener('mousemove',move); document.addEventListener('mouseup',end);
+    box.addEventListener('contextmenu',e=>{ if(e.target.closest('.my-mh')) e.preventDefault(); });
+  })();
   window.BBXMeal={
     openCfg:()=>{ renderCfg(); $('mealCfg').classList.add('show'); }, closeCfg:()=>$('mealCfg').classList.remove('show'),
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
     scan:scanOpen, closeScan:closeScan, manual:manual,
+    addMeal:()=>openName('add'), renameMeal:m=>openName('edit',m), saveName:saveName, closeName:()=>$('mealName').classList.remove('show'), delMeal:delMeal,
     setMeal:setMeal, unit:setUnit, qty:qtyStep, units:setQtyUnits, favDel:favDel, search:srOpen, closeSearch:closeSearch, doSearch:doSearch, pick:pick
   };
   window.BBXNav={ set:setView, auto:autoView };
