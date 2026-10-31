@@ -1371,6 +1371,22 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .mf-units button{ flex:1; height:42px; border-radius:12px; border:1.5px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:800; font-size:15px; cursor:pointer; padding:0; }
 .mf-units button:active{ background:#FFEFF2; border-color:#E5173A; }
 .ms-photo{ width:100%; height:46px; border-radius:12px; border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.14); color:#fff; font-family:inherit; font-weight:800; font-size:14px; margin-bottom:10px; cursor:pointer; }
+/* ===== Meal : résumé lisible + pied de repas en icônes ===== */
+.sm-blk{ margin:0 2px 18px; }
+.sm-big{ display:flex; align-items:baseline; gap:8px; }
+.sm-big b{ font-size:48px; font-weight:900; font-style:italic; line-height:1; color:#15171C; letter-spacing:-.02em; }
+.sm-big span{ font-size:15px; font-weight:800; color:#6B7280; }
+.sm-bar{ height:10px; border-radius:99px; background:#ECEEF2; margin:10px 0 8px; overflow:hidden; }
+.sm-bar i{ display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,#FF3249,#D1001F); transition:width .45s; }
+.sm-bar i.over{ background:#7F1D1D; }
+.sm-prot .sm-bar i{ background:linear-gradient(90deg,#F59E0B,#FBBF24); }
+.sm-sub{ display:flex; justify-content:space-between; align-items:baseline; font-size:12px; font-weight:700; color:#6B7280; }
+.sm-sub b{ color:#15171C; font-weight:800; }
+.sm-sub input{ width:48px; background:transparent; border:0; border-bottom:1px dashed #C4C9D2; color:#15171C; font-family:inherit; font-weight:800; font-size:12px; text-align:right; padding:0 1px; outline:0; }
+.my-add{ justify-content:flex-end; }
+.my-addb{ flex:0 0 54px; width:54px; padding:0; display:grid; place-items:center; }
+.my-addb svg{ width:24px; height:24px; fill:none; stroke:var(--mc,#E5173A); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.my-addb.plus svg{ stroke:#fff; }
 </style>
 </head>
 <body>
@@ -2673,17 +2689,17 @@ document.addEventListener('click', function(e){
   <div class="my-head"><img class="app-logo" id="mlLogo" alt="BBX"><div class="my-hr"><span class="my-date" id="mlDate"></span><button class="my-cfg" onclick="BBXMeal.openCfg()" aria-label="Réglages Meal"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L20 7"/></svg></button></div></div>
   <h1 class="my-title">Meal</h1>
   <div class="my-sum">
-    <div class="my-top">
-      <div class="my-stat"><b id="myEat">0</b><span>Mangé</span></div>
-      <div class="my-ring"><svg viewBox="0 0 120 120"><circle class="t" cx="60" cy="60" r="52"/><circle class="v" id="myKf" cx="60" cy="60" r="52"/></svg>
-        <div class="my-center"><strong id="myRem">0</strong><span id="myRemLab">kcal restantes</span></div></div>
-      <div class="my-stat"><input id="mlKg" type="number" inputmode="numeric" min="0" aria-label="Objectif calories"><span>Objectif</span></div>
+    <div class="sm-blk">
+      <div class="sm-big"><b id="myEat">0</b><span>kcal</span></div>
+      <div class="sm-bar"><i id="myKbar"></i></div>
+      <div class="sm-sub"><span>Objectif <input id="mlKg" type="number" inputmode="numeric" min="0" aria-label="Objectif calories"></span><span><span id="myRemLab">Reste</span> <b id="myRem">0</b> kcal</span></div>
     </div>
-    <div class="my-macro">
-      <div class="my-mrow"><em>Protéines</em><span><b id="myPt">0</b> / <input id="mlPg" type="number" inputmode="numeric" min="0" aria-label="Objectif protéines"> g</span></div>
-      <div class="my-bar"><i id="myPbar"></i></div>
-      <div class="my-plan" id="myPlan"></div>
+    <div class="sm-blk sm-prot">
+      <div class="sm-big"><b id="myPt">0</b><span>g de protéines</span></div>
+      <div class="sm-bar"><i id="myPbar"></i></div>
+      <div class="sm-sub"><span>Objectif <input id="mlPg" type="number" inputmode="numeric" min="0" aria-label="Objectif protéines"> g</span><span><span id="myPremLab">Reste</span> <b id="myPrem">0</b> g</span></div>
     </div>
+    <div class="my-plan" id="myPlan"></div>
   </div>
   <div class="my-hint">Touche un aliment pour modifier sa quantité. Coche ce que tu as mangé.</div>
   <div id="mlMeals"></div>
@@ -2781,7 +2797,7 @@ document.addEventListener('click', function(e){
       items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
         <div class="my-edit"><div class="my-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="my-u">${it[1]}</span>
         <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div>
-        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-addb plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à la main dans ${esc(t)}">＋</button><button class="my-addb" onclick="BBXMeal.scan(${m})">📷 Scanner</button><button class="my-addb" onclick="BBXMeal.search(${m})">🔍 Rechercher</button></div></section>`).join('');
+        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-addb plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à la main dans ${esc(t)}">＋</button><button class="my-addb" onclick="BBXMeal.scan(${m})" aria-label="Scanner un code-barres"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M7 12h10"/></svg></button><button class="my-addb" onclick="BBXMeal.search(${m})" aria-label="Rechercher un produit"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button></div></section>`).join('');
     MEALS.forEach(([t,ic,items],m)=>{
       $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; }); calc(); save(); };
       items.forEach((it,i)=>{
@@ -2808,9 +2824,10 @@ document.addEventListener('click', function(e){
       $('mymk'+m).textContent=r(mk); $('mymp'+m).textContent=items.length+' aliments · '+r(mp)+' g prot.';
       const all=$('mlall'+m); all.checked=items.length>0&&nd===items.length; all.indeterminate=nd>0&&nd<items.length; });
     $('myEat').textContent=r(K);
-    const rem=S.kg-K; $('myRem').textContent=r(Math.abs(rem)); $('myRemLab').textContent=rem>=0?'kcal restantes':'kcal en trop';
-    const c=$('myKf'); c.style.strokeDasharray=CI; c.style.strokeDashoffset=CI*(1-Math.min(1,K/S.kg));
-    $('myPt').textContent=r(P); $('myPbar').style.width=Math.min(100,P/S.pg*100)+'%';
+    const rem=S.kg-K; $('myRem').textContent=r(Math.abs(rem)); $('myRemLab').textContent=rem>=0?'Reste':'Dépassé de';
+    $('myKbar').style.width=Math.min(100,K/S.kg*100)+'%'; $('myKbar').classList.toggle('over',rem<0);
+    const prem=S.pg-P; $('myPt').textContent=r(P); $('myPrem').textContent=r(Math.abs(prem)); $('myPremLab').textContent=prem>=0?'Reste':'Dépassé de';
+    $('myPbar').style.width=Math.min(100,P/S.pg*100)+'%';
     $('myPlan').textContent='Prévu aujourd’hui : '+r(TK)+' kcal · '+r(TP)+' g de protéines';
   }
   // ---- navigation Sport | Meal ----
