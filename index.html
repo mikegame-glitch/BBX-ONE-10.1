@@ -1144,7 +1144,7 @@ html,body{ background:#090102 !important; }
   /* ---- planning des exercices (ronds L M M J V S D) ---- */
   .bk-box{ width:100%; box-sizing:border-box; margin:6px 0 8px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,70,80,.3); background:#111; color:#fff; font:12px/1.35 ui-monospace,Menlo,monospace; resize:vertical; }
   .bk-btns{ display:flex; gap:8px; }
-  .bk-btns button{ flex:1; height:42px; border:none; border-radius:12px; font:800 13px inherit; color:#fff; cursor:pointer; background:linear-gradient(180deg,#FF3249,#C0001B); }
+  .bk-btns button{ flex:1; height:42px; border:none; border-radius:12px; font-family:inherit; font-weight:800; font-size:13px;; color:#fff; cursor:pointer; background:linear-gradient(180deg,#FF3249,#C0001B); }
   .bk-btns button + button{ background:rgba(255,255,255,.08); border:1px solid rgba(255,70,80,.3); }
   .bk-msg{ font-size:12px; font-weight:700; margin:8px 2px 0; min-height:16px; color:#9A9AA0; }
   .pl-row{ padding:9px 0 10px; border-top:1px solid #2E2E30; }
@@ -1155,7 +1155,7 @@ html,body{ background:#090102 !important; }
   .pl-d.on{ background:linear-gradient(180deg,#FF3249,#C0001B); color:#fff; border-color:transparent; }
   .pl-d:active{ transform:scale(.93); }
   .pl-name{ display:flex; align-items:center; }
-  .rep-in{ width:70px; height:34px; border:0; border-radius:10px; background:#1C1C1E; color:#fff; font:800 17px inherit; font-style:italic; text-align:center; outline:0; }
+  .rep-in{ width:70px; height:34px; border:0; border-radius:10px; background:#1C1C1E; color:#fff; font-family:inherit; font-weight:800; font-size:17px;; font-style:italic; text-align:center; outline:0; }
   .pl-play{ flex:0 0 18px; width:18px; margin-right:8px; text-align:center; font-size:11px; color:#FF1F3D; }
   .pl-name .wt-ic{ margin-right:8px; }
   .pl-name.mod::after{ content:' •'; color:#FF1F3D; margin-left:4px; }
@@ -1208,7 +1208,7 @@ body:has(#progOverlay.show) .nav-pill{ opacity:0; pointer-events:none; }
 .my-macro{ margin-top:18px; padding:0 4px; }
 .my-mrow{ display:flex; justify-content:space-between; align-items:baseline; font-size:14px; font-weight:700; color:var(--tx); }
 .my-mrow em{ font-style:normal; color:#D97706; font-weight:800; letter-spacing:.05em; text-transform:uppercase; font-size:12px; }
-.my-mrow input{ width:48px; background:transparent; border:0; border-bottom:1.5px dashed #C4C9D2; color:var(--tx); font:800 14px inherit; font-family:inherit; text-align:right; padding:0 2px; outline:0; }
+.my-mrow input{ width:48px; background:transparent; border:0; border-bottom:1.5px dashed #C4C9D2; color:var(--tx); font-family:inherit; font-weight:800; font-size:14px;; font-family:inherit; text-align:right; padding:0 2px; outline:0; }
 .my-bar{ height:10px; border-radius:99px; background:#ECEEF2; margin-top:8px; overflow:hidden; }
 .my-bar i{ display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,#F59E0B,#FBBF24); transition:width .45s; }
 .my-plan{ font-size:12px; color:var(--mu); font-weight:600; margin-top:9px; }
@@ -1241,14 +1241,14 @@ body:has(#progOverlay.show) .nav-pill{ opacity:0; pointer-events:none; }
 .my-ck.all{ margin-left:2px; }
 .my-edit{ display:none; align-items:center; flex-wrap:wrap; gap:8px; padding:0 14px 12px 70px; }
 .my-eact{ flex:0 0 100%; display:flex; gap:8px; margin-top:4px; }
-.my-eact button{ flex:1; height:38px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font:800 13px inherit; cursor:pointer; padding:0 6px; }
+.my-eact button{ flex:1; height:38px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font-family:inherit; font-weight:800; font-size:13px;; cursor:pointer; padding:0 6px; }
 .my-eact .del{ border-color:#F5C2CB; color:#C70F2E; }
 .my-it.open .my-edit{ display:flex; }
 .my-it.open .my-row{ padding-bottom:8px; }
 .my-st{ display:flex; align-items:center; gap:2px; background:var(--fl); border-radius:999px; padding:3px; flex:none; }
-.my-st button{ width:28px; height:28px; border-radius:50%; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font:800 17px/1 inherit; cursor:pointer; padding:0; box-shadow:0 1px 2px rgba(20,24,40,.08); }
+.my-st button{ width:28px; height:28px; border-radius:50%; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font-family:inherit; font-weight:800; font-size:17px; line-height:1;; cursor:pointer; padding:0; box-shadow:0 1px 2px rgba(20,24,40,.08); }
 .my-st button:active{ transform:scale(.92); }
-.my-st input, .my-wf input{ width:40px; border:0; background:transparent; color:var(--tx); font:800 14px inherit; font-style:italic; text-align:center; padding:4px 0; outline:0; }
+.my-st input, .my-wf input{ width:40px; border:0; background:transparent; color:var(--tx); font-family:inherit; font-weight:800; font-size:14px;; font-style:italic; text-align:center; padding:4px 0; outline:0; }
 .my-wf{ display:flex; align-items:center; flex:none; margin-left:auto; background:var(--fl); border-radius:999px; padding:3px 12px 3px 8px; }
 .my-wf input{ width:48px; text-align:right; }
 .my-u{ color:var(--mu); font-size:12.5px; font-weight:600; white-space:nowrap; }
@@ -1273,7 +1273,7 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .mc-head b{ font-size:24px; font-weight:900; font-style:italic; font-family:"Arial Black",Impact,Arial,sans-serif; text-transform:uppercase; color:#E5173A; }
 .mc-x{ width:38px; height:38px; border-radius:50%; border:1px solid #E1E4EA; background:#fff; font-size:15px; cursor:pointer; color:#15171C; }
 .mc-add{ display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
-.mc-big{ width:100%; height:50px; border-radius:16px; border:1px solid #E1E4EA; background:#fff; color:#15171C; font:800 15px inherit; cursor:pointer; }
+.mc-big{ width:100%; height:50px; border-radius:16px; border:1px solid #E1E4EA; background:#fff; color:#15171C; font-family:inherit; font-weight:800; font-size:15px;; cursor:pointer; }
 .mc-big.red{ border:0; color:#fff; background:linear-gradient(180deg,#FF3249,#D1001F); box-shadow:0 10px 20px -10px rgba(229,23,58,.7); }
 .mc-hint{ font-size:12px; color:#6B7280; font-weight:600; margin:0 4px 14px; }
 .mc-meal{ background:#fff; border:1px solid #EAECF0; border-radius:20px; margin-bottom:12px; overflow:hidden; }
@@ -1288,10 +1288,10 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .mc-acts button{ width:30px; height:30px; border-radius:9px; border:1px solid #E1E4EA; background:#fff; font-size:12px; cursor:pointer; padding:0; color:#15171C; }
 .mc-acts button:disabled{ opacity:.3; } .mc-acts .del{ border-color:#F5C2CB; }
 .mc-empty{ padding:12px 14px; font-size:12.5px; color:#6B7280; font-weight:600; border-top:1px solid #EAECF0; }
-.mc-reset{ display:block; margin:16px auto 0; background:none; border:0; color:#6B7280; text-decoration:underline; font:700 13px inherit; cursor:pointer; }
+.mc-reset{ display:block; margin:16px auto 0; background:none; border:0; color:#6B7280; text-decoration:underline; font-family:inherit; font-weight:700; font-size:13px;; cursor:pointer; }
 .mf-info{ font-size:12.5px; font-weight:700; color:#D97706; margin:10px 2px 6px; min-height:4px; }
 .mf-l{ display:block; font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#6B7280; margin:8px 0 0; }
-.mf-l input, .mf-l select{ display:block; width:100%; box-sizing:border-box; margin-top:5px; height:44px; padding:0 12px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:#15171C; font:700 15px inherit; }
+.mf-l input, .mf-l select{ display:block; width:100%; box-sizing:border-box; margin-top:5px; height:44px; padding:0 12px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:700; font-size:15px;; }
 .mf-row{ display:flex; gap:10px; }
 .mf-prev{ margin:14px 2px; padding:12px; border-radius:14px; background:#fff; border:1px dashed #C4C9D2; font-size:13.5px; font-weight:800; text-align:center; color:#15171C; }
 .mf-btns{ display:flex; flex-direction:column; gap:10px; }
@@ -1305,20 +1305,20 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .ms-top b{ font-size:16px; font-weight:800; } .ms-top button{ width:38px; height:38px; border-radius:50%; border:0; background:rgba(255,255,255,.2); color:#fff; font-size:15px; cursor:pointer; }
 .ms-bot{ position:absolute; left:0; right:0; bottom:0; padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px)); background:linear-gradient(0deg,rgba(0,0,0,.85),transparent); }
 #msStatus{ text-align:center; font-size:14px; font-weight:700; margin-bottom:12px; }
-.ms-row{ display:flex; gap:8px; } .ms-row input{ flex:1; height:44px; border-radius:12px; border:0; padding:0 12px; font:700 15px inherit; color:#111; }
-.ms-row button{ width:64px; height:44px; border-radius:12px; border:0; background:#E5173A; color:#fff; font:800 15px inherit; cursor:pointer; }
+.ms-row{ display:flex; gap:8px; } .ms-row input{ flex:1; height:44px; border-radius:12px; border:0; padding:0 12px; font-family:inherit; font-weight:700; font-size:15px;; color:#111; }
+.ms-row button{ width:64px; height:44px; border-radius:12px; border:0; background:#E5173A; color:#fff; font-family:inherit; font-weight:800; font-size:15px;; cursor:pointer; }
 /* ===== Bouton ＋ sous chaque repas + recherche ===== */
 .my-add{ padding:10px 14px 14px; border-top:1px solid var(--ln); }
-.my-plus{ width:100%; height:44px; border-radius:14px; border:1.5px dashed var(--mc,#E5173A); background:var(--mt); color:var(--tx); font:800 14px inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+.my-plus{ width:100%; height:44px; border-radius:14px; border:1.5px dashed var(--mc,#E5173A); background:var(--mt); color:var(--tx); font-family:inherit; font-weight:800; font-size:14px;; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
 .my-plus span{ width:24px; height:24px; border-radius:50%; background:var(--mc,#E5173A); color:#fff; display:grid; place-items:center; font-size:16px; line-height:1; }
 .my-addmenu{ display:none; gap:8px; margin-top:10px; }
 .my-addmenu.open{ display:flex; }
-.my-addmenu button{ flex:1; height:42px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font:800 13px inherit; cursor:pointer; padding:0 4px; }
+.my-addmenu button{ flex:1; height:42px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font-family:inherit; font-weight:800; font-size:13px;; cursor:pointer; padding:0 4px; }
 .my-addmenu button:first-child{ background:var(--mc,#E5173A); border-color:transparent; color:#fff; }
 .mc-search{ z-index:9150; }
 .sr-bar{ display:flex; gap:8px; margin-bottom:8px; }
-.sr-bar input{ flex:1; min-width:0; height:46px; border-radius:14px; border:1px solid #DDE0E6; background:#fff; padding:0 14px; font:700 16px inherit; color:#15171C; }
-.sr-bar button{ height:46px; padding:0 16px; border:0; border-radius:14px; color:#fff; font:800 14px inherit; background:linear-gradient(180deg,#FF3249,#D1001F); cursor:pointer; }
+.sr-bar input{ flex:1; min-width:0; height:46px; border-radius:14px; border:1px solid #DDE0E6; background:#fff; padding:0 14px; font-family:inherit; font-weight:700; font-size:16px;; color:#15171C; }
+.sr-bar button{ height:46px; padding:0 16px; border:0; border-radius:14px; color:#fff; font-family:inherit; font-weight:800; font-size:14px;; background:linear-gradient(180deg,#FF3249,#D1001F); cursor:pointer; }
 .sr-meal{ font-size:12px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#6B7280; margin:4px 2px 10px; }
 .sr-sec{ font-size:11.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#6B7280; margin:14px 2px 6px; }
 .sr-note{ font-size:13px; font-weight:600; color:#6B7280; margin:12px 4px; }
@@ -1326,6 +1326,42 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .sr-th{ width:36px; height:36px; border-radius:10px; background:#F3F4F6; display:grid; place-items:center; font-size:19px; flex:none; }
 .sr-nm{ flex:1; min-width:0; } .sr-nm b{ display:block; font-size:13.5px; font-weight:700; line-height:1.25; } .sr-nm span{ font-size:11.5px; color:#6B7280; font-weight:600; }
 .sr-go{ width:30px; height:30px; border-radius:50%; background:#E5173A; color:#fff; display:grid; place-items:center; font-size:18px; font-weight:800; flex:none; }
+/* ===== Meal : pied de repas simple + formulaire lisible ===== */
+.my-add{ display:flex; gap:8px; padding:10px 14px 14px; border-top:1px solid var(--ln); }
+.my-addb{ flex:1; height:46px; border-radius:14px; border:1.5px solid var(--mc,#E5173A); background:var(--mt); color:var(--tx); font-family:inherit; font-weight:800; font-size:14px;; cursor:pointer; padding:0 6px; }
+.my-addb.plus{ flex:0 0 54px; border:0; background:var(--mc,#E5173A); color:#fff; font-size:26px; font-weight:700; line-height:1; }
+.my-addb:active{ transform:scale(.97); }
+.mf-quick{ display:flex; gap:10px; margin:0 0 6px; } .mf-quick .mc-big{ height:52px; }
+.mf-info{ font-size:14px; font-weight:700; color:#6B7280; margin:8px 2px 4px; min-height:4px; line-height:1.35; }
+.mf-info.ok{ color:#15803D; } .mf-info.err{ color:#C70F2E; }
+.mf-sec{ font-size:15px; font-weight:800; color:#15171C; margin:18px 2px 8px; }
+.mf-chips{ display:flex; gap:8px; overflow-x:auto; padding:2px 0 6px; margin:0 -16px; padding-left:16px; padding-right:16px; scrollbar-width:none; }
+.mf-chips::-webkit-scrollbar{ display:none; }
+.mf-chip{ flex:none; height:42px; padding:0 14px; border-radius:999px; border:1.5px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:800; font-size:14px;; cursor:pointer; white-space:nowrap; }
+.mf-chip.on{ background:var(--mc); border-color:var(--mc); color:#fff; }
+.mf-name{ display:flex; gap:10px; }
+.mf-name input{ height:54px; border-radius:14px; border:1.5px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:700; font-size:18px;; padding:0 14px; box-sizing:border-box; min-width:0; }
+.mf-name input:first-child{ width:64px; text-align:center; font-size:24px; padding:0; } .mf-name input:last-child{ flex:1; }
+.mf-pair{ display:flex; gap:10px; }
+.mf-f{ flex:1; display:block; } .mf-f > span{ display:block; font-size:13px; font-weight:700; color:#4B5563; margin:0 2px 6px; }
+.mf-in{ display:flex; align-items:center; height:54px; border-radius:14px; border:1.5px solid #DDE0E6; background:#fff; padding:0 14px; box-sizing:border-box; }
+.mf-in input{ flex:1; min-width:0; width:100%; border:0; outline:0; background:transparent; font-family:inherit; font-weight:800; font-size:20px;; color:#15171C; padding:0; }
+.mf-in i{ font-style:normal; font-weight:700; font-size:14px; color:#6B7280; margin-left:6px; }
+.mf-in:focus-within, .mf-name input:focus{ border-color:#E5173A; box-shadow:0 0 0 3px rgba(229,23,58,.12); outline:0; }
+.mf-qty{ display:flex; gap:10px; align-items:center; }
+.mf-qty > button{ flex:0 0 54px; height:54px; border-radius:50%; border:1.5px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:800; font-size:26px; line-height:1;; cursor:pointer; padding:0; }
+.mf-qty > button:active{ transform:scale(.94); }
+.mf-in.big{ flex:1; justify-content:center; height:60px; } .mf-in.big input{ text-align:center; font-size:28px; }
+.mf-seg{ display:flex; gap:6px; margin:10px 0 0; background:#E8EAEE; border-radius:999px; padding:4px; }
+.mf-seg button{ flex:1; height:36px; border:0; border-radius:999px; background:transparent; color:#4B5563; font-family:inherit; font-weight:800; font-size:13px;; cursor:pointer; }
+.mf-seg button.on{ background:#fff; color:#15171C; box-shadow:0 2px 6px -2px rgba(20,24,40,.3); }
+.mf-prev{ margin:18px 0 14px; padding:16px 12px; border-radius:18px; background:linear-gradient(160deg,#FFEFF2,#fff); border:1.5px solid #F5C2CB; font-size:17px; font-weight:700; text-align:center; color:#15171C; }
+.mf-prev b{ font-size:26px; font-weight:900; font-style:italic; color:#E5173A; } .mf-prev small{ display:block; margin-top:4px; font-size:13px; font-weight:600; color:#6B7280; }
+.mf-btns{ display:flex; flex-direction:column; gap:10px; } .mf-btns .mc-big{ height:54px; font-size:16px; }
+/* recherche plus lisible */
+.sr-bar input{ height:52px; font-size:17px; } .sr-bar button{ height:52px; font-size:15px; }
+.sr-it{ padding:12px 14px; } .sr-th{ width:42px; height:42px; font-size:22px; } .sr-nm b{ font-size:15px; } .sr-nm span{ font-size:13px; } .sr-go{ width:34px; height:34px; }
+.sr-sec{ font-size:13px; } .sr-note{ font-size:14px; }
 </style>
 </head>
 <body>
@@ -2175,7 +2211,7 @@ const EX_ELEVB = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQE
 <style>
   .tb-bubble{ position:fixed; right:16px; bottom:calc(16px + env(safe-area-inset-bottom,0px)); z-index:9000; height:56px; min-width:56px; padding:0 16px;
     border:none; border-radius:999px; background:#FF1F3D; color:#fff; display:flex; align-items:center; justify-content:center; gap:8px;
-    font:800 18px/1 inherit; font-variant-numeric:tabular-nums; cursor:pointer; box-shadow:0 8px 22px -6px rgba(255,31,61,.55), 0 4px 12px rgba(0,0,0,.45);
+    font-family:inherit; font-weight:800; font-size:18px; line-height:1;; font-variant-numeric:tabular-nums; cursor:pointer; box-shadow:0 8px 22px -6px rgba(255,31,61,.55), 0 4px 12px rgba(0,0,0,.45);
     transition:transform .15s ease; -webkit-tap-highlight-color:transparent; }
   .tb-bubble:active{ transform:scale(.93); }
   .tb-bubble svg{ width:26px; height:26px; fill:none; stroke:#000; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
@@ -2662,12 +2698,20 @@ document.addEventListener('click', function(e){
 </div>
 <div id="mealForm" class="mc-ov mc-sheet" aria-label="Produit">
   <div class="mc-head"><b id="mfTitle">Ajouter un produit</b><button class="mc-x" onclick="BBXMeal.closeForm()" aria-label="Fermer">✕</button></div>
-  <button class="mc-big red" id="mfScanBtn" onclick="BBXMeal.scan('form')">📷 Scanner un code-barres</button>
+  <div class="mf-quick" id="mfQuick"><button class="mc-big red" onclick="BBXMeal.scan('form')">📷 Scanner</button><button class="mc-big" onclick="BBXMeal.search('form')">🔍 Rechercher</button></div>
   <div class="mf-info" id="mfInfo"></div>
-  <label class="mf-l">Repas<select id="mfMeal"></select></label>
-  <div class="mf-row"><label class="mf-l" style="flex:1">Nom<input id="mfName" type="text" autocomplete="off" placeholder="Ex : Skyr nature"></label><label class="mf-l" style="width:78px">Emoji<input id="mfEmoji" type="text" maxlength="4" placeholder="🍽️"></label></div>
-  <div class="mf-row"><label class="mf-l" style="flex:1">Calories / 100<input id="mfKcal" type="text" inputmode="decimal" placeholder="kcal"></label><label class="mf-l" style="flex:1">Protéines / 100<input id="mfProt" type="text" inputmode="decimal" placeholder="g"></label></div>
-  <div class="mf-row"><label class="mf-l" style="flex:1">Quantité<input id="mfQty" type="text" inputmode="decimal" placeholder="100"></label><label class="mf-l" style="width:92px">Unité<select id="mfUnit"><option value="g">g</option><option value="ml">ml</option></select></label></div>
+  <div class="mf-sec">Repas</div>
+  <div class="mf-chips" id="mfChips"></div><input type="hidden" id="mfMeal" value="0">
+  <div class="mf-sec">Produit</div>
+  <div class="mf-name"><input id="mfEmoji" type="text" maxlength="4" placeholder="🍽️" aria-label="Emoji"><input id="mfName" type="text" autocomplete="off" placeholder="Nom du produit" aria-label="Nom du produit"></div>
+  <div class="mf-sec">Valeurs pour 100 <span id="mfU">g</span></div>
+  <div class="mf-pair">
+    <label class="mf-f"><span>Calories</span><div class="mf-in"><input id="mfKcal" type="text" inputmode="decimal" placeholder="0"><i>kcal</i></div></label>
+    <label class="mf-f"><span>Protéines</span><div class="mf-in"><input id="mfProt" type="text" inputmode="decimal" placeholder="0"><i>g</i></div></label>
+  </div>
+  <div class="mf-sec">Quantité mangée</div>
+  <div class="mf-qty"><button type="button" onclick="BBXMeal.qty(-1)" aria-label="Moins">−</button><div class="mf-in big"><input id="mfQty" type="text" inputmode="decimal" placeholder="100" aria-label="Quantité"><i id="mfQu">g</i></div><button type="button" onclick="BBXMeal.qty(1)" aria-label="Plus">+</button></div>
+  <div class="mf-seg" id="mfSeg"><button type="button" class="on" onclick="BBXMeal.unit('g')">grammes</button><button type="button" onclick="BBXMeal.unit('ml')">millilitres</button></div><input type="hidden" id="mfUnit" value="g">
   <div class="mf-prev" id="mfPrev"></div>
   <div class="mf-btns"><button class="mc-big red" onclick="BBXMeal.saveForm()" id="mfOk">Valider</button><button class="mc-big" onclick="BBXMeal.closeForm()">Annuler</button></div>
 </div>
@@ -2727,7 +2771,7 @@ document.addEventListener('click', function(e){
       items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
         <div class="my-edit"><div class="my-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="my-u">${it[1]}</span>
         <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div>
-        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-plus" onclick="BBXMeal.addMenu(${m})" aria-label="Ajouter un produit à ${esc(t)}" aria-expanded="false"><span>＋</span> Ajouter un produit</button><div class="my-addmenu" id="myam${m}"><button onclick="BBXMeal.scan(${m})">📷 Scanner</button><button onclick="BBXMeal.search(${m})">🔍 Rechercher</button><button onclick="BBXMeal.add(${m})">✎ Manuel</button></div></div></section>`).join('');
+        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-addb plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à la main dans ${esc(t)}">＋</button><button class="my-addb" onclick="BBXMeal.scan(${m})">📷 Scanner</button><button class="my-addb" onclick="BBXMeal.search(${m})">🔍 Rechercher</button></div></section>`).join('');
     MEALS.forEach(([t,ic,items],m)=>{
       $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; }); calc(); save(); };
       items.forEach((it,i)=>{
@@ -2793,32 +2837,49 @@ document.addEventListener('click', function(e){
   const fm={mode:'add',m:0,i:0,unitW:100,label:'portion de 100 g',serving:0};
   function fmPrev(){
     const k=num($('mfKcal').value), p=num($('mfProt').value), q=num($('mfQty').value), u=$('mfUnit').value;
-    $('mfPrev').textContent=(q>0&&k>=0)?('Pour '+r1(q)+' '+u+' : '+r(k*q/100)+' kcal · '+r1((p>=0?p:0)*q/100)+' g de protéines'):'Indique les calories et la quantité';
+    $('mfPrev').innerHTML=(q>0&&k>=0)?('<b>'+r(k*q/100)+'</b> kcal &nbsp;·&nbsp; <b>'+r1((p>=0?p:0)*q/100)+'</b> g de protéines<small>pour '+r1(q)+' '+u+'</small>'):'<small>Indique les calories et la quantité pour voir le total</small>';
+  }
+  function setUnit(u){
+    $('mfUnit').value=u; $('mfU').textContent=u; $('mfQu').textContent=u;
+    [...$('mfSeg').children].forEach((b,i)=>b.classList.toggle('on',(i===0)===(u==='g')));
+    fmPrev();
+  }
+  function setMeal(x){
+    $('mfMeal').value=x;
+    [...$('mfChips').children].forEach((b,i)=>b.classList.toggle('on',i===x));
+    const bx=$('mfChips'), ch=bx.children[x]; if(ch) bx.scrollLeft=ch.offsetLeft-(bx.clientWidth-ch.offsetWidth)/2;
+  }
+  function qtyStep(dir){
+    const q=num($('mfQty').value)||0, step=q>=100?10:5;
+    $('mfQty').value=r1(Math.max(1,q+dir*step)); fmPrev();
   }
   function openForm(mode,m,i,pref){
     pref=pref||{};
-    $('mfMeal').innerHTML=MEALS.map(([t],x)=>`<option value="${x}">${esc(t)}</option>`).join('');
+    $('mfChips').innerHTML=MEALS.map(([t,ic],x)=>`<button type="button" class="mf-chip" style="--mc:${mcol(t)[0]};--mt:${mcol(t)[1]}" onclick="BBXMeal.setMeal(${x})">${esc(ic)} ${esc(t)}</button>`).join('');
     fm.mode=mode; fm.serving=pref.serving||0;
+    $('mfInfo').className='mf-info';
     if(mode==='edit'){
       const it=MEALS[m][2][i], q=per100(it);
       fm.m=m; fm.i=i; fm.unitW=it[2]; fm.label=it[1];
-      $('mfTitle').textContent='Modifier le produit'; $('mfOk').textContent='Enregistrer'; $('mfScanBtn').style.display='none';
-      $('mfMeal').value=m; $('mfName').value=it[0]; $('mfEmoji').value=it[7];
-      $('mfKcal').value=r1(q.k); $('mfProt').value=r1(q.p); $('mfUnit').value=it[6]; $('mfQty').value=r1(W(m,i,it));
+      $('mfTitle').textContent='Modifier le produit'; $('mfOk').textContent='Enregistrer'; $('mfQuick').style.display='none';
+      setMeal(m); $('mfName').value=it[0]; $('mfEmoji').value=it[7];
+      $('mfKcal').value=r1(q.k); $('mfProt').value=r1(q.p); $('mfQty').value=r1(W(m,i,it)); setUnit(it[6]);
       $('mfInfo').textContent='';
     }else{
-      $('mfTitle').textContent='Ajouter un produit'; $('mfOk').textContent='Valider'; $('mfScanBtn').style.display='';
-      $('mfMeal').value=(m!=null&&m>=0)?m:($('mfMeal').value||0);
+      $('mfTitle').textContent='Ajouter un produit'; $('mfOk').textContent='Valider'; $('mfQuick').style.display='';
+      setMeal((m!=null&&m>=0)?m:(+$('mfMeal').value||0));
       $('mfName').value=pref.name||''; $('mfEmoji').value=pref.emoji||'';
       $('mfKcal').value=pref.kcal!=null?r1(pref.kcal):''; $('mfProt').value=pref.prot!=null?r1(pref.prot):'';
-      $('mfUnit').value='g'; $('mfQty').value=pref.serving>0?pref.serving:(pref.name?100:'');
+      $('mfQty').value=pref.serving>0?pref.serving:(pref.name?100:''); setUnit('g');
       $('mfInfo').textContent=pref.info||'';
+      if(pref.info) $('mfInfo').className='mf-info ok';
     }
-    fmPrev(); $('mealForm').classList.add('show');
+    fmPrev(); $('mealForm').classList.add('show'); $('mealForm').scrollTop=0;
+    { const bx=$('mfChips'), ch=bx.querySelector('.on'); if(ch) bx.scrollLeft=ch.offsetLeft-(bx.clientWidth-ch.offsetWidth)/2; }
   }
   function saveForm(){
     const name=$('mfName').value.trim(), k=num($('mfKcal').value), p=num($('mfProt').value)||0, q=num($('mfQty').value), unit=$('mfUnit').value, mt=+$('mfMeal').value;
-    const info=t=>{ $('mfInfo').textContent=t; };
+    const info=t=>{ $('mfInfo').textContent=t; $('mfInfo').className='mf-info err'; $('mealForm').scrollTop=0; };
     if(!name) return info('Donne un nom au produit.');
     if(!(k>=0)) return info('Indique les calories pour 100 '+unit+'.');
     if(!(q>0)) return info('Indique la quantité.');
@@ -2834,7 +2895,7 @@ document.addEventListener('click', function(e){
       if(mt===fm.m){ MEALS[mt][2][fm.i]=it; } else { MEALS[fm.m][2].splice(fm.i,1); MEALS[mt][2].push(it); }
       if(wasDone) S.d[MEALS[mt][0]+'|'+nm]=true;
     }else MEALS[mt][2].push(it);
-    $('mealForm').classList.remove('show'); $('mealSearch').classList.remove('show'); refresh();
+    sr.fromForm=false; $('mealForm').classList.remove('show'); $('mealSearch').classList.remove('show'); refresh();
   }
   // --- scanner de code-barres ---
   const sc={stream:null,timer:0,done:false};
@@ -2904,7 +2965,7 @@ document.addEventListener('click', function(e){
     sc.target=(t==='form')?+$('mfMeal').value:t; $('msCode').value=''; $('mealScan').classList.add('show'); st('Démarrage de la caméra…'); startCam();
   }
   const manual=()=>{ const c=$('msCode').value.replace(/\D/g,''); if(c.length<6){ st('Code trop court : tape les chiffres sous le code-barres.'); return; } sc.done=false; onCode(c); };
-  ['mfKcal','mfProt','mfQty'].forEach(id=>$(id).addEventListener('input',fmPrev)); $('mfUnit').addEventListener('change',fmPrev);
+  ['mfKcal','mfProt','mfQty'].forEach(id=>$(id).addEventListener('input',fmPrev));
   // --- menu ＋ sous chaque repas ---
   function addMenu(m){
     document.querySelectorAll('.my-addmenu').forEach(el=>{ if(el.id!=='myam'+m) el.classList.remove('open'); });
@@ -2912,9 +2973,11 @@ document.addEventListener('click', function(e){
     const b=el.parentNode.querySelector('.my-plus'); if(b) b.setAttribute('aria-expanded',String(on));
   }
   // --- recherche de produit ---
-  const sr={target:null,list:[],n:0};
+  const sr={target:null,list:[],n:0,fromForm:false};
+  function closeSearch(){ $('mealSearch').classList.remove('show'); if(sr.fromForm){ sr.fromForm=false; $('mealForm').classList.add('show'); } }
   function srOpen(m){
-    sr.target=(m==null)?0:m; sr.list=[]; sr.n++;
+    sr.fromForm=(m==='form'); if(sr.fromForm) $('mealForm').classList.remove('show');
+    sr.target=(m==='form')?(+$('mfMeal').value||0):((m==null)?0:m); sr.list=[]; sr.n++;
     $('srMeal').textContent='Ajout dans : '+MEALS[sr.target][0];
     $('srList').innerHTML='<div class="sr-note">Tape le nom d’un produit. Tes produits déjà utilisés s’affichent en premier.</div>';
     $('srQ').value=''; $('mealSearch').classList.add('show'); setTimeout(()=>{ try{ $('srQ').focus(); }catch(e){} },150);
@@ -2946,7 +3009,7 @@ document.addEventListener('click', function(e){
     }catch(e){ if(my!==sr.n) return; const w=$('srWait'); if(w) w.remove(); box.insertAdjacentHTML('beforeend','<div class="sr-note">Pas de connexion pour chercher plus de produits.'+(sr.list.length?'':' Ajoute-le à la main.')+'</div>'); }
   }
   function pick(i){
-    const x=sr.list[i]; if(!x) return;
+    const x=sr.list[i]; if(!x) return; sr.fromForm=false;
     openForm('add',sr.target,null,{name:x.name,kcal:x.kcal,prot:x.prot,serving:x.serving,emoji:x.emoji,info:(x.local?'Produit de tes repas.':'Produit Open Food Facts.')+' Vérifie les valeurs, indique la quantité puis valide.'+(x.kcal==null?' Les calories ne sont pas renseignées : complète-les.':'')});
   }
   ['srQ'].forEach(id=>$(id).addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); doSearch(); } }));
@@ -2955,7 +3018,7 @@ document.addEventListener('click', function(e){
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
     scan:scanOpen, closeScan:closeScan, manual:manual,
-    addMenu:addMenu, search:srOpen, closeSearch:()=>$('mealSearch').classList.remove('show'), doSearch:doSearch, pick:pick
+    setMeal:setMeal, unit:setUnit, qty:qtyStep, search:srOpen, closeSearch:closeSearch, doSearch:doSearch, pick:pick
   };
   window.BBXNav={ set:setView, auto:autoView };
   const lg=document.querySelector('.page-header .app-logo'); if(lg) $('mlLogo').src=lg.src;
