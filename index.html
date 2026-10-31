@@ -1239,7 +1239,10 @@ body:has(#progOverlay.show) .nav-pill{ opacity:0; pointer-events:none; }
 .my-ck input:indeterminate + span{ border-color:var(--mc,#E5173A); color:var(--mc,#E5173A); }
 .my-ck input:indeterminate + span::after{ content:"–"; }
 .my-ck.all{ margin-left:2px; }
-.my-edit{ display:none; align-items:center; gap:8px; padding:0 14px 12px 70px; }
+.my-edit{ display:none; align-items:center; flex-wrap:wrap; gap:8px; padding:0 14px 12px 70px; }
+.my-eact{ flex:0 0 100%; display:flex; gap:8px; margin-top:4px; }
+.my-eact button{ flex:1; height:38px; border-radius:12px; border:1px solid #DDE0E6; background:#fff; color:var(--tx); font:800 13px inherit; cursor:pointer; padding:0 6px; }
+.my-eact .del{ border-color:#F5C2CB; color:#C70F2E; }
 .my-it.open .my-edit{ display:flex; }
 .my-it.open .my-row{ padding-bottom:8px; }
 .my-st{ display:flex; align-items:center; gap:2px; background:var(--fl); border-radius:999px; padding:3px; flex:none; }
@@ -2723,7 +2726,8 @@ document.addEventListener('click', function(e){
     $('mlMeals').innerHTML=MEALS.map(([t,ic,items],m)=>`<section class="my-card" style="--mc:${mcol(t)[0]};--mt:${mcol(t)[1]}"><div class="my-mh"><div class="my-mi">${ic}</div><div><b>${t}</b><span id="mymp${m}"></span></div><div class="my-mk"><b id="mymk${m}"></b><small>kcal</small></div><label class="my-ck all" title="Tout cocher"><input type="checkbox" id="mlall${m}" aria-label="Tout cocher : ${t}"><span></span></label></div>`+
       items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
         <div class="my-edit"><div class="my-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="my-u">${it[1]}</span>
-        <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div></div></div>`).join('')+`<div class="my-add"><button class="my-plus" onclick="BBXMeal.addMenu(${m})" aria-label="Ajouter un produit à ${esc(t)}" aria-expanded="false"><span>＋</span> Ajouter un produit</button><div class="my-addmenu" id="myam${m}"><button onclick="BBXMeal.scan(${m})">📷 Scanner</button><button onclick="BBXMeal.search(${m})">🔍 Rechercher</button><button onclick="BBXMeal.add(${m})">✎ Manuel</button></div></div></section>`).join('');
+        <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div>
+        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-plus" onclick="BBXMeal.addMenu(${m})" aria-label="Ajouter un produit à ${esc(t)}" aria-expanded="false"><span>＋</span> Ajouter un produit</button><div class="my-addmenu" id="myam${m}"><button onclick="BBXMeal.scan(${m})">📷 Scanner</button><button onclick="BBXMeal.search(${m})">🔍 Rechercher</button><button onclick="BBXMeal.add(${m})">✎ Manuel</button></div></div></section>`).join('');
     MEALS.forEach(([t,ic,items],m)=>{
       $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; }); calc(); save(); };
       items.forEach((it,i)=>{
