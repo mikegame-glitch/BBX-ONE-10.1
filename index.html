@@ -1452,6 +1452,28 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .ht-it small{ display:block; font-size:11.5px; font-weight:600; color:#6B7280; }
 .ht-it span:last-child, .ht-mr span:last-child{ white-space:nowrap; color:#4B5563; }
 .sr-manual{ display:block; width:100%; margin-top:10px; height:50px; border-radius:14px; border:1.5px dashed #C4C9D2; background:rgba(255,255,255,.7); color:#15171C; font-family:inherit; font-weight:800; font-size:14px; cursor:pointer; padding:0 10px; }
+/* ===== Poids ===== */
+.mw-text{ font-size:15px; font-weight:600; color:#4B5563; line-height:1.45; margin:0 2px 18px; }
+.wg-empty{ font-size:13.5px; font-weight:600; color:#6B7280; line-height:1.5; margin:0 0 12px; }
+.wg-tiles{ display:flex; gap:8px; margin-bottom:10px; }
+.wg-tiles > div{ flex:1; background:#F6F7F9; border-radius:14px; padding:10px 6px; text-align:center; }
+.wg-tiles b{ display:block; font-size:21px; font-weight:900; font-style:italic; line-height:1.1; color:#15171C; }
+.wg-tiles span{ font-size:10.5px; font-weight:700; color:#6B7280; }
+.wg-tiles b.up, .wg-row em.up{ color:#15803D; } .wg-tiles b.down, .wg-row em.down{ color:#C70F2E; }
+.wg-goal{ font-size:13px; font-weight:700; color:#15171C; background:#ECFDF3; border:1px solid #BBF7D0; border-radius:14px; padding:10px 12px; margin-bottom:8px; }
+.wg-goal small{ display:block; margin-top:3px; font-size:11.5px; font-weight:600; color:#4B5563; }
+.wc{ width:100%; height:auto; display:block; margin:4px 0 6px; }
+.wc-grid{ stroke:#ECEEF2; stroke-width:1; } .wc-y{ font-size:10px; font-weight:700; fill:#9CA3AF; text-anchor:end; }
+.wc-goal{ stroke:#16A34A; stroke-width:1.8; stroke-dasharray:5 4; } .wc-gl{ font-size:10px; font-weight:800; fill:#15803D; text-anchor:end; }
+.wc-line{ fill:none; stroke:#E5173A; stroke-width:2.6; stroke-linejoin:round; stroke-linecap:round; }
+.wc-dot{ fill:#fff; stroke:#E5173A; stroke-width:2.2; } .wc-dot.last{ fill:#E5173A; }
+.wc-val{ font-size:12px; font-weight:900; fill:#15171C; text-anchor:middle; } .wc-x{ font-size:10px; font-weight:700; fill:#9CA3AF; text-anchor:middle; }
+.wg-btns{ display:flex; gap:8px; margin:8px 0 4px; }
+.wg-btns button{ flex:1; height:42px; border-radius:12px; border:1.5px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; padding:0 6px; }
+.wg-btns button:first-child{ background:#E5173A; border-color:#E5173A; color:#fff; }
+.wg-row{ display:flex; align-items:center; gap:10px; padding:6px 0; font-size:13px; font-weight:700; color:#4B5563; border-top:1px solid #F1F2F5; }
+.wg-row span{ flex:1; } .wg-row b{ color:#15171C; } .wg-row em{ font-style:normal; width:48px; text-align:right; font-size:12px; }
+.wg-row button{ width:28px; height:28px; border-radius:50%; border:1px solid #E1E4EA; background:#fff; color:#9CA3AF; font-size:11px; cursor:pointer; padding:0; }
 </style>
 </head>
 <body>
@@ -2771,6 +2793,14 @@ document.addEventListener('click', function(e){
   <button class="my-addmeal" onclick="BBXMeal.addMeal()">＋ Ajouter un repas</button>
 </div>
 <div id="mealToast" class="m-toast" role="status"><span id="toastTxt"></span><button id="toastUndo">Annuler</button></div>
+<div id="mealWeigh" class="mc-ov mc-sheet" style="z-index:9400" aria-label="Poids">
+  <div class="mc-head"><b id="mwTitle">Pesée du lundi</b><button class="mc-x" onclick="BBXMeal.closeWeigh(true)" aria-label="Fermer">✕</button></div>
+  <div class="mw-text" id="mwText"></div>
+  <div class="mf-qty"><button type="button" onclick="BBXMeal.wstep(-0.1)" aria-label="Moins 100 g">−</button><div class="mf-in big"><input id="mwInput" type="text" inputmode="decimal" placeholder="0,0" aria-label="Poids en kg"><i>kg</i></div><button type="button" onclick="BBXMeal.wstep(0.1)" aria-label="Plus 100 g">+</button></div>
+  <label class="mf-l" id="mwDateRow" style="margin-top:14px"><span style="font-size:13px;font-weight:700;color:#4B5563;text-transform:none;letter-spacing:0">Date de la pesée</span><input type="date" id="mwDate"></label>
+  <div class="mf-info err" id="mwInfo"></div>
+  <div class="mf-btns" style="margin-top:14px"><button class="mc-big red" id="mwOk" onclick="BBXMeal.saveWeigh()">Enregistrer</button><button class="mc-big" id="mwLater" onclick="BBXMeal.closeWeigh(true)">Plus tard</button></div>
+</div>
 <div id="mealHist" class="mc-ov" aria-label="Suivi">
   <div class="mc-head"><b>Suivi</b><button class="mc-x" onclick="BBXMeal.closeHist()" aria-label="Fermer">✕</button></div>
   <div class="ht-seg" id="htSeg"><button type="button" data-n="7" class="on">7 jours</button><button type="button" data-n="30">30 jours</button></div>
@@ -3473,10 +3503,10 @@ document.addEventListener('click', function(e){
     for(let i=htN-1;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i); const k=dkey(d); days.push({k:k,d:d,h:HIST[k]||null}); }
     const have=days.filter(x=>x.h);
     [...$('htSeg').children].forEach(b=>b.classList.toggle('on',+b.dataset.n===htN));
-    if(!have.length){ $('htBody').innerHTML='<div class="ht-empty">Pas encore d’historique.<br>Chaque jour est enregistré automatiquement dès que tu coches ce que tu as mangé : reviens ici demain pour voir ta progression.</div>'; return; }
+    if(!have.length){ $('htBody').innerHTML=weightHTML()+'<div class="ht-empty">Pas encore d’historique.<br>Chaque jour est enregistré automatiquement dès que tu coches ce que tu as mangé : reviens ici demain pour voir ta progression.</div>'; return; }
     const avg=f=>have.reduce((a,x)=>a+x.h[f],0)/have.length;
     const okK=have.filter(x=>x.h.k>=x.h.kg*0.95).length, okP=have.filter(x=>x.h.p>=x.h.pg*0.95).length;
-    let h=`<div class="ht-tiles"><div><b>${r(avg('k'))}</b><span>kcal / jour</span></div><div><b>${r(avg('p'))}</b><span>g prot. / jour</span></div><div><b>${have.length}/${days.length}</b><span>jours suivis</span></div></div>`;
+    let h=weightHTML()+`<div class="ht-tiles"><div><b>${r(avg('k'))}</b><span>kcal / jour</span></div><div><b>${r(avg('p'))}</b><span>g prot. / jour</span></div><div><b>${have.length}/${days.length}</b><span>jours suivis</span></div></div>`;
     h+=`<div class="ht-ok"><span>🔥 Calories atteintes <b>${okK}/${have.length}</b></span><span>💪 Protéines atteintes <b>${okP}/${have.length}</b></span></div>`;
     h+=barsHTML(days,'k',S.kg,'Calories','#E5173A','kcal')+barsHTML(days,'p',S.pg,'Protéines','#F59E0B','g');
     h+='<div class="ht-sec">Jour par jour</div>';
@@ -3496,11 +3526,89 @@ document.addEventListener('click', function(e){
   function histDay(k){ htOpen[k]=!htOpen[k]; renderHist(); }
   function clearHist(){ if(!confirm('Effacer tout l’historique des jours ?')) return; HIST={}; saveHist(); recordTodayNow(); renderHist(); }
   function recordTodayNow(){ calc(); }
+  // ---------- poids : pesée du lundi, évolution par semaine, objectif ----------
+  const WKEY='bb9-weight';
+  let WT={log:{},goal:null};
+  try{ const x=JSON.parse(localStorage.getItem(WKEY)||'null'); if(x&&typeof x==='object'){ WT.log=x.log||{}; WT.goal=x.goal||null; } }catch(e){}
+  const saveWT=()=>{ try{ localStorage.setItem(WKEY,JSON.stringify(WT)); }catch(e){} };
+  const fk=v=>String(Math.round(v*10)/10).replace('.',',');
+  const fd=k=>{ const a=k.split('-'); return new Date(+a[0],+a[1]-1,+a[2]); };
+  const monday=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));
+  const weekIdx=d=>Math.round(monday(d).getTime()/604800000);
+  const shortDate=k=>fd(k).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  function wtChart(pts){
+    const goal=WT.goal, vals=pts.map(p=>p.kg).concat(goal?[goal]:[]);
+    let lo=Math.min(...vals), hi=Math.max(...vals); if(hi-lo<2){ const m=(hi+lo)/2; lo=m-1; hi=m+1; } lo-=0.5; hi+=0.5;
+    const W=340,H=176,pl=38,pr=14,pt=16,pb=28,w=W-pl-pr,h=H-pt-pb, w0=pts[0].wk, span=Math.max(1,pts[pts.length-1].wk-w0);
+    const X=wk=>pl+(pts.length===1?w/2:(wk-w0)/span*w), Y=v=>pt+(1-(v-lo)/(hi-lo))*h;
+    let g=''; for(let i=0;i<4;i++){ const v=lo+(hi-lo)*i/3, y=Y(v); g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" class="wc-grid"/><text x="${pl-6}" y="${y+4}" class="wc-y">${fk(v)}</text>`; }
+    if(goal) g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(goal)}" y2="${Y(goal)}" class="wc-goal"/><text x="${W-pr}" y="${Y(goal)-5}" class="wc-gl">Objectif ${fk(goal)}</text>`;
+    const line=pts.map(p=>X(p.wk)+','+Y(p.kg)).join(' ');
+    g+=(pts.length>1?`<polyline points="${line}" class="wc-line"/>`:'')+pts.map((p,i)=>`<circle cx="${X(p.wk)}" cy="${Y(p.kg)}" r="${i===pts.length-1?5:3.5}" class="wc-dot${i===pts.length-1?' last':''}"/>`).join('');
+    const lp=pts[pts.length-1]; g+=`<text x="${Math.min(W-pr-16,X(lp.wk))}" y="${Y(lp.kg)-10}" class="wc-val">${fk(lp.kg)}</text>`;
+    const xs=pts.length<=4?pts:[pts[0],pts[Math.floor(pts.length/2)],lp];
+    g+=xs.map(p=>`<text x="${X(p.wk)}" y="${H-8}" class="wc-x">${shortDate(p.k)}</text>`).join('');
+    return `<svg viewBox="0 0 ${W} ${H}" class="wc" role="img" aria-label="Évolution du poids par semaine">${g}</svg>`;
+  }
+  function weightHTML(){
+    const L=Object.keys(WT.log).sort().map(k=>({k:k,kg:WT.log[k]}));
+    const btns='<div class="wg-btns"><button onclick="BBXMeal.addWeigh()">＋ Ajouter une pesée</button><button onclick="BBXMeal.goalWeigh()">🎯 Objectif'+(WT.goal?' : '+fk(WT.goal)+' kg':'')+'</button></div>';
+    if(!L.length) return '<div class="ht-card wg"><div class="ht-title" style="margin-bottom:10px">⚖️ Poids<small>'+(WT.goal?'objectif '+fk(WT.goal)+' kg':'')+'</small></div><div class="wg-empty">Pas encore de pesée. Chaque lundi, l’appli te demande ton poids : l’évolution s’affichera ici semaine après semaine. Tu peux aussi en ajouter une maintenant.</div>'+btns+'</div>';
+    const last=L[L.length-1], prev=L.length>1?L[L.length-2]:null, first=L[0];
+    const wk={}; L.forEach(x=>{ wk[weekIdx(fd(x.k))]={wk:weekIdx(fd(x.k)),kg:x.kg,k:x.k}; });
+    const pts=Object.keys(wk).map(Number).sort((a,b)=>a-b).slice(-12).map(i=>wk[i]);
+    const sgn=v=>(v>0?'+':v<0?'−':'')+fk(Math.abs(v));
+    let t='<div class="wg-tiles"><div><b>'+fk(last.kg)+'</b><span>kg · '+shortDate(last.k)+'</span></div>';
+    t+='<div><b class="'+(prev?(last.kg-prev.kg>0?'up':last.kg-prev.kg<0?'down':''):'')+'">'+(prev?sgn(last.kg-prev.kg):'–')+'</b><span>kg vs avant</span></div>';
+    t+='<div><b>'+(L.length>1?sgn(last.kg-first.kg):'–')+'</b><span>kg depuis le début</span></div></div>';
+    let goalTxt='';
+    if(WT.goal){
+      const rest=WT.goal-last.kg, reached=Math.abs(rest)<0.05;
+      goalTxt='<div class="wg-goal">'+(reached?'🎯 Objectif atteint ! ('+fk(WT.goal)+' kg)':'🎯 Objectif <b>'+fk(WT.goal)+' kg</b> · reste <b>'+fk(Math.abs(rest))+' kg</b> à '+(rest>0?'prendre':'perdre'));
+      const weeks=weekIdx(fd(last.k))-weekIdx(fd(first.k));
+      if(!reached&&weeks>=3){ const rate=(last.kg-first.kg)/weeks; if(rate!==0&&Math.sign(rate)===Math.sign(rest)){ const need=Math.ceil(Math.abs(rest/rate)); goalTxt+='<small>Au rythme actuel ('+(rate>0?'+':'−')+fk(Math.abs(rate))+' kg/semaine) : environ '+need+' semaine'+(need>1?'s':'')+' (estimation).</small>'; } else goalTxt+='<small>Au rythme actuel, tu t’éloignes de l’objectif.</small>'; }
+      goalTxt+='</div>';
+    }
+    const rows=L.slice(-8).reverse().map((x,i,arr)=>{ const pv=L[L.length-1-i-1]; const dl=pv?x.kg-pv.kg:null;
+      return `<div class="wg-row"><span>${fd(x.k).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}</span><b>${fk(x.kg)} kg</b><em class="${dl>0?'up':dl<0?'down':''}">${dl==null?'':sgn(dl)}</em><button onclick="BBXMeal.delWeigh('${x.k}')" aria-label="Supprimer cette pesée">✕</button></div>`; }).join('');
+    return '<div class="ht-card wg"><div class="ht-title" style="margin-bottom:12px">⚖️ Poids<small>par semaine</small></div>'+t+goalTxt+wtChart(pts)+btns+'<div class="ht-sub">Dernières pesées</div>'+rows+'</div>';
+  }
+  const mw={mode:'monday'}; let weighSkip=0;
+  function openWeigh(mode){
+    mw.mode=mode; const L=Object.keys(WT.log).sort(), last=L.length?WT.log[L[L.length-1]]:null;
+    $('mwInfo').textContent=''; $('mwDateRow').style.display=mode==='add'?'block':'none'; $('mwLater').textContent=mode==='monday'?'Plus tard':'Annuler';
+    if(mode==='goal'){ $('mwTitle').textContent='Objectif de poids'; $('mwText').textContent=WT.goal?'Ton objectif actuel : '+fk(WT.goal)+' kg.':'Quel poids veux-tu atteindre ?'; $('mwInput').value=WT.goal?fk(WT.goal):(last?fk(last):''); $('mwOk').textContent='Enregistrer l’objectif'; }
+    else{
+      $('mwTitle').textContent=mode==='monday'?'⚖️ Pesée du lundi':'Ajouter une pesée';
+      $('mwText').textContent=(mode==='monday'?'C’est lundi : quel est ton poids ce matin ?':'Quel poids veux-tu enregistrer ?')+(last!=null?' Dernière pesée : '+fk(last)+' kg ('+shortDate(L[L.length-1])+').':'');
+      $('mwInput').value=last!=null?fk(last):''; $('mwDate').value=dkey(new Date()); $('mwDate').max=dkey(new Date()); $('mwOk').textContent='Enregistrer';
+    }
+    $('mealWeigh').classList.add('show'); setTimeout(()=>{ try{ $('mwInput').focus(); $('mwInput').select(); }catch(e){} },250);
+  }
+  function closeWeigh(skip){ $('mealWeigh').classList.remove('show'); if(skip&&mw.mode==='monday') weighSkip=Date.now(); }
+  function saveWeigh(){
+    const v=num($('mwInput').value);
+    if(!(v>=20&&v<=400)){ $('mwInfo').textContent='Indique un poids valide, en kg.'; return; }
+    const kg=Math.round(v*10)/10;
+    if(mw.mode==='goal') WT.goal=kg; else WT.log[mw.mode==='monday'?dkey(new Date()):($('mwDate').value||dkey(new Date()))]=kg;
+    saveWT(); $('mealWeigh').classList.remove('show'); if($('mealHist').classList.contains('show')) renderHist();
+  }
+  function wstep(d){ const v=num($('mwInput').value); $('mwInput').value=fk(Math.max(20,Math.round(((isNaN(v)?70:v)+d)*10)/10)); }
+  function delWeigh(k){ if(!confirm('Supprimer la pesée du '+shortDate(k)+' ?')) return; delete WT.log[k]; saveWT(); renderHist(); }
+  // tous les lundis : demander le poids tant qu'il n'est pas saisi
+  function checkMonday(){
+    const now=new Date(); if(now.getDay()!==1) return;
+    if(WT.log[dkey(now)]!=null||$('mealWeigh').classList.contains('show')||Date.now()-weighSkip<2*3600*1000) return;
+    openWeigh('monday');
+  }
+  setTimeout(checkMonday,1200);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(checkMonday,600); });
   window.BBXMeal={
     openCfg:()=>{ renderCfg(); $('mealCfg').classList.add('show'); }, closeCfg:()=>$('mealCfg').classList.remove('show'),
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
     scan:scanOpen, closeScan:closeScan, manual:manual, scanMode:setScanMode, photoMode:photoMode,
+    addWeigh:()=>openWeigh('add'), goalWeigh:()=>openWeigh('goal'), saveWeigh:saveWeigh, closeWeigh:closeWeigh, wstep:wstep, delWeigh:delWeigh,
     openHist:openHist, closeHist:()=>$('mealHist').classList.remove('show'), histDay:histDay, clearHist:clearHist,
     addMeal:()=>openName('add'), renameMeal:m=>openName('edit',m), saveName:saveName, closeName:()=>$('mealName').classList.remove('show'), delMeal:delMeal,
     addTyped:addTyped, setMeal:setMeal, unit:setUnit, qty:qtyStep, units:setQtyUnits, portion:setPortion, favDel:favDel, search:srOpen, closeSearch:closeSearch, doSearch:doSearch, pick:pick
