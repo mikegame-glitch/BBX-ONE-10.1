@@ -1409,6 +1409,8 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
   transform:translateY(24px); opacity:0; pointer-events:none; transition:transform .2s, opacity .2s; }
 .m-toast.show{ transform:none; opacity:1; pointer-events:auto; }
 .m-toast button{ background:none; border:0; color:#FF6B7A; font-family:inherit; font-weight:800; font-size:14px; cursor:pointer; padding:6px 4px; }
+.mc-seg{ margin:0 0 14px; } .mc-seg > span{ display:block; font-size:13px; font-weight:700; color:#4B5563; margin:0 2px 6px; }
+.ms-link{ display:block; width:100%; background:none; border:0; color:#fff; opacity:.85; text-decoration:underline; font-family:inherit; font-weight:700; font-size:13px; margin:-2px 0 12px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -2735,6 +2737,7 @@ document.addEventListener('click', function(e){
     <button class="mc-big" onclick="BBXMeal.search(null)">🔍 Rechercher un produit</button>
     <button class="mc-big" onclick="BBXMeal.add(null)">＋ Ajouter à la main</button>
   </div>
+  <div class="mc-seg"><span>Scanner un code-barres avec :</span><div class="mf-seg" id="mcSm"><button type="button" data-sm="live" onclick="BBXMeal.scanMode('live')">Caméra en direct</button><button type="button" data-sm="photo" onclick="BBXMeal.scanMode('photo')">Photo (sans autorisation)</button></div></div>
   <div class="mc-hint">Change les produits de chaque repas : ▲▼ pour l’ordre, ✎ pour modifier ou changer de repas, 🗑 pour supprimer.</div>
   <div id="mcList"></div>
   <button class="mc-big" style="margin-top:6px" onclick="BBXMeal.addMeal()">＋ Ajouter un repas</button>
@@ -2777,7 +2780,7 @@ document.addEventListener('click', function(e){
   <video id="msVideo" playsinline muted></video>
   <div class="ms-frame"><i></i></div>
   <div class="ms-top"><b>Scanner un code-barres</b><button onclick="BBXMeal.closeScan()" aria-label="Fermer">✕</button></div>
-  <div class="ms-bot"><div id="msStatus">Démarrage de la caméra…</div><button class="ms-photo" onclick="document.getElementById('msFile').click()">📷 Prendre une photo du code-barres</button><input type="file" id="msFile" accept="image/*" capture="environment" hidden><div class="ms-row"><input id="msCode" type="text" inputmode="numeric" placeholder="Ou tape le code-barres"><button onclick="BBXMeal.manual()">OK</button></div></div>
+  <div class="ms-bot"><div id="msStatus">Démarrage de la caméra…</div><button class="ms-photo" onclick="document.getElementById('msFile').click()">📷 Prendre une photo du code-barres</button><button class="ms-link" onclick="BBXMeal.photoMode()">Toujours utiliser la photo (plus d’autorisation)</button><input type="file" id="msFile" accept="image/*" capture="environment" hidden><div class="ms-row"><input id="msCode" type="text" inputmode="numeric" placeholder="Ou tape le code-barres"><button onclick="BBXMeal.manual()">OK</button></div></div>
 </div>
 <div class="nav-pill" role="tablist" aria-label="Navigation">
   <button id="navSport" class="on" onclick="BBXNav.set('sport')" role="tab" aria-label="Sport"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Sport</button>
@@ -2978,7 +2981,7 @@ document.addEventListener('click', function(e){
   // --- scanner de code-barres ---
   const sc={stream:null,timer:0,done:false};
   const st=t=>{ $('msStatus').textContent=t; };
-  // La caméra n'est demandée qu'une fois : on garde l'accès (image coupée) pendant 90 s après un scan, puis on le libère.
+  // La caméra n'est demandée qu'une fois : on garde l'accès (image coupée) 10 min après un scan, ou jusqu'à la fermeture de l'appli.
   const cam={stream:null,idle:0};
   function releaseCam(){ clearTimeout(cam.idle); if(cam.stream){ cam.stream.getTracks().forEach(t=>t.stop()); cam.stream=null; } }
   async function getCam(){
@@ -2989,7 +2992,7 @@ document.addEventListener('click', function(e){
   }
   function stopCam(){
     clearInterval(sc.timer); sc.timer=0; const v=$('msVideo'); try{ v.srcObject=null; }catch(e){}
-    if(cam.stream){ cam.stream.getVideoTracks().forEach(t=>{ t.enabled=false; }); clearTimeout(cam.idle); cam.idle=setTimeout(releaseCam,90000); }
+    if(cam.stream){ cam.stream.getVideoTracks().forEach(t=>{ t.enabled=false; }); clearTimeout(cam.idle); cam.idle=setTimeout(releaseCam,600000); }
   }
   function closeScan(){ stopCam(); $('mealScan').classList.remove('show'); }
   function loadZX(){
@@ -3024,10 +3027,15 @@ document.addEventListener('click', function(e){
   }
   $('msFile').addEventListener('change',async e=>{
     const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return;
-    st('Lecture de la photo…');
+    $('mealScan').classList.add('show'); st('Lecture de la photo…');
     let code=null; try{ code=await decodeImage(f); }catch(err){}
-    if(code){ stopCam(); sc.done=false; onCode(code); } else st('Code-barres non lu. Rapproche-toi, évite les reflets, ou tape le code ci-dessous.');
+    if(code){ stopCam(); sc.done=false; onCode(code); } else{ $('mealScan').classList.add('show'); st('Code-barres non lu. Rapproche-toi, évite les reflets, ou tape le code ci-dessous.'); }
   });
+  const SCANKEY='bb9-scanmode'; let scanMode='live';
+  try{ scanMode=localStorage.getItem(SCANKEY)==='photo'?'photo':'live'; }catch(e){}
+  function renderScanMode(){ document.querySelectorAll('#mcSm [data-sm]').forEach(b=>b.classList.toggle('on',b.dataset.sm===scanMode)); }
+  function setScanMode(m){ scanMode=m==='photo'?'photo':'live'; try{ localStorage.setItem(SCANKEY,scanMode); }catch(e){} if(scanMode==='photo') releaseCam(); renderScanMode(); }
+  function photoMode(){ setScanMode('photo'); stopCam(); $('msFile').click(); }
   async function startCam(){
     stopCam(); sc.done=false;
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ st('Caméra indisponible ici. Tape le code-barres ci-dessous.'); return; }
@@ -3074,7 +3082,9 @@ document.addEventListener('click', function(e){
     }
   }
   function scanOpen(t){
-    sc.target=(t==='form')?+$('mfMeal').value:t; $('msCode').value=''; $('mealScan').classList.add('show'); st('Démarrage de la caméra…'); startCam();
+    sc.target=(t==='form')?+$('mfMeal').value:t; $('msCode').value=''; sc.done=false;
+    if(scanMode==='photo'){ $('msFile').click(); return; }      // mode photo : appareil photo du téléphone, aucune autorisation
+    $('mealScan').classList.add('show'); st('Démarrage de la caméra…'); startCam();
   }
   const manual=()=>{ const c=$('msCode').value.replace(/\D/g,''); if(c.length<6){ st('Code trop court : tape les chiffres sous le code-barres.'); return; } sc.done=false; onCode(c); };
   ['mfKcal','mfProt','mfQty'].forEach(id=>$(id).addEventListener('input',fmPrev));
@@ -3240,7 +3250,7 @@ document.addEventListener('click', function(e){
   }
   $('srQ').addEventListener('input',liveSearch);
   $('srQ').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); doSearch(); } });
-  window.addEventListener('pagehide',releaseCam);
+  window.addEventListener('pagehide',releaseCam); renderScanMode();
   // ---------- repas : créer / renommer / supprimer / déplacer ----------
   const mn={mode:'add',m:0};
   function openName(mode,m){
@@ -3368,7 +3378,7 @@ document.addEventListener('click', function(e){
     openCfg:()=>{ renderCfg(); $('mealCfg').classList.add('show'); }, closeCfg:()=>$('mealCfg').classList.remove('show'),
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
-    scan:scanOpen, closeScan:closeScan, manual:manual,
+    scan:scanOpen, closeScan:closeScan, manual:manual, scanMode:setScanMode, photoMode:photoMode,
     addMeal:()=>openName('add'), renameMeal:m=>openName('edit',m), saveName:saveName, closeName:()=>$('mealName').classList.remove('show'), delMeal:delMeal,
     setMeal:setMeal, unit:setUnit, qty:qtyStep, units:setQtyUnits, portion:setPortion, favDel:favDel, search:srOpen, closeSearch:closeSearch, doSearch:doSearch, pick:pick
   };
