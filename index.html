@@ -1395,6 +1395,20 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 #mealView.drag-on{ -webkit-user-select:none; user-select:none; }
 .mc-sm{ width:34px; height:34px; border-radius:50%; border:1px solid #DDE0E6; background:#fff; font-size:14px; cursor:pointer; padding:0; margin-right:2px; }
 .mc-sm.del{ border-color:#F5C2CB; }
+.mf-units button.wide{ flex:1 1 45%; }
+.mf-units span b{ color:#15171C; }
+/* ===== Balayer pour supprimer ===== */
+.my-it{ position:relative; overflow:hidden; background:var(--cd); }
+.my-it::before{ content:"🗑  Supprimer"; position:absolute; inset:0; display:flex; align-items:center; padding-left:20px; font-weight:800; font-size:14px; color:#fff; background:#E5173A; opacity:0; transition:opacity .1s, background .1s; }
+.my-it.swiping::before{ opacity:1; }
+.my-it.armed::before{ background:#B91C1C; }
+.my-row{ position:relative; z-index:1; background:var(--cd); touch-action:pan-y; }
+.my-edit{ position:relative; z-index:1; background:var(--cd); }
+.m-toast{ position:fixed; z-index:9050; left:16px; right:16px; bottom:calc(88px + env(safe-area-inset-bottom,0px)); display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px 14px 12px 16px; border-radius:16px; background:#15171C; color:#fff; font-size:14px; font-weight:700; box-shadow:0 14px 30px -10px rgba(0,0,0,.6);
+  transform:translateY(24px); opacity:0; pointer-events:none; transition:transform .2s, opacity .2s; }
+.m-toast.show{ transform:none; opacity:1; pointer-events:auto; }
+.m-toast button{ background:none; border:0; color:#FF6B7A; font-family:inherit; font-weight:800; font-size:14px; cursor:pointer; padding:6px 4px; }
 </style>
 </head>
 <body>
@@ -2709,10 +2723,11 @@ document.addEventListener('click', function(e){
     </div>
     <div class="my-plan" id="myPlan"></div>
   </div>
-  <div class="my-hint">Touche un aliment pour modifier sa quantité. Maintiens le titre d’un repas appuyé pour le déplacer.</div>
+  <div class="my-hint">Touche un produit pour modifier sa quantité, balaie-le vers la droite pour le supprimer. Maintiens le titre d’un repas appuyé pour le déplacer.</div>
   <div id="mlMeals"></div>
   <button class="my-addmeal" onclick="BBXMeal.addMeal()">＋ Ajouter un repas</button>
 </div>
+<div id="mealToast" class="m-toast" role="status"><span id="toastTxt"></span><button id="toastUndo">Annuler</button></div>
 <div id="mealCfg" class="mc-ov" aria-label="Réglages Meal">
   <div class="mc-head"><b>Réglages Meal</b><button class="mc-x" onclick="BBXMeal.closeCfg()" aria-label="Fermer">✕</button></div>
   <div class="mc-add">
@@ -2825,7 +2840,7 @@ document.addEventListener('click', function(e){
         w.oninput=()=>{ const n=Math.max(0,parseFloat(w.value)||0); S.w[key(m,i)]=n; c.value=r2(n/it[2]); calc(); save(); };
         c.parentNode.querySelectorAll('button').forEach(b=>b.onclick=()=>setN((parseFloat(c.value)||0)+step*b.dataset.d));
         $('mlk'+m+'-'+i).onchange=e=>{ S.d[key(m,i)]=e.target.checked; calc(); save(); };
-        $('myit'+m+'-'+i).querySelector('.my-row').onclick=e=>{ if(e.target.closest('label')) return; $('myit'+m+'-'+i).classList.toggle('open'); };
+        $('myit'+m+'-'+i).querySelector('.my-row').onclick=e=>{ if(e.target.closest('label')||Date.now()-lastSwipe<450) return; $('myit'+m+'-'+i).classList.toggle('open'); };
       });
     });
     $('mlKg').value=S.kg; $('mlPg').value=S.pg;
@@ -2884,12 +2899,18 @@ document.addEventListener('click', function(e){
     const k=num($('mfKcal').value), p=num($('mfProt').value), q=num($('mfQty').value), u=$('mfUnit').value;
     $('mfPrev').innerHTML=(q>0&&k>=0)?('<b>'+r(k*q/100)+'</b> kcal &nbsp;·&nbsp; <b>'+r1((p>=0?p:0)*q/100)+'</b> g de protéines<small>pour '+r1(q)+' '+u+'</small>'):'<small>Indique les calories et la quantité pour voir le total</small>';
   }
+  function syncPortions(){ const d=fm.portions&&fm.portions[0]; fm.serving=d?d.g:0; fm.newLabel=d?d.label:''; }
   function renderUnits(){
-    const box=$('mfUnits'), lbl=fm.mode==='edit'?fm.label:fm.newLabel, w=fm.serving;
-    if(!(w>0)||!lbl||/^portion de /.test(lbl)){ box.style.display='none'; box.innerHTML=''; return; }
+    const box=$('mfUnits'), P=fm.portions||[], d=P[0];
+    if(!d){ box.style.display='none'; box.innerHTML=''; return; }
+    const u=$('mfUnit').value;
     box.style.display='flex';
-    box.innerHTML='<span>Poids moyen : 1 '+esc(lbl)+' ≈ '+r(w)+' '+$('mfUnit').value+' (modifiable)</span>'+[0.5,1,2,3,4].map(n=>`<button type="button" onclick="BBXMeal.units(${n})">${n===0.5?'½':'×'+n}</button>`).join('');
+    let h='<span>Portion la plus courante : <b>1 '+esc(d.label)+' ≈ '+r(d.g)+' '+u+'</b> (modifiable)</span>'+[0.5,1,2,3,4].map(n=>`<button type="button" onclick="BBXMeal.units(${n})">${n===0.5?'½':'×'+n}</button>`).join('');
+    if(P.length>1) h+='<span>Autres portions</span>'+P.slice(1).map((q,i)=>`<button type="button" class="wide" onclick="BBXMeal.portion(${i+1})">1 ${esc(q.label)} · ${r(q.g)} ${u}</button>`).join('');
+    box.innerHTML=h;
   }
+  function setPortion(i){ const q=fm.portions&&fm.portions[i]; if(!q) return; $('mfQty').value=r1(q.g); fmPrev(); }
+  function autoQty(){ const d=fm.portions&&fm.portions[0], cur=$('mfQty').value.trim(); if(d&&(cur===''||cur===String(fm.lastAuto))){ fm.lastAuto=r1(d.g); $('mfQty').value=fm.lastAuto; fmPrev(); } }
   function setQtyUnits(n){ $('mfQty').value=r1(n*fm.serving); fmPrev(); }
   function setUnit(u){
     $('mfUnit').value=u; $('mfU').textContent=u; $('mfQu').textContent=u;
@@ -2913,7 +2934,7 @@ document.addEventListener('click', function(e){
     $('mfInfo').className='mf-info';
     if(mode==='edit'){
       const it=MEALS[m][2][i], q=per100(it);
-      fm.m=m; fm.i=i; fm.unitW=it[2]; fm.label=it[1]; fm.serving=it[2]; fm.newLabel='';
+      fm.m=m; fm.i=i; fm.unitW=it[2]; fm.label=it[1]; fm.fixed=true; fm.portions=mergePortions(it[2]>0?{label:it[1],g:it[2]}:null,(FAV.find(f=>normS(f.name)===normS(it[0]))||{}).portions,it[0]); syncPortions();
       $('mfTitle').textContent='Modifier le produit'; $('mfOk').textContent='Enregistrer'; $('mfQuick').style.display='none';
       setMeal(m); $('mfName').value=it[0]; $('mfEmoji').value=it[7];
       $('mfKcal').value=r1(q.k); $('mfProt').value=r1(q.p); $('mfQty').value=r1(W(m,i,it)); setUnit(it[6]);
@@ -2923,7 +2944,10 @@ document.addEventListener('click', function(e){
       setMeal((m!=null&&m>=0)?m:(+$('mfMeal').value||0));
       $('mfName').value=pref.name||''; $('mfEmoji').value=pref.emoji||'';
       $('mfKcal').value=pref.kcal!=null?r1(pref.kcal):''; $('mfProt').value=pref.prot!=null?r1(pref.prot):'';
-      fm.newLabel=pref.label||''; $('mfQty').value=pref.serving>0?pref.serving:(pref.name?100:''); setUnit(pref.unit||'g');
+      { let P=pref.portions; if(!P||!P.length) P=pref.serving>0?[{label:(pref.label||'portion'),g:pref.serving}]:[];
+      fm.fixed=!!(pref.portions&&pref.portions.length); fm.portions=mergePortions(P[0],P.slice(1),pref.name||''); syncPortions();
+      fm.lastAuto=fm.serving>0?r1(fm.serving):''; }
+    $('mfQty').value=fm.serving>0?r1(fm.serving):(pref.name?100:''); setUnit(pref.unit||'g');
       $('mfInfo').textContent=pref.info||'';
       if(pref.info) $('mfInfo').className='mf-info ok';
     }
@@ -2943,12 +2967,12 @@ document.addEventListener('click', function(e){
     const unitW=edit?fm.unitW:(fm.serving>0?fm.serving:100);
     const label=edit?fm.label:(fm.serving>0?(fm.newLabel||'portion'):'portion de 100 '+unit);
     const it=[nm,label,unitW,q/unitW,k*q/100,p*q/100,unit,emoji];
-    upsertFav(it);
+    upsertFav(it,fm.portions);
     if(edit){
       const wasDone=!!S.d[key(fm.m,fm.i)]; dropState(fm.m,fm.i);
       if(mt===fm.m){ MEALS[mt][2][fm.i]=it; } else { MEALS[fm.m][2].splice(fm.i,1); MEALS[mt][2].push(it); }
       if(wasDone) S.d[MEALS[mt][0]+'|'+nm]=true;
-    }else MEALS[mt][2].push(it);
+    }else{ MEALS[mt][2].push(it); S.d[MEALS[mt][0]+'|'+nm]=true; }
     sr.fromForm=false; $('mealForm').classList.remove('show'); $('mealSearch').classList.remove('show'); refresh();
   }
   // --- scanner de code-barres ---
@@ -3024,14 +3048,15 @@ document.addEventListener('click', function(e){
   async function lookup(code){
     try{
       const ctrl=new AbortController(), to=setTimeout(()=>ctrl.abort(),9000);
-      const resp=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=product_name,product_name_fr,brands,nutriments,serving_quantity',{signal:ctrl.signal});
+      const resp=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=product_name,product_name_fr,brands,nutriments,serving_quantity,serving_size,product_quantity',{signal:ctrl.signal});
       clearTimeout(to);
       const j=await resp.json();
       if(!j||j.status!==1||!j.product) return {found:false,reason:'nf'};
       const pr=j.product, n=pr.nutriments||{};
       let kcal=n['energy-kcal_100g']; if(kcal==null&&n['energy_100g']!=null) kcal=n['energy_100g']/4.184;
       const nm=(pr.product_name_fr||pr.product_name||'').trim(), br=(pr.brands||'').split(',')[0].trim();
-      return {found:true,name:nm+(br&&nm.toLowerCase().indexOf(br.toLowerCase())<0?' ('+br+')':''),kcal:kcal,prot:n.proteins_100g,serving:parseFloat(pr.serving_quantity)||0};
+      const full=nm+(br&&nm.toLowerCase().indexOf(br.toLowerCase())<0?' ('+br+')':''), P=offPortions(pr,full);
+      return {found:true,name:full,kcal:kcal,prot:n.proteins_100g,serving:P[0]?P[0].g:0,label:P[0]?P[0].label:'',portions:P};
     }catch(e){ return {found:false,reason:'net'}; }
   }
   async function onCode(raw){
@@ -3042,7 +3067,7 @@ document.addEventListener('click', function(e){
     const target=sc.target;
     closeScan();
     if(res.found){
-      openForm('add',target,null,{name:res.name,kcal:res.kcal,prot:res.prot,serving:res.serving,label:res.serving>0?'portion':'',emoji:'🛒',
+      openForm('add',target,null,{name:res.name,kcal:res.kcal,prot:res.prot,serving:res.serving,label:res.label,portions:res.portions,emoji:'🛒',
         info:'Produit trouvé (code '+code+'). Vérifie les valeurs, indique la quantité puis valide.'+(res.kcal==null?' Les calories ne sont pas renseignées : complète-les.':'')});
     }else{
       openForm('add',target,null,{name:'',info:(res.reason==='net'?'Pas de connexion pour chercher le produit':'Produit introuvable')+' (code '+code+') : renseigne-le à la main.'});
@@ -3053,6 +3078,7 @@ document.addEventListener('click', function(e){
   }
   const manual=()=>{ const c=$('msCode').value.replace(/\D/g,''); if(c.length<6){ st('Code trop court : tape les chiffres sous le code-barres.'); return; } sc.done=false; onCode(c); };
   ['mfKcal','mfProt','mfQty'].forEach(id=>$(id).addEventListener('input',fmPrev));
+  $('mfName').addEventListener('input',()=>{ if(fm.mode!=='add'||fm.fixed) return; fm.portions=mergePortions(null,[],$('mfName').value); syncPortions(); renderUnits(); autoQty(); });
   // --- menu ＋ sous chaque repas ---
   function addMenu(m){
     document.querySelectorAll('.my-addmenu').forEach(el=>{ if(el.id!=='myam'+m) el.classList.remove('open'); });
@@ -3071,11 +3097,11 @@ document.addEventListener('click', function(e){
   }
   // ---------- aliments courants (poids moyens, valeurs cuites) + mes produits ----------
   // nom | mots-clés | kcal/100 | prot/100 | emoji | poids moyen (g) | unité (ex. clémentine) | g ou ml
-  const FOOD_RAW=["Clémentine|mandarine|47|0.9|🍊|80|clémentine", "Mandarine|clementine|53|0.8|🍊|80|mandarine", "Orange||47|0.9|🍊|150|orange", "Citron||29|1.1|🍋|100|citron", "Pamplemousse||42|0.8|🍊|250|pamplemousse", "Pomme||52|0.3|🍎|150|pomme", "Poire||57|0.4|🍐|160|poire", "Banane||89|1.1|🍌|105|banane", "Fraises|fraise|32|0.7|🍓|150|portion", "Framboises|framboise|52|1.2|🍓|125|portion", "Myrtilles|bleuet myrtille|57|0.7|🫐|125|portion", "Mûres|mure|43|1.4|🫐|125|portion", "Cerises|cerise|63|1.1|🍒|8|cerise", "Raisin||69|0.7|🍇|150|grappe", "Pêche|peche|39|0.9|🍑|150|pêche", "Nectarine||44|1.1|🍑|140|nectarine", "Abricot||48|1.4|🍑|45|abricot", "Prune|mirabelle quetsche|46|0.7|🍑|35|prune", "Kiwi||61|1.1|🥝|75|kiwi", "Ananas||50|0.5|🍍|100|tranche", "Mangue||60|0.8|🥭|150|portion", "Melon||34|0.8|🍈|200|part", "Pastèque|pasteque|30|0.6|🍉|250|part", "Figue fraîche|figue|74|0.8|🍑|50|figue", "Datte Deglet Noor|dattes|282|2.5|🌴|7|datte", "Grenade||83|1.7|🍎|100|portion", "Litchi|letchi|66|0.8|🍒|10|litchi", "Papaye||43|0.5|🍈|150|portion", "Fruit de la passion|maracuja|97|2.2|🍈|18|fruit", "Noix de coco râpée|coco|660|6.9|🥥|10|cuillère", "Avocat||160|2|🥑|120|avocat", "Raisins secs||299|3.1|🍇|30|poignée", "Pruneaux||240|2.2|🍑|10|pruneau", "Abricots secs||241|3.4|🍑|8|abricot sec", "Figues sèches|figue seche|249|3.3|🍑|20|figue sèche", "Compote de pommes|compote|63|0.3|🍎|100|pot", "Jus d’orange||45|0.7|🧃|200|verre|ml", "Jus de pomme||46|0.1|🧃|200|verre|ml", "Carotte crue|carottes|41|0.9|🥕|80|carotte", "Carotte cuite|carottes|35|0.8|🥕|100|portion", "Tomate||18|0.9|🍅|120|tomate", "Tomate cerise||18|0.9|🍅|15|tomate cerise", "Concombre||15|0.7|🥒|100|portion", "Courgette cuite||15|1.1|🥒|150|portion", "Aubergine cuite||35|0.8|🍆|150|portion", "Poivron||31|1|🫑|150|poivron", "Oignon||40|1.1|🧅|100|oignon", "Ail||149|6.4|🧄|4|gousse", "Poireau cuit||31|0.8|🥬|150|portion", "Chou-fleur cuit|chou fleur|23|1.8|🥦|150|portion", "Brocoli cuit||35|2.4|🥦|150|portion", "Épinards cuits|epinard|23|3|🥬|150|portion", "Salade verte|laitue|15|1.4|🥬|50|portion", "Haricots verts cuits||35|1.9|🫛|150|portion", "Petits pois cuits||84|5.4|🫛|100|portion", "Maïs doux cuit|mais|96|3.4|🌽|100|portion", "Champignons cuits|champignon de paris|28|2.2|🍄|100|portion", "Champignons crus|champignon de paris|22|3.1|🍄|100|portion", "Betterave cuite||44|1.7|🥬|100|portion", "Céleri branche|celeri|16|0.7|🥬|50|branche", "Radis||16|0.7|🥬|10|radis", "Asperges cuites|asperge|22|2.4|🥬|150|portion", "Artichaut cuit||53|2.9|🥬|120|artichaut", "Chou cuit||23|1.3|🥬|150|portion", "Chou de Bruxelles cuits||36|2.6|🥬|150|portion", "Potiron cuit|courge citrouille|20|0.7|🎃|150|portion", "Patate douce cuite||90|2|🍠|150|portion", "Pomme de terre cuite|pommes de terre patate vapeur eau|87|1.9|🥔|150|pomme de terre", "Endive||17|0.9|🥬|100|endive", "Olives noires||115|0.8|🫒|4|olive", "Cornichon||11|0.3|🥒|8|cornichon", "Lentilles cuites||116|9|🫘|150|portion", "Pois chiches cuits||164|8.9|🫘|150|portion", "Haricots rouges cuits||127|8.7|🫘|150|portion", "Haricots blancs cuits||139|9.7|🫘|150|portion", "Fèves cuites|feve|110|7.6|🫘|150|portion", "Edamame cuit||121|12|🫛|100|portion", "Tofu nature||76|8|🥡|100|portion", "Tofu fumé||140|15|🥡|100|portion", "Tempeh||193|19|🥡|100|portion", "Houmous||166|8|🫘|30|cuillère", "Riz blanc cuit||130|2.7|🍚|150|portion", "Riz basmati cuit||125|3|🍚|150|portion", "Riz complet cuit||123|2.7|🍚|150|portion", "Pâtes cuites|pates spaghetti|158|5.8|🍝|180|portion", "Pâtes complètes cuites|pates|124|5.3|🍝|180|portion", "Semoule cuite|couscous|112|3.8|🍚|150|portion", "Blé cuit type Ébly|ble ebly|125|4.5|🌾|150|portion", "Quinoa cuit||120|4.4|🌾|150|portion", "Boulgour cuit||83|3.1|🌾|150|portion", "Polenta cuite||70|1.6|🌽|150|portion", "Gnocchis cuits||150|3.5|🥔|150|portion", "Flocons d’avoine secs|avoine porridge|372|13|🌾|40|portion", "Muesli||363|10|🌾|40|portion", "Corn flakes|cereales petit dejeuner|375|7|🥣|30|portion", "Pain blanc|baguette|270|9|🥖|30|tranche", "Pain complet||247|13|🍞|35|tranche", "Pain de mie||266|8|🍞|25|tranche", "Pain aux céréales|pain aux cereales|250|10|🍞|35|tranche", "Biscotte||390|11|🍞|8|biscotte", "Galette de riz||387|8|🍘|9|galette", "Wrap tortilla||310|8.5|🌯|60|wrap", "Pizza margherita||250|11|🍕|150|part", "Frites cuites||312|3.4|🍟|150|portion", "Chips||536|6.5|🥔|30|poignée", "Croissant||406|8.2|🥐|60|croissant", "Pain au chocolat||414|7.5|🥐|70|pain au chocolat", "Crêpe nature|crepe|200|6|🥞|60|crêpe", "Biscuit sec||440|7|🍪|8|biscuit", "Barre de céréales|barre de cereales|400|6|🍫|25|barre", "Hamburger||250|13|🍔|200|burger", "Purée de pommes de terre cuite|puree|90|2|🥔|150|portion", "Soupe de légumes|soupe de legumes|30|1|🥣|300|bol", "Ratatouille cuite||50|1|🍆|200|portion", "Poulet blanc cuit|filet escalope|165|31|🍗|120|filet", "Poulet cuisse cuite||209|26|🍗|100|cuisse", "Dinde escalope cuite||135|30|🦃|120|escalope", "Steak haché 5% cuit|boeuf hache|171|26|🥩|100|steak", "Steak haché 15% cuit|boeuf hache|250|26|🥩|100|steak", "Steak de boeuf grillé|bavette entrecote rumsteck|195|28|🥩|150|steak", "Filet mignon de porc cuit|porc|143|26|🥩|120|portion", "Jambon blanc||107|18|🥓|45|tranche", "Jambon cru||215|26|🥓|20|tranche", "Bacon cuit||541|37|🥓|8|tranche", "Saucisse de porc cuite||300|17|🌭|80|saucisse", "Saucisson sec||450|25|🥓|30|portion", "Agneau gigot cuit||206|25|🥩|120|portion", "Magret de canard cuit||200|22|🦆|150|magret", "Saumon cuit||232|25|🐟|125|pavé", "Saumon fumé||180|21|🐟|30|tranche", "Thon en boîte nature|conserve thon boite|116|26|🐟|110|boîte", "Cabillaud cuit|morue|105|23|🐟|120|portion", "Colin cuit|pollock|111|23.5|🐟|120|portion", "Sardine en boîte|conserve sardines boite|208|25|🐟|95|boîte", "Maquereau cuit||262|24|🐟|100|filet", "Truite cuite||168|24|🐟|120|filet", "Crevettes cuites|crevette|99|24|🦐|100|portion", "Surimi||95|8.5|🐟|15|bâtonnet", "Moules cuites|moule|172|24|🦪|100|portion", "Œuf dur|oeuf oeufs cuit|155|12.6|🥚|55|œuf", "Blanc d’œuf cuit|oeuf blanc|52|11|🥚|33|blanc", "Jaune d’œuf cuit|oeuf jaune|322|16|🥚|17|jaune", "Lait demi-écrémé|lait demi ecreme|46|3.3|🥛|200|verre|ml", "Lait entier||64|3.2|🥛|200|verre|ml", "Lait écrémé|lait ecreme|35|3.4|🥛|200|verre|ml", "Yaourt nature||55|4|🥛|125|pot", "Yaourt grec||97|9|🥛|125|pot", "Yaourt 0%|yaourt|40|4.3|🥛|125|pot", "Yaourt protéiné|yaourt proteine|65|10|🥛|150|pot", "Skyr nature||57|10.5|🥣|140|pot", "Fromage blanc 0%||45|7.5|🥣|100|portion", "Fromage blanc 3%||75|7.5|🥣|100|portion", "Fromage blanc 20%||110|7|🥣|100|portion", "Cottage cheese||98|11|🥣|100|portion", "Mozzarella||280|18|🧀|125|boule", "Emmental||380|28|🧀|30|portion", "Comté|comte|410|27|🧀|30|portion", "Camembert||300|20|🧀|30|portion", "Brie||330|20|🧀|30|portion", "Parmesan||431|38|🧀|10|portion", "Feta||264|14|🧀|40|portion", "Fromage de chèvre|fromage de chevre|265|17|🧀|30|portion", "Ricotta||174|11|🧀|50|portion", "Fromage râpé|fromage rape|380|28|🧀|20|portion", "Fromage frais type carré|carre frais|190|7|🧀|25|portion", "Beurre||717|0.9|🧈|10|noix", "Crème fraîche épaisse|creme fraiche|292|2.4|🥛|30|cuillère", "Crème fraîche légère|creme fraiche|150|3|🥛|30|cuillère", "Crème liquide|creme|300|2.2|🥛|30|cuillère|ml", "Lait de coco||197|2|🥥|100|portion|ml", "Lait d’amande|lait amande|15|0.5|🥛|200|verre|ml", "Lait d’avoine|lait avoine|45|1|🥛|200|verre|ml", "Lait de soja||33|3|🥛|200|verre|ml", "Huile d’olive|huile olive|884|0|🫒|10|cuillère", "Huile de tournesol||884|0|🌻|10|cuillère", "Huile de coco||862|0|🥥|10|cuillère", "Amandes|amande|579|21|🌰|30|poignée", "Noix||654|15|🌰|5|noix", "Noisettes|noisette|628|15|🌰|30|poignée", "Noix de cajou|cajou|553|18|🌰|30|poignée", "Cacahuètes|arachides cacahuete|567|26|🥜|30|poignée", "Pistaches|pistache|560|20|🌰|30|poignée", "Noix de pécan|pecan|691|9|🌰|30|poignée", "Beurre de cacahuète|beurre de cacahuete|610|26.7|🥜|16|cuillère", "Purée d’amande|puree amande|614|21|🌰|15|cuillère", "Graines de chia||486|17|🌱|10|cuillère", "Graines de lin||534|18|🌱|10|cuillère", "Graines de courge||559|30|🌱|10|cuillère", "Graines de tournesol||584|21|🌻|10|cuillère", "Graines de sésame|sesame|573|18|🌱|10|cuillère", "Tahini||595|17|🌱|15|cuillère", "Miel||304|0.3|🍯|21|cuillère", "Sucre||400|0|🍬|6|morceau", "Confiture||250|0.4|🍓|20|cuillère", "Sirop d’érable|erable|260|0|🍁|20|cuillère|ml", "Chocolat noir 70%||560|9|🍫|10|carré", "Chocolat noir 90%||590|12|🍫|10|carré", "Chocolat au lait||535|7.7|🍫|10|carré", "Pâte à tartiner Nutella|nutella pate a tartiner|539|6.3|🍫|15|cuillère", "Glace vanille|creme glacee|207|3.5|🍨|50|boule", "Coca-Cola|coca soda|42|0|🥤|330|canette|ml", "Coca zéro|coca soda zero|0|0|🥤|330|canette|ml", "Bière|biere|43|0.5|🍺|250|verre|ml", "Vin rouge||85|0.1|🍷|125|verre|ml", "Café noir|cafe|2|0.1|☕|150|tasse|ml", "Smoothie fruits||50|0.5|🥤|250|verre|ml", "Whey protéine|poudre proteine whey|387|80|💪|30|mesure", "Caséine|casein poudre|370|78|💪|30|mesure", "Protéine végétale|poudre vegan proteine vegetale|380|75|💪|30|mesure", "Barre protéinée|barre proteinee|350|30|🍫|45|barre", "Créatine|creatine|0|0|⚡|3|dose"];
+  const FOOD_RAW=["Clémentine|mandarine|47|0.9|🍊|80|clémentine", "Mandarine|clementine|53|0.8|🍊|80|mandarine", "Orange||47|0.9|🍊|150|orange", "Citron||29|1.1|🍋|100|citron", "Pamplemousse||42|0.8|🍊|250|pamplemousse", "Pomme||52|0.3|🍎|150|pomme", "Poire||57|0.4|🍐|160|poire", "Banane||89|1.1|🍌|105|banane", "Fraises|fraise|32|0.7|🍓|150|portion", "Framboises|framboise|52|1.2|🍓|125|portion", "Myrtilles|bleuet myrtille|57|0.7|🫐|125|portion", "Mûres|mure|43|1.4|🫐|125|portion", "Cerises|cerise|63|1.1|🍒|8|cerise", "Raisin||69|0.7|🍇|150|grappe", "Pêche|peche|39|0.9|🍑|150|pêche", "Nectarine||44|1.1|🍑|140|nectarine", "Abricot||48|1.4|🍑|45|abricot", "Prune|mirabelle quetsche|46|0.7|🍑|35|prune", "Kiwi||61|1.1|🥝|75|kiwi", "Ananas||50|0.5|🍍|100|tranche", "Mangue||60|0.8|🥭|150|portion", "Melon||34|0.8|🍈|200|part", "Pastèque|pasteque|30|0.6|🍉|250|part", "Figue fraîche|figue|74|0.8|🍑|50|figue", "Datte Deglet Noor|dattes|282|2.5|🌴|7|datte", "Grenade||83|1.7|🍎|100|portion", "Litchi|letchi|66|0.8|🍒|10|litchi", "Papaye||43|0.5|🍈|150|portion", "Fruit de la passion|maracuja|97|2.2|🍈|18|fruit", "Noix de coco râpée|coco|660|6.9|🥥|10|cuillère", "Avocat||160|2|🥑|120|avocat", "Raisins secs||299|3.1|🍇|30|poignée", "Pruneaux||240|2.2|🍑|10|pruneau", "Abricots secs||241|3.4|🍑|8|abricot sec", "Figues sèches|figue seche|249|3.3|🍑|20|figue sèche", "Compote de pommes|compote|63|0.3|🍎|100|pot", "Jus d’orange||45|0.7|🧃|200|verre|ml", "Jus de pomme||46|0.1|🧃|200|verre|ml", "Carotte crue|carottes|41|0.9|🥕|80|carotte", "Carotte cuite|carottes|35|0.8|🥕|100|portion", "Tomate||18|0.9|🍅|120|tomate", "Tomate cerise||18|0.9|🍅|15|tomate cerise", "Concombre||15|0.7|🥒|100|portion", "Courgette cuite||15|1.1|🥒|150|portion", "Aubergine cuite||35|0.8|🍆|150|portion", "Poivron||31|1|🫑|150|poivron", "Oignon||40|1.1|🧅|100|oignon", "Ail||149|6.4|🧄|4|gousse", "Poireau cuit||31|0.8|🥬|150|portion", "Chou-fleur cuit|chou fleur|23|1.8|🥦|150|portion", "Brocoli cuit||35|2.4|🥦|150|portion", "Épinards cuits|epinard|23|3|🥬|150|portion", "Salade verte|laitue|15|1.4|🥬|50|portion", "Haricots verts cuits||35|1.9|🫛|150|portion", "Petits pois cuits||84|5.4|🫛|100|portion", "Maïs doux cuit|mais|96|3.4|🌽|100|portion", "Champignons cuits|champignon de paris|28|2.2|🍄|100|portion", "Champignons crus|champignon de paris|22|3.1|🍄|100|portion", "Betterave cuite||44|1.7|🥬|100|portion", "Céleri branche|celeri|16|0.7|🥬|50|branche", "Radis||16|0.7|🥬|10|radis", "Asperges cuites|asperge|22|2.4|🥬|150|portion", "Artichaut cuit||53|2.9|🥬|120|artichaut", "Chou cuit||23|1.3|🥬|150|portion", "Chou de Bruxelles cuits||36|2.6|🥬|150|portion", "Potiron cuit|courge citrouille|20|0.7|🎃|150|portion", "Patate douce cuite||90|2|🍠|150|portion", "Pomme de terre cuite|pommes de terre patate vapeur eau|87|1.9|🥔|150|pomme de terre", "Endive||17|0.9|🥬|100|endive", "Olives noires||115|0.8|🫒|4|olive", "Cornichon||11|0.3|🥒|8|cornichon", "Lentilles cuites||116|9|🫘|150|portion", "Pois chiches cuits||164|8.9|🫘|150|portion", "Haricots rouges cuits||127|8.7|🫘|150|portion", "Haricots blancs cuits||139|9.7|🫘|150|portion", "Fèves cuites|feve|110|7.6|🫘|150|portion", "Edamame cuit||121|12|🫛|100|portion", "Tofu nature||76|8|🥡|100|portion", "Tofu fumé||140|15|🥡|100|portion", "Tempeh||193|19|🥡|100|portion", "Houmous||166|8|🫘|30|cuillère", "Riz blanc cuit||130|2.7|🍚|150|portion", "Riz basmati cuit||125|3|🍚|150|portion", "Riz complet cuit||123|2.7|🍚|150|portion", "Pâtes cuites|pates spaghetti|158|5.8|🍝|180|portion", "Pâtes complètes cuites|pates|124|5.3|🍝|180|portion", "Semoule cuite|couscous|112|3.8|🍚|150|portion", "Blé cuit type Ébly|ble ebly|125|4.5|🌾|150|portion", "Quinoa cuit||120|4.4|🌾|150|portion", "Boulgour cuit||83|3.1|🌾|150|portion", "Polenta cuite||70|1.6|🌽|150|portion", "Gnocchis cuits||150|3.5|🥔|150|portion", "Flocons d’avoine secs|avoine porridge|372|13|🌾|40|portion", "Muesli||363|10|🌾|40|portion", "Corn flakes|cereales petit dejeuner|375|7|🥣|30|portion", "Pain blanc|baguette|270|9|🥖|30|tranche", "Pain complet||247|13|🍞|35|tranche", "Pain de mie||266|8|🍞|25|tranche", "Pain aux céréales|pain aux cereales|250|10|🍞|35|tranche", "Biscotte||390|11|🍞|8|biscotte", "Galette de riz||387|8|🍘|9|galette", "Wrap tortilla||310|8.5|🌯|60|wrap", "Pizza margherita||250|11|🍕|150|part", "Frites cuites||312|3.4|🍟|150|portion", "Chips||536|6.5|🥔|30|poignée", "Croissant||406|8.2|🥐|60|croissant", "Pain au chocolat||414|7.5|🥐|70|pain au chocolat", "Crêpe nature|crepe|200|6|🥞|60|crêpe", "Biscuit sec||440|7|🍪|8|biscuit", "Barre de céréales|barre de cereales|400|6|🍫|25|barre", "Hamburger||250|13|🍔|200|burger", "Purée de pommes de terre cuite|puree|90|2|🥔|150|portion", "Soupe de légumes|soupe de legumes|30|1|🥣|300|bol", "Ratatouille cuite||50|1|🍆|200|portion", "Poulet blanc cuit|filet escalope|165|31|🍗|120|filet", "Poulet cuisse cuite||209|26|🍗|100|cuisse", "Dinde escalope cuite||135|30|🦃|120|escalope", "Steak haché 5% cuit|boeuf hache|171|26|🥩|100|steak", "Steak haché 15% cuit|boeuf hache|250|26|🥩|100|steak", "Steak de boeuf grillé|bavette entrecote rumsteck|195|28|🥩|150|steak", "Filet mignon de porc cuit|porc|143|26|🥩|120|portion", "Jambon blanc||107|18|🥓|45|tranche", "Jambon cru||215|26|🥓|20|tranche", "Bacon cuit||541|37|🥓|8|tranche", "Saucisse de porc cuite||300|17|🌭|80|saucisse", "Saucisson sec||450|25|🥓|30|portion", "Agneau gigot cuit||206|25|🥩|120|portion", "Magret de canard cuit||200|22|🦆|150|magret", "Saumon cuit||232|25|🐟|125|pavé", "Saumon fumé||180|21|🐟|30|tranche", "Thon en boîte nature|conserve thon boite|116|26|🐟|110|boîte", "Cabillaud cuit|morue|105|23|🐟|120|portion", "Colin cuit|pollock|111|23.5|🐟|120|portion", "Sardine en boîte|conserve sardines boite|208|25|🐟|95|boîte", "Maquereau cuit||262|24|🐟|100|filet", "Truite cuite||168|24|🐟|120|filet", "Crevettes cuites|crevette|99|24|🦐|100|portion", "Surimi||95|8.5|🐟|15|bâtonnet", "Moules cuites|moule|172|24|🦪|100|portion", "Œuf dur|oeuf oeufs cuit|155|12.6|🥚|55|œuf", "Blanc d’œuf cuit|oeuf blanc|52|11|🥚|33|blanc", "Jaune d’œuf cuit|oeuf jaune|322|16|🥚|17|jaune", "Lait demi-écrémé|lait demi ecreme|46|3.3|🥛|200|verre|ml", "Lait entier||64|3.2|🥛|200|verre|ml", "Lait écrémé|lait ecreme|35|3.4|🥛|200|verre|ml", "Yaourt nature||55|4|🥛|125|pot", "Yaourt grec||97|9|🥛|125|pot", "Yaourt 0%|yaourt|40|4.3|🥛|125|pot", "Yaourt protéiné|yaourt proteine|65|10|🥛|150|pot", "Skyr nature||57|10.5|🥣|140|pot", "Fromage blanc 0%||45|7.5|🥣|100|portion", "Fromage blanc 3%||75|7.5|🥣|100|portion", "Fromage blanc 20%||110|7|🥣|100|portion", "Cottage cheese||98|11|🥣|100|portion", "Mozzarella||280|18|🧀|125|boule", "Emmental||380|28|🧀|30|portion", "Comté|comte|410|27|🧀|30|portion", "Camembert||300|20|🧀|30|portion", "Brie||330|20|🧀|30|portion", "Parmesan||431|38|🧀|10|portion", "Feta||264|14|🧀|40|portion", "Fromage de chèvre|fromage de chevre|265|17|🧀|30|portion", "Ricotta||174|11|🧀|50|portion", "Fromage râpé|fromage rape|380|28|🧀|20|portion", "Fromage frais type carré|carre frais|190|7|🧀|25|portion", "Beurre||717|0.9|🧈|10|noix", "Crème fraîche épaisse|creme fraiche|292|2.4|🥛|30|cuillère", "Crème fraîche légère|creme fraiche|150|3|🥛|30|cuillère", "Crème liquide|creme|300|2.2|🥛|30|cuillère|ml", "Lait de coco||197|2|🥥|100|portion|ml", "Lait d’amande|lait amande|15|0.5|🥛|200|verre|ml", "Lait d’avoine|lait avoine|45|1|🥛|200|verre|ml", "Lait de soja||33|3|🥛|200|verre|ml", "Huile d’olive|huile olive|884|0|🫒|10|cuillère", "Huile de tournesol||884|0|🌻|10|cuillère", "Huile de coco||862|0|🥥|10|cuillère", "Amandes|amande|579|21|🌰|30|poignée", "Noix||654|15|🌰|5|noix", "Noisettes|noisette|628|15|🌰|30|poignée", "Noix de cajou|cajou|553|18|🌰|30|poignée", "Cacahuètes|arachides cacahuete|567|26|🥜|30|poignée", "Pistaches|pistache|560|20|🌰|30|poignée", "Noix de pécan|pecan|691|9|🌰|30|poignée", "Beurre de cacahuète|beurre de cacahuete|610|26.7|🥜|16|cuillère", "Purée d’amande|puree amande|614|21|🌰|15|cuillère", "Graines de chia||486|17|🌱|10|cuillère", "Graines de lin||534|18|🌱|10|cuillère", "Graines de courge||559|30|🌱|10|cuillère", "Graines de tournesol||584|21|🌻|10|cuillère", "Graines de sésame|sesame|573|18|🌱|10|cuillère", "Tahini||595|17|🌱|15|cuillère", "Miel||304|0.3|🍯|21|cuillère", "Sucre||400|0|🍬|6|morceau", "Confiture||250|0.4|🍓|20|cuillère", "Sirop d’érable|erable|260|0|🍁|20|cuillère|ml", "Chocolat noir 70%||560|9|🍫|10|carré||tablette:100,demi-tablette:50", "Chocolat noir 90%||590|12|🍫|10|carré||tablette:100,demi-tablette:50", "Chocolat au lait||535|7.7|🍫|10|carré||tablette:100,demi-tablette:50", "Pâte à tartiner Nutella|nutella pate a tartiner|539|6.3|🍫|15|cuillère", "Glace vanille|creme glacee|207|3.5|🍨|50|boule", "Coca-Cola|coca soda|42|0|🥤|330|canette|ml", "Coca zéro|coca soda zero|0|0|🥤|330|canette|ml", "Bière|biere|43|0.5|🍺|250|verre|ml", "Vin rouge||85|0.1|🍷|125|verre|ml", "Café noir|cafe|2|0.1|☕|150|tasse|ml", "Smoothie fruits||50|0.5|🥤|250|verre|ml", "Whey protéine|poudre proteine whey|387|80|💪|30|mesure", "Caséine|casein poudre|370|78|💪|30|mesure", "Protéine végétale|poudre vegan proteine vegetale|380|75|💪|30|mesure", "Barre protéinée|barre proteinee|350|30|🍫|45|barre", "Créatine|creatine|0|0|⚡|3|dose"];
   const normS=t=>String(t).toLowerCase().replace(/œ/g,'oe').replace(/æ/g,'ae').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const STOP={de:1,du:1,des:1,la:1,le:1,les:1,au:1,aux:1,en:1,et:1,a:1,d:1,l:1};
   const wordsOf=t=>normS(t).split(/[^a-z0-9]+/).filter(Boolean);
-  const FOODS=FOOD_RAW.map(l=>{ const a=l.split('|'); return {name:a[0],kcal:+a[2],prot:+a[3],emoji:a[4]||'🍽️',serving:+a[5]||0,label:a[6]||'',unit:a[7]||'g',words:wordsOf(a[0]+' '+(a[1]||''))}; });
+  const FOODS=FOOD_RAW.map(l=>{ const a=l.split('|'); return {name:a[0],kcal:+a[2],prot:+a[3],emoji:a[4]||'🍽️',serving:+a[5]||0,label:a[6]||'',unit:a[7]||'g',extras:a[8]||'',words:wordsOf(a[0]+' '+(a[1]||''))}; });
   function ed1(a,b){
     if(a===b) return true; const la=a.length, lb=b.length; if(Math.abs(la-lb)>1) return false;
     let i=0; while(i<la&&i<lb&&a[i]===b[i]) i++;
@@ -3092,25 +3118,69 @@ document.addEventListener('click', function(e){
     let toks=wordsOf(q); const sig=toks.filter(t=>!STOP[t]); if(sig.length) toks=sig; if(!toks.length) return -1;
     let sc=0; for(const t of toks){ const x=tokScore(t,words); if(x<0) return -1; sc+=x; } return sc;
   }
+  // ---------- portions courantes (la 1re = portion par défaut) ----------
+  const PORTION_GUESS=[
+    [/chocolat|choco|cacao/,[['carré',10],['tablette',100]]],
+    [/skyr|yaourt|fromage blanc|petit.?suisse|creme dessert|dessert lacte/,[['pot',125]]],
+    [/sable|biscuit|cookie|petit.?beurre|gaufrette|galette bretonne/,[['biscuit',10]]],
+    [/barre/,[['barre',30]]],
+    [/baguette|pain|toast|brioche/,[['tranche',30]]],
+    [/jambon|bacon|rosette|saucisson/,[['tranche',30]]],
+    [/fromage|emmental|comte|cheddar|gruyere|camembert|brie|mozzarella|edam|raclette/,[['portion',30]]],
+    [/coca|cola|canette|soda|limonade/,[['canette',330]]],
+    [/lait|jus |jus$|boisson|sirop|the |the$|smoothie/,[['verre',200]]],
+    [/chips|apero|cacahuete|amande|noix|noisette|pistache|cajou/,[['poignée',30]]],
+    [/huile|vinaigrette/,[['cuillère',10]]],
+    [/beurre|margarine/,[['noix',10]]],
+    [/sucre/,[['morceau',6]]],
+    [/miel|confiture|pate a tartiner|nutella|houmous|tahini/,[['cuillère',20]]],
+    [/compote/,[['pot',100]]],
+    [/oeuf/,[['œuf',55]]],
+    [/cereale|muesli|flocon|granola/,[['portion',40]]],
+    [/riz|pate|semoule|quinoa|boulgour|lentille|haricot|pois chiche|pomme de terre/,[['portion',150]]],
+    [/soupe|veloute/,[['bol',300]]],
+    [/glace/,[['boule',50]]],
+    [/pizza/,[['part',150]]],
+    [/steak|escalope|filet|poulet|dinde/,[['portion',120]]],
+    [/saumon|cabillaud|poisson|thon/,[['portion',120]]]
+  ];
+  const packLabel=n=>{ n=normS(n); return /chocolat|choco|cacao/.test(n)?'tablette':/skyr|yaourt|dessert/.test(n)?'pot':/lait|jus|boisson|soda|coca|limonade/.test(n)?'bouteille':/barre/.test(n)?'barre':'paquet'; };
+  function guessPortions(name){ const n=normS(name); for(const [re,list] of PORTION_GUESS) if(re.test(n)) return list.map(([label,g])=>({label:label,g:g})); return []; }
+  const parseExtras=t=>String(t||'').split(',').filter(Boolean).map(x=>{ const a=x.split(':'); return {label:a[0],g:+a[1]}; }).filter(x=>x.label&&x.g>0);
+  function mergePortions(def,extras,name){
+    const out=[], add=p=>{ if(p&&p.g>0&&p.label&&!/^portion de /.test(p.label)&&!out.some(o=>o.label===p.label)) out.push({label:p.label,g:p.g}); };
+    add(def); (extras||[]).forEach(add); guessPortions(name).forEach(add); return out;
+  }
+  function offPortions(pr,name){
+    const out=[], sv=parseFloat(pr.serving_quantity)||0, pq=parseFloat(pr.product_quantity)||0, g=guessPortions(name);
+    if(sv>0){
+      let lab=''; const m=String(pr.serving_size||'').match(/^\s*[\d.,\/½]+\s*([^\d(),]+?)\s*(?:\(|$)/);
+      if(m){ const w=m[1].trim().toLowerCase(); if(w&&!/^(g|gr|grammes?|ml|cl|mg|kg|l|litre|litres)$/.test(w)) lab=w; }
+      if(!lab) lab=(g[0]&&Math.abs(g[0].g-sv)<=sv*0.5)?g[0].label:'portion';
+      out.push({label:lab,g:sv});
+    }else if(g[0]) out.push(g[0]);
+    if(pq>0&&pq>(out[0]?out[0].g:0)*1.2){ const pk=g.find(x=>x.g>=pq*0.8&&x.g<=pq*1.25); out.push({label:pk?pk.label:packLabel(name),g:pq}); }
+    return mergePortions(out[0],out.slice(1),name);
+  }
   const FAVKEY='bb9-favs';
   let FAV=null; try{ FAV=JSON.parse(localStorage.getItem(FAVKEY)||'null'); }catch(e){}
   const saveFav=()=>{ try{ localStorage.setItem(FAVKEY,JSON.stringify(FAV)); }catch(e){} };
   if(!Array.isArray(FAV)){   // première fois : mes produits = ceux déjà présents dans mes repas
     FAV=[]; MEALS.forEach(([t,ic,items])=>items.forEach(it=>{ if(FAV.some(f=>f.name===it[0])) return; const q=per100(it); FAV.push({name:it[0],kcal:q.k,prot:q.p,serving:it[2]>0?it[2]:0,label:it[1],emoji:it[7],unit:it[6]}); })); saveFav();
   }
-  function upsertFav(it){
-    const q=per100(it), f={name:it[0],kcal:q.k,prot:q.p,serving:it[2]>0?it[2]:0,label:it[1],emoji:it[7],unit:it[6]};
+  function upsertFav(it,portions){
+    const q=per100(it), f={name:it[0],kcal:q.k,prot:q.p,serving:it[2]>0?it[2]:0,label:it[1],emoji:it[7],unit:it[6],portions:portions||[]};
     FAV=FAV.filter(x=>normS(x.name)!==normS(f.name)); FAV.unshift(f); if(FAV.length>500) FAV.length=500; saveFav();
   }
   function favDel(i){ if(i<0||i>=FAV.length) return; FAV.splice(i,1); saveFav(); liveSearch(); }
-  const asFav=(f,i)=>({name:f.name,kcal:f.kcal,prot:f.prot,serving:f.serving,label:f.label,emoji:f.emoji,unit:f.unit,fav:true,_fi:i});
+  const asFav=(f,i)=>({name:f.name,kcal:f.kcal,prot:f.prot,serving:f.serving,label:f.label,emoji:f.emoji,unit:f.unit,portions:f.portions,fav:true,_fi:i});
   function favMatches(q){
     return FAV.map((f,i)=>({f:f,i:i,sc:rank(q,wordsOf(f.name))})).filter(o=>o.sc>=0).sort((a,b)=>a.sc-b.sc||a.i-b.i).slice(0,30).map(o=>Object.assign(asFav(o.f,o.i),{_sc:o.sc}));
   }
   function dbMatches(q){
     const mine={}; FAV.forEach(f=>{ mine[normS(f.name)]=1; });
     return FOODS.map(f=>({f:f,sc:rank(q,f.words)})).filter(o=>o.sc>=0&&!mine[normS(o.f.name)]).sort((a,b)=>a.sc-b.sc||a.f.name.length-b.f.name.length).slice(0,25)
-      .map(o=>({name:o.f.name,kcal:o.f.kcal,prot:o.f.prot,serving:o.f.serving,label:o.f.label,emoji:o.f.emoji,unit:o.f.unit,db:true,_sc:o.sc}));
+      .map(o=>({name:o.f.name,kcal:o.f.kcal,prot:o.f.prot,serving:o.f.serving,label:o.f.label,emoji:o.f.emoji,unit:o.f.unit,portions:mergePortions(o.f.serving>0&&o.f.label?{label:o.f.label,g:o.f.serving}:null,parseExtras(o.f.extras),o.f.name),db:true,_sc:o.sc}));
   }
   function localResults(q){   // les fautes de frappe ne comptent que si rien d'autre n'est trouvé
     const all=favMatches(q).concat(dbMatches(q)), direct=all.filter(x=>x._sc<2);
@@ -3138,11 +3208,11 @@ document.addEventListener('click', function(e){
     const qs=[q]; const nq=normS(q); if(nq!==q.toLowerCase()) qs.push(nq);
     for(const qq of qs){
       const ctrl=new AbortController(), to=setTimeout(()=>ctrl.abort(),12000); let j;
-      try{ const resp=await fetch('https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(qq)+'&search_simple=1&action=process&json=1&page_size=30&sort_by=unique_scans_n&fields=code,product_name,product_name_fr,brands,nutriments,serving_quantity',{signal:ctrl.signal}); if(!resp.ok) throw {http:resp.status}; j=await resp.json(); }
+      try{ const resp=await fetch('https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(qq)+'&search_simple=1&action=process&json=1&page_size=30&sort_by=unique_scans_n&fields=code,product_name,product_name_fr,brands,nutriments,serving_quantity,serving_size,product_quantity',{signal:ctrl.signal}); if(!resp.ok) throw {http:resp.status}; j=await resp.json(); }
       finally{ clearTimeout(to); }
       const net=(j.products||[]).map(pr=>{ const n=pr.nutriments||{}; let kcal=n['energy-kcal_100g']; if(kcal==null&&n['energy_100g']!=null) kcal=n['energy_100g']/4.184;
-        const nm=(pr.product_name_fr||pr.product_name||'').trim(), br=(pr.brands||'').split(',')[0].trim(), sv=parseFloat(pr.serving_quantity)||0;
-        return {name:nm+(br&&nm.toLowerCase().indexOf(br.toLowerCase())<0?' ('+br+')':''),kcal:kcal,prot:n.proteins_100g,serving:sv,label:sv>0?'portion':'',unit:'g',emoji:'🛒',off:true,_nm:nm}; }).filter(x=>x._nm);
+        const nm=(pr.product_name_fr||pr.product_name||'').trim(), br=(pr.brands||'').split(',')[0].trim(), full=nm+(br&&nm.toLowerCase().indexOf(br.toLowerCase())<0?' ('+br+')':''), P=offPortions(pr,full);
+        return {name:full,kcal:kcal,prot:n.proteins_100g,serving:P[0]?P[0].g:0,label:P[0]?P[0].label:'',portions:P,unit:'g',emoji:'🛒',off:true,_nm:nm}; }).filter(x=>x._nm);
       if(net.length) return net.sort((a,b)=>(a.kcal==null)-(b.kcal==null));
     }
     return [];
@@ -3165,7 +3235,7 @@ document.addEventListener('click', function(e){
     const x=sr.list[i]; if(!x) return; sr.fromForm=false;
     const src=x.fav?'Dans tes produits.':(x.db?'Valeurs moyennes pour 100 '+(x.unit||'g')+'.':'Produit Open Food Facts.');
     const w=(x.serving>0&&x.label&&!/^portion de /.test(x.label))?' Poids moyen : 1 '+x.label+' ≈ '+r(x.serving)+' '+(x.unit||'g')+' (modifiable).':'';
-    openForm('add',sr.target,null,{name:x.name,kcal:x.kcal,prot:x.prot,serving:x.serving,label:x.label,unit:x.unit,emoji:x.emoji,
+    openForm('add',sr.target,null,{name:x.name,kcal:x.kcal,prot:x.prot,serving:x.serving,label:x.label,portions:x.portions,unit:x.unit,emoji:x.emoji,
       info:src+w+' Indique la quantité puis valide.'+(x.kcal==null?' Les calories ne sont pas renseignées : complète-les.':'')});
   }
   $('srQ').addEventListener('input',liveSearch);
@@ -3248,13 +3318,59 @@ document.addEventListener('click', function(e){
     box.addEventListener('mousedown',begin); document.addEventListener('mousemove',move); document.addEventListener('mouseup',end);
     box.addEventListener('contextmenu',e=>{ if(e.target.closest('.my-mh')) e.preventDefault(); });
   })();
+  // ---------- supprimer un produit en le balayant vers la droite (avec « Annuler ») ----------
+  let lastSwipe=0, toastTimer=0, undoFn=null;
+  function showToast(txt,fn){
+    clearTimeout(toastTimer); undoFn=fn; $('toastTxt').textContent=txt; $('mealToast').classList.add('show');
+    toastTimer=setTimeout(()=>{ $('mealToast').classList.remove('show'); undoFn=null; },6000);
+  }
+  function swipeDelete(m,i){
+    const it=MEALS[m]&&MEALS[m][2][i]; if(!it) return;
+    const rec={title:MEALS[m][0],i:i,it:it,d:S.d[key(m,i)],w:S.w[key(m,i)]};
+    dropState(m,i); MEALS[m][2].splice(i,1); refresh();
+    showToast('« '+it[0]+' » supprimé',()=>{
+      const mm=MEALS.findIndex(x=>x[0]===rec.title); if(mm<0) return;
+      MEALS[mm][2].splice(Math.min(rec.i,MEALS[mm][2].length),0,rec.it);
+      const k=rec.title+'|'+rec.it[0]; if(rec.d) S.d[k]=rec.d; if(rec.w!=null) S.w[k]=rec.w; refresh();
+    });
+  }
+  (function(){
+    const box=$('mlMeals'); let g=null;
+    const pt=e=>(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;
+    const ids=it=>{ const a=/^myit(\d+)-(\d+)$/.exec(it.id); return a?[+a[1],+a[2]]:null; };
+    function begin(e){
+      const row=e.target.closest&&e.target.closest('.my-row'); if(!row||e.target.closest('label,button,input')) return;
+      const it=row.closest('.my-it'); if(!it||!ids(it)) return; const p=pt(e);
+      g={row:row,it:it,x:p.clientX,y:p.clientY,dx:0,on:false,w:row.getBoundingClientRect().width};
+    }
+    function move(e){
+      if(!g) return; const p=pt(e), dx=p.clientX-g.x, dy=p.clientY-g.y;
+      if(!g.on){
+        if(Math.abs(dy)>10&&Math.abs(dy)>Math.abs(dx)){ g=null; return; }
+        if(dx>12&&dx>Math.abs(dy)*1.5){ g.on=true; g.it.classList.add('swiping'); } else return;
+      }
+      if(e.cancelable) e.preventDefault();
+      g.dx=Math.max(0,dx); g.row.style.transform='translateX('+g.dx+'px)'; g.it.classList.toggle('armed',g.dx>Math.min(110,g.w*0.3));
+    }
+    function end(){
+      if(!g) return; const o=g; g=null; if(!o.on) return;
+      lastSwipe=Date.now(); o.row.style.transition='transform .18s';
+      if(o.dx>Math.min(110,o.w*0.3)){ o.row.style.transform='translateX(110%)'; const a=ids(o.it); setTimeout(()=>swipeDelete(a[0],a[1]),170); }
+      else{ o.row.style.transform=''; o.it.classList.remove('armed','swiping'); setTimeout(()=>{ o.row.style.transition=''; },220); }
+    }
+    box.addEventListener('touchstart',begin,{passive:true});
+    document.addEventListener('touchmove',move,{passive:false});
+    document.addEventListener('touchend',end); document.addEventListener('touchcancel',end);
+    box.addEventListener('mousedown',begin); document.addEventListener('mousemove',move); document.addEventListener('mouseup',end);
+    $('toastUndo').addEventListener('click',()=>{ const f=undoFn; undoFn=null; clearTimeout(toastTimer); $('mealToast').classList.remove('show'); if(f) f(); });
+  })();
   window.BBXMeal={
     openCfg:()=>{ renderCfg(); $('mealCfg').classList.add('show'); }, closeCfg:()=>$('mealCfg').classList.remove('show'),
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
     scan:scanOpen, closeScan:closeScan, manual:manual,
     addMeal:()=>openName('add'), renameMeal:m=>openName('edit',m), saveName:saveName, closeName:()=>$('mealName').classList.remove('show'), delMeal:delMeal,
-    setMeal:setMeal, unit:setUnit, qty:qtyStep, units:setQtyUnits, favDel:favDel, search:srOpen, closeSearch:closeSearch, doSearch:doSearch, pick:pick
+    setMeal:setMeal, unit:setUnit, qty:qtyStep, units:setQtyUnits, portion:setPortion, favDel:favDel, search:srOpen, closeSearch:closeSearch, doSearch:doSearch, pick:pick
   };
   window.BBXNav={ set:setView, auto:autoView };
   const lg=document.querySelector('.page-header .app-logo'); if(lg) $('mlLogo').src=lg.src;
