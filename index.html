@@ -1474,6 +1474,13 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .wg-row{ display:flex; align-items:center; gap:10px; padding:6px 0; font-size:13px; font-weight:700; color:#4B5563; border-top:1px solid #F1F2F5; }
 .wg-row span{ flex:1; } .wg-row b{ color:#15171C; } .wg-row em{ font-style:normal; width:48px; text-align:right; font-size:12px; }
 .wg-row button{ width:28px; height:28px; border-radius:50%; border:1px solid #E1E4EA; background:#fff; color:#9CA3AF; font-size:11px; cursor:pointer; padding:0; }
+/* ===== Habitudes + recherche tout-en-un ===== */
+.hb-sub{ font-size:13.5px; font-weight:600; color:#4B5563; line-height:1.45; margin:0 2px 12px; }
+.hb-ok{ font-size:13.5px; font-weight:800; color:#15803D; margin:0 2px 8px; min-height:2px; }
+.hb-it{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:#fff; border:1px solid #EAECF0; border-radius:14px; padding:11px 14px; margin-bottom:8px; cursor:pointer; font:inherit; color:#15171C; }
+.hb-it:active{ background:#FFEFF2; }
+.sr-acts{ display:flex; gap:8px; margin:0 0 10px; }
+.sr-acts button{ flex:1; height:44px; border-radius:12px; border:1.5px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; padding:0 6px; }
 </style>
 </head>
 <body>
@@ -2820,9 +2827,17 @@ document.addEventListener('click', function(e){
   <button class="mc-big" style="margin-top:6px" onclick="BBXMeal.addMeal()">＋ Ajouter un repas</button>
   <button class="mc-reset" onclick="BBXMeal.resetDef()">Remettre les repas d’origine</button>
 </div>
+<div id="mealHabits" class="mc-ov mc-sheet" style="z-index:9160" aria-label="Habitudes">
+  <div class="mc-head"><b id="hbTitle">Habitudes</b><button class="mc-x" onclick="BBXMeal.closeHabits()" aria-label="Fermer">✕</button></div>
+  <div class="hb-sub" id="hbSub"></div>
+  <div class="hb-ok" id="hbOk"></div>
+  <div id="hbList"></div>
+  <div class="mf-btns" style="margin-top:14px"><button class="mc-big" onclick="BBXMeal.habitsSearch()">🔍 Chercher un autre produit</button><button class="mc-big red" onclick="BBXMeal.closeHabits()">Terminé</button></div>
+</div>
 <div id="mealSearch" class="mc-ov mc-search" aria-label="Rechercher un produit">
   <div class="mc-head"><b>Rechercher</b><button class="mc-x" onclick="BBXMeal.closeSearch()" aria-label="Fermer">✕</button></div>
   <div class="sr-bar"><input id="srQ" type="search" autocomplete="off" autocapitalize="off" placeholder="Ex : skyr, poulet, riz…" enterkeyhint="search"><button onclick="BBXMeal.doSearch()">Chercher</button></div>
+  <div class="sr-acts"><button onclick="BBXMeal.srScan()">📷 Scanner un code-barres</button><button onclick="BBXMeal.srManual()">✎ Ajouter à la main</button></div>
   <div class="sr-meal" id="srMeal"></div>
   <div id="srList"></div>
 </div>
@@ -2922,16 +2937,16 @@ document.addEventListener('click', function(e){
       items.map((it,i)=>`<div class="my-it" id="myit${m}-${i}"><div class="my-row" data-m="${m}" data-i="${i}"><div class="my-th">${it[7]}</div><div class="my-nm"><b>${it[0]}</b><span id="mymt${m}-${i}"></span></div><div class="my-kc"><b id="mykc${m}-${i}"></b><small>kcal</small></div><label class="my-ck"><input type="checkbox" id="mlk${m}-${i}" ${S.d[key(m,i)]?'checked':''}><span></span></label></div>
         <div class="my-edit"><div class="my-st"><button data-d="-1" aria-label="Moins">−</button><input type="number" inputmode="decimal" min="0" step="any" id="mlc${m}-${i}" value="${r2(W(m,i,it)/it[2])}"><button data-d="1" aria-label="Plus">+</button></div><span class="my-u">${it[1]}</span>
         <div class="my-wf"><input type="number" inputmode="decimal" min="0" step="any" id="mlw${m}-${i}" value="${r1(W(m,i,it))}"><span class="my-u">${it[6]}</span></div>
-        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-delmeal" onclick="BBXMeal.delMeal(${m})">🗑 Supprimer le repas</button><button class="my-addb plus" onclick="BBXMeal.add(${m})" aria-label="Ajouter à la main dans ${esc(t)}">＋</button><button class="my-addb" onclick="BBXMeal.scan(${m})" aria-label="Scanner un code-barres"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M7 12h10"/></svg></button><button class="my-addb" onclick="BBXMeal.search(${m})" aria-label="Rechercher un produit"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button></div></section>`).join('');
+        <div class="my-eact"><button onclick="BBXMeal.edit(${m},${i})">✎ Modifier</button><button class="del" onclick="BBXMeal.del(${m},${i})">🗑 Supprimer</button></div></div></div>`).join('')+`<div class="my-add"><button class="my-delmeal" onclick="BBXMeal.delMeal(${m})">🗑 Supprimer le repas</button><button class="my-addb plus" onclick="BBXMeal.habits(${m})" aria-label="Mes habitudes pour ${esc(t)}">＋</button><button class="my-addb" onclick="BBXMeal.scan(${m})" aria-label="Scanner un code-barres"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M7 12h10"/></svg></button><button class="my-addb" onclick="BBXMeal.search(${m})" aria-label="Rechercher un produit"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button></div></section>`).join('');
     MEALS.forEach(([t,ic,items],m)=>{
-      $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; }); calc(); save(); };
+      $('mlall'+m).onchange=e=>{ const on=e.target.checked; items.forEach((it,i)=>{ S.d[key(m,i)]=on; $('mlk'+m+'-'+i).checked=on; if(on) bumpHabit(MEALS[m][0],it[0],W(m,i,it)); }); calc(); save(); };
       items.forEach((it,i)=>{
         const c=$('mlc'+m+'-'+i), w=$('mlw'+m+'-'+i), step=Number.isInteger(it[3])?1:.5;
         const setN=n=>{ n=Math.max(0,n); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); c.value=r2(n); calc(); save(); };
         c.oninput=()=>{ const n=Math.max(0,parseFloat(c.value)||0); S.w[key(m,i)]=n*it[2]; w.value=r1(n*it[2]); calc(); save(); };
         w.oninput=()=>{ const n=Math.max(0,parseFloat(w.value)||0); S.w[key(m,i)]=n; c.value=r2(n/it[2]); calc(); save(); };
         c.parentNode.querySelectorAll('button').forEach(b=>b.onclick=()=>setN((parseFloat(c.value)||0)+step*b.dataset.d));
-        $('mlk'+m+'-'+i).onchange=e=>{ S.d[key(m,i)]=e.target.checked; calc(); save(); };
+        $('mlk'+m+'-'+i).onchange=e=>{ S.d[key(m,i)]=e.target.checked; if(e.target.checked) bumpHabit(MEALS[m][0],it[0],W(m,i,it)); calc(); save(); };
         $('myit'+m+'-'+i).querySelector('.my-row').onclick=e=>{ if(e.target.closest('label')||Date.now()-lastSwipe<450) return; $('myit'+m+'-'+i).classList.toggle('open'); };
       });
     });
@@ -3060,7 +3075,7 @@ document.addEventListener('click', function(e){
     const unitW=edit?fm.unitW:(fm.serving>0?fm.serving:100);
     const label=edit?fm.label:(fm.serving>0?(fm.newLabel||'portion'):'portion de 100 '+unit);
     const it=[nm,label,unitW,q/unitW,k*q/100,p*q/100,unit,emoji];
-    upsertFav(it,fm.portions);
+    upsertFav(it,fm.portions); bumpHabit(MEALS[mt][0],nm,q);
     if(edit){
       const wasDone=!!S.d[key(fm.m,fm.i)]; dropState(fm.m,fm.i);
       if(mt===fm.m){ MEALS[mt][2][fm.i]=it; } else { MEALS[fm.m][2].splice(fm.i,1); MEALS[mt][2].push(it); }
@@ -3381,6 +3396,7 @@ document.addEventListener('click', function(e){
       if(old!==name){
         if(MEALS[mn.m][3]==null) MEALS[mn.m][3]=mcol(old);          // le repas garde sa couleur
         MEALS[mn.m][2].forEach(it=>{ ['w','d'].forEach(f=>{ const k=old+'|'+it[0]; if(k in S[f]){ S[f][name+'|'+it[0]]=S[f][k]; delete S[f][k]; } }); });
+        if(HAB[old]){ HAB[name]=HAB[old]; delete HAB[old]; saveHab(); }
         MEALS[mn.m][0]=name;
       }
       MEALS[mn.m][1]=emoji;
@@ -3393,7 +3409,7 @@ document.addEventListener('click', function(e){
     const mm=MEALS[m]; if(!mm) return;
     const n=mm[2].length;
     if(!confirm('Supprimer le repas « '+mm[0]+' »'+(n?' et ses '+n+' produit'+(n>1?'s':''):'')+' ?')) return;
-    mm[2].forEach((it,i)=>dropState(m,i)); MEALS.splice(m,1); refresh();
+    mm[2].forEach((it,i)=>dropState(m,i)); delete HAB[mm[0]]; saveHab(); MEALS.splice(m,1); refresh();
   }
   // déplacer un repas : rester appuyé sur son titre, puis glisser
   (function(){
@@ -3603,12 +3619,51 @@ document.addEventListener('click', function(e){
   }
   setTimeout(checkMonday,1200);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(checkMonday,600); });
+  // ---------- habitudes : produits que je mange d'habitude, repas par repas ----------
+  const HABKEY='bb9-habits';
+  let HAB=null; try{ HAB=JSON.parse(localStorage.getItem(HABKEY)||'null'); }catch(e){}
+  const saveHab=()=>{ try{ localStorage.setItem(HABKEY,JSON.stringify(HAB)); }catch(e){} };
+  if(!HAB||typeof HAB!=='object'){ HAB={}; MEALS.forEach(([t,ic,items])=>{ HAB[t]={}; items.forEach(it=>{ HAB[t][it[0]]={n:1,g:Math.round(it[2]*it[3]*10)/10,t:0,d:''}; }); saveHab(); }); }
+  function bumpHabit(title,name,g){
+    const h=HAB[title]=HAB[title]||{}, o=h[name]||{n:0,g:g,t:0,d:''}, d=today();
+    if(o.d!==d){ o.n++; o.d=d; }            // un seul point par jour et par produit
+    if(g>0) o.g=Math.round(g*10)/10; o.t=Date.now(); h[name]=o; saveHab();
+  }
+  const hb={m:0,list:[]};
+  function habitsFor(m){
+    const title=MEALS[m][0], present=new Set(MEALS[m][2].map(it=>it[0])), H=HAB[title]||{};
+    return Object.keys(H).filter(n=>!present.has(n)).map(n=>({name:n,h:H[n],f:FAV.find(f=>f.name===n)})).filter(x=>x.f)
+      .sort((a,b)=>b.h.n-a.h.n||b.h.t-a.h.t).slice(0,25);
+  }
+  function recentFor(m){
+    const present=new Set(MEALS[m][2].map(it=>it[0]));
+    return FAV.filter(f=>!present.has(f.name)).slice(0,8).map(f=>({name:f.name,h:{n:0,g:f.serving>0?f.serving:100},f:f}));
+  }
+  function habitRow(x,i){
+    const f=x.f, uw=f.serving>0?f.serving:100, g=x.h.g>0?x.h.g:uw, lbl=f.serving>0?f.label:'portion de 100 '+f.unit;
+    return `<button class="hb-it" onclick="BBXMeal.quick(${i})"><span class="sr-th">${esc(f.emoji||'🍽️')}</span><span class="sr-nm"><b>${esc(f.name)}</b><span>${r2(g/uw)} ${esc(lbl)} · ${r(g)} ${f.unit} · ${r(f.kcal*g/100)} kcal${x.h.n>1?' · '+x.h.n+' fois':''}</span></span><span class="sr-go">＋</span></button>`;
+  }
+  function renderHabits(msg){
+    const m=hb.m; if(!MEALS[m]) return; let list=habitsFor(m), sub='Produits que tu manges d’habitude à ce repas. Touche-en un pour l’ajouter : il est tout de suite coché.';
+    if(!list.length){ list=recentFor(m); sub=list.length?'Pas encore d’habitudes pour ce repas : voici tes derniers produits.':'Pas encore d’habitudes pour ce repas. Utilise la recherche pour ajouter des produits : les plus fréquents apparaîtront ici.'; }
+    hb.list=list; $('hbTitle').textContent=MEALS[m][1]+' '+MEALS[m][0]; $('hbSub').textContent=sub; $('hbOk').textContent=msg||'';
+    $('hbList').innerHTML=list.map(habitRow).join('');
+  }
+  function openHabits(m){ hb.m=m; renderHabits(''); $('mealHabits').classList.add('show'); $('mealHabits').scrollTop=0; }
+  function quickAdd(i){
+    const x=hb.list[i]; if(!x) return; const f=x.f, m=hb.m, uw=f.serving>0?f.serving:100, g=x.h.g>0?x.h.g:uw;
+    const label=f.serving>0?(f.label||'portion'):'portion de 100 '+f.unit;
+    const it=[f.name,label,uw,g/uw,f.kcal*g/100,f.prot*g/100,f.unit,f.emoji||'🍽️'];
+    MEALS[m][2].push(it); S.d[MEALS[m][0]+'|'+f.name]=true; bumpHabit(MEALS[m][0],f.name,g); refresh(); renderHabits('✓ « '+f.name+' » ajouté et coché');
+  }
   window.BBXMeal={
     openCfg:()=>{ renderCfg(); $('mealCfg').classList.add('show'); }, closeCfg:()=>$('mealCfg').classList.remove('show'),
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
     scan:scanOpen, closeScan:closeScan, manual:manual, scanMode:setScanMode, photoMode:photoMode,
     addWeigh:()=>openWeigh('add'), goalWeigh:()=>openWeigh('goal'), saveWeigh:saveWeigh, closeWeigh:closeWeigh, wstep:wstep, delWeigh:delWeigh,
+    habits:openHabits, closeHabits:()=>$('mealHabits').classList.remove('show'), quick:quickAdd, habitsSearch:()=>{ $('mealHabits').classList.remove('show'); srOpen(hb.m); },
+    srScan:()=>scanOpen(sr.target), srManual:()=>openForm('add',sr.target),
     openHist:openHist, closeHist:()=>$('mealHist').classList.remove('show'), histDay:histDay, clearHist:clearHist,
     addMeal:()=>openName('add'), renameMeal:m=>openName('edit',m), saveName:saveName, closeName:()=>$('mealName').classList.remove('show'), delMeal:delMeal,
     addTyped:addTyped, setMeal:setMeal, unit:setUnit, qty:qtyStep, units:setQtyUnits, portion:setPortion, favDel:favDel, search:srOpen, closeSearch:closeSearch, doSearch:doSearch, pick:pick
