@@ -1481,6 +1481,39 @@ body:has(#mealView.show) .nav-pill button.on{ color:#fff; background:linear-grad
 .hb-it:active{ background:#FFEFF2; }
 .sr-acts{ display:flex; gap:8px; margin:0 0 10px; }
 .sr-acts button{ flex:1; height:44px; border-radius:12px; border:1.5px solid #DDE0E6; background:#fff; color:#15171C; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; padding:0 6px; }
+/* ===== Objectif détaillé + Coach ===== */
+.pl-hint{ font-size:12.5px; font-weight:600; color:#6B7280; line-height:1.45; margin:8px 2px 0; }
+.pl-opts{ display:flex; gap:8px; } .pl-note{ font-size:13px; font-weight:600; color:#6B7280; line-height:1.45; margin:6px 2px; }
+.pl-opt{ flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:10px 4px; border-radius:14px; border:1.5px solid #DDE0E6; background:#fff; font-family:inherit; cursor:pointer; color:#15171C; }
+.pl-opt b{ font-size:13px; font-weight:800; } .pl-opt span{ font-size:12px; font-weight:700; color:#4B5563; } .pl-opt small{ font-size:11px; font-weight:700; color:#9CA3AF; }
+.pl-opt.star{ border-color:#F5C2CB; background:#FFF7F8; } .pl-opt.on{ border-color:#E5173A; box-shadow:0 0 0 3px rgba(229,23,58,.12); }
+.pl-card{ background:#fff; border:1px solid #EAECF0; border-radius:16px; padding:6px 14px; margin:14px 0 10px; }
+.pl-line{ display:flex; justify-content:space-between; gap:10px; padding:8px 0; font-size:13px; font-weight:700; color:#4B5563; border-top:1px solid #F1F2F5; } .pl-line:first-child{ border-top:0; }
+.pl-line b{ color:#15171C; text-align:right; } .pl-line.big b{ font-size:16px; color:#E5173A; }
+.pl-rates{ display:flex; gap:6px; margin:4px 0 6px; } .pl-rates > div{ flex:1; background:#F6F7F9; border-radius:12px; padding:9px 4px; text-align:center; }
+.pl-rates b{ display:block; font-size:16px; font-weight:900; font-style:italic; color:#15171C; } .pl-rates span{ font-size:10.5px; font-weight:700; color:#6B7280; }
+.pl-verd{ border-radius:14px; padding:11px 14px; margin-bottom:10px; border:1px solid; } .pl-verd b{ display:block; font-size:15px; font-weight:900; } .pl-verd span{ font-size:12.5px; font-weight:600; line-height:1.4; }
+.pl-verd.ok{ background:#ECFDF3; border-color:#BBF7D0; color:#14532D; } .pl-verd.warn{ background:#FFFBEB; border-color:#FDE68A; color:#78350F; } .pl-verd.bad{ background:#FEF2F2; border-color:#FECACA; color:#7F1D1D; }
+.pl-gauge{ display:flex; align-items:center; gap:10px; font-size:12.5px; font-weight:700; color:#4B5563; } .pl-gauge > span{ flex:1; } .pl-gauge b{ color:#15171C; min-width:64px; text-align:right; }
+.pl-gauge div{ display:flex; gap:3px; } .pl-gauge i{ width:20px; height:8px; border-radius:4px; background:#E5E7EB; }
+.pl-gauge .g0 i:nth-child(-n+1), .pl-gauge .g1 i:nth-child(-n+1){ background:#22C55E; } .pl-gauge .g1 i:nth-child(2){ background:#22C55E; } .pl-gauge .g2 i:nth-child(-n+3){ background:#F59E0B; } .pl-gauge .g3 i{ background:#EF4444; }
+.pl-fine{ font-size:11.5px; font-weight:600; color:#9CA3AF; margin:4px 2px 4px; }
+.pl-best{ margin-top:10px; padding:11px 14px; border-radius:14px; background:#FFF7F8; border:1px solid #F5C2CB; font-size:13px; font-weight:600; color:#15171C; line-height:1.5; }
+.pl-best button{ margin-left:6px; border:0; border-radius:8px; background:#E5173A; color:#fff; font-family:inherit; font-weight:800; font-size:12px; padding:5px 10px; cursor:pointer; }
+.pl-chk{ display:flex; align-items:flex-start; gap:10px; margin:14px 2px 4px; font-size:13.5px; font-weight:700; color:#15171C; } .pl-chk input{ width:20px; height:20px; accent-color:#E5173A; flex:none; margin-top:1px; }
+.wc-plan{ stroke:#9CA3AF; stroke-width:2; stroke-dasharray:2 5; stroke-linecap:round; }
+.wg-row span small{ display:block; font-size:11px; font-weight:600; color:#9CA3AF; }
+.cc-tiles{ display:flex; gap:8px; margin-bottom:10px; } .cc-tiles > div{ flex:1; background:#F6F7F9; border-radius:14px; padding:10px 4px; text-align:center; }
+.cc-tiles b{ display:block; font-size:19px; font-weight:900; font-style:italic; color:#15171C; } .cc-tiles span{ font-size:10.5px; font-weight:700; color:#6B7280; }
+.cc-msg{ border-radius:14px; padding:11px 13px; font-size:13.5px; font-weight:700; line-height:1.45; margin-bottom:8px; border:1px solid; }
+.cc-msg.good{ background:#ECFDF3; border-color:#BBF7D0; color:#14532D; } .cc-msg.warn{ background:#FFFBEB; border-color:#FDE68A; color:#78350F; } .cc-msg.bad{ background:#FEF2F2; border-color:#FECACA; color:#7F1D1D; } .cc-msg.wait{ background:#F6F7F9; border-color:#EAECF0; color:#4B5563; }
+.cc-need{ margin:0 0 8px 18px; padding:0; font-size:13px; font-weight:600; color:#4B5563; line-height:1.5; }
+.cc-calc{ font-size:13px; font-weight:600; color:#4B5563; line-height:1.5; margin:6px 2px; } .cc-calc b{ color:#15171C; }
+.cc-waist{ border-radius:12px; padding:10px 12px; font-size:12.5px; font-weight:700; line-height:1.45; margin:8px 0; } .cc-waist.good{ background:#ECFDF3; color:#14532D; } .cc-waist.warn{ background:#FFFBEB; color:#78350F; } .cc-waist.bad{ background:#FEF2F2; color:#7F1D1D; }
+.cc-auto{ display:flex; align-items:flex-start; gap:10px; margin:12px 2px 4px; font-size:13px; font-weight:700; color:#15171C; } .cc-auto input{ width:20px; height:20px; accent-color:#E5173A; flex:none; }
+.cc-log{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:#4B5563; padding:5px 0; border-top:1px solid #F1F2F5; } .cc-log span{ flex:1; } .cc-log b{ color:#15171C; white-space:nowrap; }
+.cc-log button{ border:1px solid #F5C2CB; background:#fff; color:#C70F2E; border-radius:8px; font-family:inherit; font-weight:800; font-size:11px; padding:4px 8px; cursor:pointer; }
+.cc-note{ font-size:11.5px; font-weight:600; color:#9CA3AF; margin:8px 2px 0; }
 </style>
 </head>
 <body>
@@ -2800,11 +2833,35 @@ document.addEventListener('click', function(e){
   <button class="my-addmeal" onclick="BBXMeal.addMeal()">＋ Ajouter un repas</button>
 </div>
 <div id="mealToast" class="m-toast" role="status"><span id="toastTxt"></span><button id="toastUndo">Annuler</button></div>
+<div id="mealPlan" class="mc-ov mc-sheet" style="z-index:9400" aria-label="Objectif de poids">
+  <div class="mc-head"><b>🎯 Objectif</b><button class="mc-x" onclick="BBXMeal.closePlan()" aria-label="Fermer">✕</button></div>
+  <div class="mf-sec" style="margin-top:2px">Poids actuel</div>
+  <div class="mf-in"><input id="plCur" type="text" inputmode="decimal" placeholder="0,0" oninput="BBXMeal.plRender()" aria-label="Poids actuel"><i>kg</i></div>
+  <div class="mf-sec">Ton niveau en musculation</div>
+  <div class="mf-seg" id="plLevel"><button type="button" data-v="deb" onclick="BBXMeal.plLevel('deb')">Débutant</button><button type="button" data-v="int" onclick="BBXMeal.plLevel('int')">Intermédiaire</button><button type="button" data-v="adv" onclick="BBXMeal.plLevel('adv')">Avancé</button></div>
+  <div class="pl-hint" id="plLevelHint"></div>
+  <div class="mf-sec">Poids visé</div>
+  <div class="mf-qty"><button type="button" onclick="BBXMeal.plTarget(-0.5)" aria-label="Moins 500 g">−</button><div class="mf-in big"><input id="plTarget" type="text" inputmode="decimal" placeholder="0,0" oninput="BBXMeal.plRender()" aria-label="Poids visé"><i>kg</i></div><button type="button" onclick="BBXMeal.plTarget(0.5)" aria-label="Plus 500 g">+</button></div>
+  <div class="mf-sec">Choisis ton rythme</div>
+  <div class="pl-opts" id="plOpts"></div>
+  <div class="mf-sec">Ou règle la durée toi-même</div>
+  <div class="mf-qty"><button type="button" onclick="BBXMeal.plDur(-1)" aria-label="Moins">−</button><div class="mf-in big"><input id="plDur" type="text" inputmode="decimal" placeholder="12" oninput="BBXMeal.plRender()" aria-label="Durée"></div><button type="button" onclick="BBXMeal.plDur(1)" aria-label="Plus">+</button></div>
+  <div class="mf-seg" id="plUnit"><button type="button" data-u="days" onclick="BBXMeal.plUnit('days')">jours</button><button type="button" data-u="weeks" onclick="BBXMeal.plUnit('weeks')">semaines</button><button type="button" data-u="months" onclick="BBXMeal.plUnit('months')">mois</button></div>
+  <div id="plSum"></div>
+  <div class="mf-sec">Mon profil <small style="font-weight:600;color:#6B7280">(pour estimer tes calories)</small></div>
+  <div class="mf-seg" id="plSex"><button type="button" data-s="H" onclick="BBXMeal.plSex('H')">Homme</button><button type="button" data-s="F" onclick="BBXMeal.plSex('F')">Femme</button></div>
+  <div class="mf-pair" style="margin-top:10px"><label class="mf-f"><span>Âge</span><div class="mf-in"><input id="plAge" type="text" inputmode="numeric" placeholder="25" oninput="BBXMeal.plRender()"><i>ans</i></div></label><label class="mf-f"><span>Taille</span><div class="mf-in"><input id="plH" type="text" inputmode="numeric" placeholder="178" oninput="BBXMeal.plRender()"><i>cm</i></div></label></div>
+  <label class="mf-f" style="display:block;margin-top:10px"><span>Activité au quotidien</span><div class="mf-in"><select id="plAct" onchange="BBXMeal.plRender()" style="width:100%;border:0;background:transparent;font:700 15px inherit;font-family:inherit;color:#15171C;outline:0"><option value="1.2">Sédentaire (peu de sport)</option><option value="1.375">Légère (1–3 séances / sem.)</option><option value="1.55" selected>Modérée (3–5 séances / sem.)</option><option value="1.725">Élevée (6–7 séances / sem.)</option></select></div></label>
+  <label class="pl-chk"><input type="checkbox" id="plApply" checked><span>Mettre à jour mes objectifs de calories et de protéines</span></label>
+  <div class="mf-info err" id="plInfo"></div>
+  <div class="mf-btns" style="margin-top:12px"><button class="mc-big red" onclick="BBXMeal.savePlan()">Enregistrer l’objectif</button><button class="mc-big" onclick="BBXMeal.closePlan()">Annuler</button></div>
+</div>
 <div id="mealWeigh" class="mc-ov mc-sheet" style="z-index:9400" aria-label="Poids">
   <div class="mc-head"><b id="mwTitle">Pesée du lundi</b><button class="mc-x" onclick="BBXMeal.closeWeigh(true)" aria-label="Fermer">✕</button></div>
   <div class="mw-text" id="mwText"></div>
   <div class="mf-qty"><button type="button" onclick="BBXMeal.wstep(-0.1)" aria-label="Moins 100 g">−</button><div class="mf-in big"><input id="mwInput" type="text" inputmode="decimal" placeholder="0,0" aria-label="Poids en kg"><i>kg</i></div><button type="button" onclick="BBXMeal.wstep(0.1)" aria-label="Plus 100 g">+</button></div>
   <label class="mf-l" id="mwDateRow" style="margin-top:14px"><span style="font-size:13px;font-weight:700;color:#4B5563;text-transform:none;letter-spacing:0">Date de la pesée</span><input type="date" id="mwDate"></label>
+  <label class="mf-l" id="mwWaistRow" style="margin-top:14px"><span style="font-size:13px;font-weight:700;color:#4B5563;text-transform:none;letter-spacing:0">Tour de taille en cm (facultatif — aide à repérer le gras)</span><input type="text" inputmode="decimal" id="mwWaist" placeholder="ex : 84"></label>
   <div class="mf-info err" id="mwInfo"></div>
   <div class="mf-btns" style="margin-top:14px"><button class="mc-big red" id="mwOk" onclick="BBXMeal.saveWeigh()">Enregistrer</button><button class="mc-big" id="mwLater" onclick="BBXMeal.closeWeigh(true)">Plus tard</button></div>
 </div>
@@ -2951,7 +3008,7 @@ document.addEventListener('click', function(e){
       });
     });
     $('mlKg').value=S.kg; $('mlPg').value=S.pg;
-    $('mlKg').oninput=e=>{ S.kg=Math.max(1,+e.target.value||1); calc(); save(); };
+    $('mlKg').oninput=e=>{ S.kg=Math.max(1,+e.target.value||1); if(WT.plan){ WT.plan.lastAdj=dkey(new Date()); saveWT(); } calc(); save(); };
     $('mlPg').oninput=e=>{ S.pg=Math.max(1,+e.target.value||1); calc(); save(); };
     try{ $('mlDate').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); }catch(e){}
   }
@@ -3519,10 +3576,10 @@ document.addEventListener('click', function(e){
     for(let i=htN-1;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i); const k=dkey(d); days.push({k:k,d:d,h:HIST[k]||null}); }
     const have=days.filter(x=>x.h);
     [...$('htSeg').children].forEach(b=>b.classList.toggle('on',+b.dataset.n===htN));
-    if(!have.length){ $('htBody').innerHTML=weightHTML()+'<div class="ht-empty">Pas encore d’historique.<br>Chaque jour est enregistré automatiquement dès que tu coches ce que tu as mangé : reviens ici demain pour voir ta progression.</div>'; return; }
+    if(!have.length){ $('htBody').innerHTML=weightHTML()+coachHTML()+'<div class="ht-empty">Pas encore d’historique.<br>Chaque jour est enregistré automatiquement dès que tu coches ce que tu as mangé : reviens ici demain pour voir ta progression.</div>'; return; }
     const avg=f=>have.reduce((a,x)=>a+x.h[f],0)/have.length;
     const okK=have.filter(x=>x.h.k>=x.h.kg*0.95).length, okP=have.filter(x=>x.h.p>=x.h.pg*0.95).length;
-    let h=weightHTML()+`<div class="ht-tiles"><div><b>${r(avg('k'))}</b><span>kcal / jour</span></div><div><b>${r(avg('p'))}</b><span>g prot. / jour</span></div><div><b>${have.length}/${days.length}</b><span>jours suivis</span></div></div>`;
+    let h=weightHTML()+coachHTML()+`<div class="ht-tiles"><div><b>${r(avg('k'))}</b><span>kcal / jour</span></div><div><b>${r(avg('p'))}</b><span>g prot. / jour</span></div><div><b>${have.length}/${days.length}</b><span>jours suivis</span></div></div>`;
     h+=`<div class="ht-ok"><span>🔥 Calories atteintes <b>${okK}/${have.length}</b></span><span>💪 Protéines atteintes <b>${okP}/${have.length}</b></span></div>`;
     h+=barsHTML(days,'k',S.kg,'Calories','#E5173A','kcal')+barsHTML(days,'p',S.pg,'Protéines','#F59E0B','g');
     h+='<div class="ht-sec">Jour par jour</div>';
@@ -3537,41 +3594,73 @@ document.addEventListener('click', function(e){
     }).join('');
     $('htBody').innerHTML=h;
   }
-  function openHist(){ renderHist(); $('mealHist').classList.add('show'); $('mealHist').scrollTop=0; }
+  function openHist(){ autoAdjust(); renderHist(); $('mealHist').classList.add('show'); $('mealHist').scrollTop=0; }
   [...$('htSeg').children].forEach(b=>b.addEventListener('click',()=>{ htN=+b.dataset.n; renderHist(); }));
   function histDay(k){ htOpen[k]=!htOpen[k]; renderHist(); }
   function clearHist(){ if(!confirm('Effacer tout l’historique des jours ?')) return; HIST={}; saveHist(); recordTodayNow(); renderHist(); }
   function recordTodayNow(){ calc(); }
-  // ---------- poids : pesée du lundi, évolution par semaine, objectif ----------
+  // ---------- poids : pesée du lundi, objectif détaillé, coach qui s'adapte ----------
   const WKEY='bb9-weight';
-  let WT={log:{},goal:null};
-  try{ const x=JSON.parse(localStorage.getItem(WKEY)||'null'); if(x&&typeof x==='object'){ WT.log=x.log||{}; WT.goal=x.goal||null; } }catch(e){}
+  let WT={log:{},goal:null,plan:null,prof:{},cal:{auto:true,log:[]},waist:{}};
+  try{ const x=JSON.parse(localStorage.getItem(WKEY)||'null'); if(x&&typeof x==='object'){ WT.log=x.log||{}; WT.goal=x.goal||null; WT.plan=x.plan||null; WT.prof=x.prof||{}; WT.cal=Object.assign({auto:true,log:[]},x.cal||{}); WT.waist=x.waist||{}; } }catch(e){}
   const saveWT=()=>{ try{ localStorage.setItem(WKEY,JSON.stringify(WT)); }catch(e){} };
   const fk=v=>String(Math.round(v*10)/10).replace('.',',');
+  const f2=v=>String(Math.round(v*100)/100).replace('.',',');
   const fd=k=>{ const a=k.split('-'); return new Date(+a[0],+a[1]-1,+a[2]); };
   const monday=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));
   const weekIdx=d=>Math.round(monday(d).getTime()/604800000);
   const shortDate=k=>fd(k).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+  const round25=v=>Math.round(v/25)*25;
+  const KCAL_KG=1100;   // kcal par jour pour 1 kg/semaine (≈ 7 700 kcal par kg de poids)
+  // repères indicatifs : prise de poids hebdomadaire, en % du poids de corps, pour limiter le gras
+  const LEVELS={deb:{n:'Débutant',lo:0.25,hi:0.5,t:'Moins d’un an de pratique régulière : le corps répond vite, tu peux prendre un peu plus vite.'},int:{n:'Intermédiaire',lo:0.15,hi:0.3,t:'1 à 3 ans de pratique : le muscle se construit plus lentement, il faut un rythme plus doux.'},adv:{n:'Avancé',lo:0.07,hi:0.15,t:'Plus de 3 ans : la marge de progression est faible, un petit surplus suffit.'}};
+  const lastWeight=()=>{ const L=Object.keys(WT.log).sort(); return L.length?{k:L[L.length-1],kg:WT.log[L[L.length-1]]}:null; };
+  function maintenance(kg){
+    const p=WT.prof||{}; if(!(p.h>0&&p.age>0&&p.act>0&&kg>0)) return null;
+    return Math.round((10*kg+6.25*p.h-5*p.age+(p.sex==='F'?-161:5))*p.act);
+  }
+  function evalPlan(cur,target,weeks,level){
+    const L=LEVELS[level]||LEVELS.deb, diff=target-cur, rate=weeks>0?diff/weeks:0, pct=cur>0?Math.abs(rate)/cur*100:0; let v,fat;
+    if(Math.abs(diff)<0.05){ v='same'; fat=0; }
+    else if(diff>0){ if(pct<L.lo*0.6){ v='slow2'; fat=0; } else if(pct<L.lo){ v='slow'; fat=0; } else if(pct<=L.hi){ v='ideal'; fat=1; } else if(pct<=L.hi*1.4){ v='fast'; fat=2; } else { v='toofast'; fat=3; } }
+    else{ if(pct<=0.75){ v='loss'; fat=0; } else { v='lossfast'; fat=3; } }
+    return {diff:diff,rate:rate,pct:pct,v:v,fat:fat,lo:L.lo,hi:L.hi};
+  }
+  const VERD={
+    same:['➖','Poids inchangé','Tu vises le poids actuel : c’est du maintien.','ok'],
+    slow2:['🐢','Très lent','Presque invisible : raccourcis la durée pour progresser.','warn'],
+    slow:['🐢','Un peu lent','Prudent. Tu peux accélérer un peu sans prendre de gras.','ok'],
+    ideal:['✅','Rythme idéal','Prise surtout de muscle, très peu de gras.','ok'],
+    fast:['⚠️','Un peu trop rapide','Une part de gras apparaît : allonge un peu la durée ou surveille ton tour de taille.','warn'],
+    toofast:['⛔','Trop rapide','Surtout du gras à ce rythme. Allonge la durée.','bad'],
+    loss:['📉','Perte progressive','Rythme raisonnable pour garder le muscle.','ok'],
+    lossfast:['⛔','Perte trop rapide','Risque de perdre du muscle : allonge la durée.','bad']
+  };
+  const FATL=['Très faible','Faible','Modéré','Élevé'];
+  // --- graphique du poids (avec trajectoire prévue) ---
   function wtChart(pts){
-    const goal=WT.goal, vals=pts.map(p=>p.kg).concat(goal?[goal]:[]);
+    const goal=WT.goal, pl=WT.plan, vals=pts.map(p=>p.kg).concat(goal?[goal]:[]).concat(pl?[pl.startKg]:[]);
     let lo=Math.min(...vals), hi=Math.max(...vals); if(hi-lo<2){ const m=(hi+lo)/2; lo=m-1; hi=m+1; } lo-=0.5; hi+=0.5;
-    const W=340,H=176,pl=38,pr=14,pt=16,pb=28,w=W-pl-pr,h=H-pt-pb, w0=pts[0].wk, span=Math.max(1,pts[pts.length-1].wk-w0);
-    const X=wk=>pl+(pts.length===1?w/2:(wk-w0)/span*w), Y=v=>pt+(1-(v-lo)/(hi-lo))*h;
-    let g=''; for(let i=0;i<4;i++){ const v=lo+(hi-lo)*i/3, y=Y(v); g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" class="wc-grid"/><text x="${pl-6}" y="${y+4}" class="wc-y">${fk(v)}</text>`; }
-    if(goal) g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(goal)}" y2="${Y(goal)}" class="wc-goal"/><text x="${W-pr}" y="${Y(goal)-5}" class="wc-gl">Objectif ${fk(goal)}</text>`;
-    const line=pts.map(p=>X(p.wk)+','+Y(p.kg)).join(' ');
-    g+=(pts.length>1?`<polyline points="${line}" class="wc-line"/>`:'')+pts.map((p,i)=>`<circle cx="${X(p.wk)}" cy="${Y(p.kg)}" r="${i===pts.length-1?5:3.5}" class="wc-dot${i===pts.length-1?' last':''}"/>`).join('');
+    const W=340,H=176,pl0=38,pr=14,pt=16,pb=28,w=W-pl0-pr,h=H-pt-pb; let w0=pts[0].wk, w1=pts[pts.length-1].wk, pw0=0, pw1=0, endK=null;
+    if(pl){ pw0=weekIdx(fd(pl.start)); pw1=pw0+pl.weeks; w0=Math.min(w0,pw0); w1=Math.max(w1,pw1); endK=dkey(addDays(fd(pl.start),Math.round(pl.weeks*7))); }
+    const span=Math.max(1,w1-w0), X=wk=>pl0+((pts.length===1&&!pl)?w/2:(wk-w0)/span*w), Y=v=>pt+(1-(v-lo)/(hi-lo))*h;
+    let g=''; for(let i=0;i<4;i++){ const v=lo+(hi-lo)*i/3, y=Y(v); g+=`<line x1="${pl0}" x2="${W-pr}" y1="${y}" y2="${y}" class="wc-grid"/><text x="${pl0-6}" y="${y+4}" class="wc-y">${fk(v)}</text>`; }
+    if(goal) g+=`<line x1="${pl0}" x2="${W-pr}" y1="${Y(goal)}" y2="${Y(goal)}" class="wc-goal"/><text x="${W-pr}" y="${Y(goal)-5}" class="wc-gl">Objectif ${fk(goal)}</text>`;
+    if(pl) g+=`<line x1="${X(pw0)}" y1="${Y(pl.startKg)}" x2="${X(pw1)}" y2="${Y(pl.target)}" class="wc-plan"/>`;
+    g+=(pts.length>1?`<polyline points="${pts.map(p=>X(p.wk)+','+Y(p.kg)).join(' ')}" class="wc-line"/>`:'')+pts.map((p,i)=>`<circle cx="${X(p.wk)}" cy="${Y(p.kg)}" r="${i===pts.length-1?5:3.5}" class="wc-dot${i===pts.length-1?' last':''}"/>`).join('');
     const lp=pts[pts.length-1]; g+=`<text x="${Math.min(W-pr-16,X(lp.wk))}" y="${Y(lp.kg)-10}" class="wc-val">${fk(lp.kg)}</text>`;
-    const xs=pts.length<=4?pts:[pts[0],pts[Math.floor(pts.length/2)],lp];
-    g+=xs.map(p=>`<text x="${X(p.wk)}" y="${H-8}" class="wc-x">${shortDate(p.k)}</text>`).join('');
+    const xs=[pts[0],lp]; if(endK&&weekIdx(fd(endK))>lp.wk+1) xs.push({wk:pw1,k:endK}); const seen={};
+    g+=xs.filter(p=>{ const k=Math.round(X(p.wk)/18); if(seen[k]) return false; seen[k]=1; return true; }).map(p=>{ const x=X(p.wk), an=x>W-34?'end':(x<pl0+10?'start':'middle'); return `<text x="${an==='end'?W-pr:(an==='start'?pl0:x)}" y="${H-8}" class="wc-x" text-anchor="${an}">${shortDate(p.k)}</text>`; }).join('');
     return `<svg viewBox="0 0 ${W} ${H}" class="wc" role="img" aria-label="Évolution du poids par semaine">${g}</svg>`;
   }
+  // --- carte « Poids » ---
   function weightHTML(){
     const L=Object.keys(WT.log).sort().map(k=>({k:k,kg:WT.log[k]}));
-    const btns='<div class="wg-btns"><button onclick="BBXMeal.addWeigh()">＋ Ajouter une pesée</button><button onclick="BBXMeal.goalWeigh()">🎯 Objectif'+(WT.goal?' : '+fk(WT.goal)+' kg':'')+'</button></div>';
+    const btns='<div class="wg-btns"><button onclick="BBXMeal.addWeigh()">＋ Ajouter une pesée</button><button onclick="BBXMeal.goalWeigh()">🎯 '+(WT.plan?'Modifier l’objectif':'Définir un objectif')+'</button></div>';
     if(!L.length) return '<div class="ht-card wg"><div class="ht-title" style="margin-bottom:10px">⚖️ Poids<small>'+(WT.goal?'objectif '+fk(WT.goal)+' kg':'')+'</small></div><div class="wg-empty">Pas encore de pesée. Chaque lundi, l’appli te demande ton poids : l’évolution s’affichera ici semaine après semaine. Tu peux aussi en ajouter une maintenant.</div>'+btns+'</div>';
     const last=L[L.length-1], prev=L.length>1?L[L.length-2]:null, first=L[0];
-    const wk={}; L.forEach(x=>{ wk[weekIdx(fd(x.k))]={wk:weekIdx(fd(x.k)),kg:x.kg,k:x.k}; });
+    const wk={}; L.forEach(x=>{ const i=weekIdx(fd(x.k)); wk[i]={wk:i,kg:x.kg,k:x.k}; });
     const pts=Object.keys(wk).map(Number).sort((a,b)=>a-b).slice(-12).map(i=>wk[i]);
     const sgn=v=>(v>0?'+':v<0?'−':'')+fk(Math.abs(v));
     let t='<div class="wg-tiles"><div><b>'+fk(last.kg)+'</b><span>kg · '+shortDate(last.k)+'</span></div>';
@@ -3581,37 +3670,41 @@ document.addEventListener('click', function(e){
     if(WT.goal){
       const rest=WT.goal-last.kg, reached=Math.abs(rest)<0.05;
       goalTxt='<div class="wg-goal">'+(reached?'🎯 Objectif atteint ! ('+fk(WT.goal)+' kg)':'🎯 Objectif <b>'+fk(WT.goal)+' kg</b> · reste <b>'+fk(Math.abs(rest))+' kg</b> à '+(rest>0?'prendre':'perdre'));
-      const weeks=weekIdx(fd(last.k))-weekIdx(fd(first.k));
-      if(!reached&&weeks>=3){ const rate=(last.kg-first.kg)/weeks; if(rate!==0&&Math.sign(rate)===Math.sign(rest)){ const need=Math.ceil(Math.abs(rest/rate)); goalTxt+='<small>Au rythme actuel ('+(rate>0?'+':'−')+fk(Math.abs(rate))+' kg/semaine) : environ '+need+' semaine'+(need>1?'s':'')+' (estimation).</small>'; } else goalTxt+='<small>Au rythme actuel, tu t’éloignes de l’objectif.</small>'; }
+      const pl=WT.plan;
+      if(pl&&!reached){
+        const elapsed=(Date.now()-fd(pl.start).getTime())/604800000, planned=pl.startKg+pl.rate*Math.min(elapsed,pl.weeks), gap=last.kg-planned;
+        const ahead=(pl.rate>=0)?gap>=0:gap<=0;
+        goalTxt+='<small>Plan : '+(pl.rate>=0?'+':'−')+f2(Math.abs(pl.rate))+' kg/semaine sur '+fk(pl.weeks)+' semaines. '+(Math.abs(gap)<0.15?'Tu es pile sur la trajectoire.':'Tu as '+fk(Math.abs(gap))+' kg '+(ahead?'d’avance':'de retard')+' sur la trajectoire prévue.')+'</small>';
+      }else if(!reached){
+        const weeks=weekIdx(fd(last.k))-weekIdx(fd(first.k));
+        if(weeks>=3){ const rate=(last.kg-first.kg)/weeks; if(rate!==0&&Math.sign(rate)===Math.sign(rest)){ const need=Math.ceil(Math.abs(rest/rate)); goalTxt+='<small>Au rythme actuel ('+(rate>0?'+':'−')+fk(Math.abs(rate))+' kg/semaine) : environ '+need+' semaine'+(need>1?'s':'')+' (estimation).</small>'; } }
+      }
       goalTxt+='</div>';
     }
-    const rows=L.slice(-8).reverse().map((x,i,arr)=>{ const pv=L[L.length-1-i-1]; const dl=pv?x.kg-pv.kg:null;
-      return `<div class="wg-row"><span>${fd(x.k).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}</span><b>${fk(x.kg)} kg</b><em class="${dl>0?'up':dl<0?'down':''}">${dl==null?'':sgn(dl)}</em><button onclick="BBXMeal.delWeigh('${x.k}')" aria-label="Supprimer cette pesée">✕</button></div>`; }).join('');
+    const rows=L.slice(-8).reverse().map((x,i)=>{ const pv=L[L.length-1-i-1]; const dl=pv?x.kg-pv.kg:null, wa=WT.waist[x.k];
+      return `<div class="wg-row"><span>${fd(x.k).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}${wa?'<small>taille '+fk(wa)+' cm</small>':''}</span><b>${fk(x.kg)} kg</b><em class="${dl>0?'up':dl<0?'down':''}">${dl==null?'':sgn(dl)}</em><button onclick="BBXMeal.delWeigh('${x.k}')" aria-label="Supprimer cette pesée">✕</button></div>`; }).join('');
     return '<div class="ht-card wg"><div class="ht-title" style="margin-bottom:12px">⚖️ Poids<small>par semaine</small></div>'+t+goalTxt+wtChart(pts)+btns+'<div class="ht-sub">Dernières pesées</div>'+rows+'</div>';
   }
+  // --- fenêtre de pesée ---
   const mw={mode:'monday'}; let weighSkip=0;
   function openWeigh(mode){
     mw.mode=mode; const L=Object.keys(WT.log).sort(), last=L.length?WT.log[L[L.length-1]]:null;
     $('mwInfo').textContent=''; $('mwDateRow').style.display=mode==='add'?'block':'none'; $('mwLater').textContent=mode==='monday'?'Plus tard':'Annuler';
-    if(mode==='goal'){ $('mwTitle').textContent='Objectif de poids'; $('mwText').textContent=WT.goal?'Ton objectif actuel : '+fk(WT.goal)+' kg.':'Quel poids veux-tu atteindre ?'; $('mwInput').value=WT.goal?fk(WT.goal):(last?fk(last):''); $('mwOk').textContent='Enregistrer l’objectif'; }
-    else{
-      $('mwTitle').textContent=mode==='monday'?'⚖️ Pesée du lundi':'Ajouter une pesée';
-      $('mwText').textContent=(mode==='monday'?'C’est lundi : quel est ton poids ce matin ?':'Quel poids veux-tu enregistrer ?')+(last!=null?' Dernière pesée : '+fk(last)+' kg ('+shortDate(L[L.length-1])+').':'');
-      $('mwInput').value=last!=null?fk(last):''; $('mwDate').value=dkey(new Date()); $('mwDate').max=dkey(new Date()); $('mwOk').textContent='Enregistrer';
-    }
+    $('mwTitle').textContent=mode==='monday'?'⚖️ Pesée du lundi':'Ajouter une pesée';
+    $('mwText').textContent=(mode==='monday'?'C’est lundi : quel est ton poids ce matin ?':'Quel poids veux-tu enregistrer ?')+(last!=null?' Dernière pesée : '+fk(last)+' kg ('+shortDate(L[L.length-1])+').':'');
+    $('mwInput').value=last!=null?fk(last):''; $('mwDate').value=dkey(new Date()); $('mwDate').max=dkey(new Date()); $('mwWaist').value=''; $('mwOk').textContent='Enregistrer';
     $('mealWeigh').classList.add('show'); setTimeout(()=>{ try{ $('mwInput').focus(); $('mwInput').select(); }catch(e){} },250);
   }
   function closeWeigh(skip){ $('mealWeigh').classList.remove('show'); if(skip&&mw.mode==='monday') weighSkip=Date.now(); }
   function saveWeigh(){
     const v=num($('mwInput').value);
     if(!(v>=20&&v<=400)){ $('mwInfo').textContent='Indique un poids valide, en kg.'; return; }
-    const kg=Math.round(v*10)/10;
-    if(mw.mode==='goal') WT.goal=kg; else WT.log[mw.mode==='monday'?dkey(new Date()):($('mwDate').value||dkey(new Date()))]=kg;
-    saveWT(); $('mealWeigh').classList.remove('show'); if($('mealHist').classList.contains('show')) renderHist();
+    const kg=Math.round(v*10)/10, k=mw.mode==='monday'?dkey(new Date()):($('mwDate').value||dkey(new Date()));
+    WT.log[k]=kg; const wv=num($('mwWaist').value); if(wv>=40&&wv<=250) WT.waist[k]=Math.round(wv*10)/10;
+    saveWT(); $('mealWeigh').classList.remove('show'); autoAdjust(); if($('mealHist').classList.contains('show')) renderHist();
   }
   function wstep(d){ const v=num($('mwInput').value); $('mwInput').value=fk(Math.max(20,Math.round(((isNaN(v)?70:v)+d)*10)/10)); }
-  function delWeigh(k){ if(!confirm('Supprimer la pesée du '+shortDate(k)+' ?')) return; delete WT.log[k]; saveWT(); renderHist(); }
-  // tous les lundis : demander le poids tant qu'il n'est pas saisi
+  function delWeigh(k){ if(!confirm('Supprimer la pesée du '+shortDate(k)+' ?')) return; delete WT.log[k]; delete WT.waist[k]; saveWT(); renderHist(); }
   function checkMonday(){
     const now=new Date(); if(now.getDay()!==1) return;
     if(WT.log[dkey(now)]!=null||$('mealWeigh').classList.contains('show')||Date.now()-weighSkip<2*3600*1000) return;
@@ -3619,6 +3712,122 @@ document.addEventListener('click', function(e){
   }
   setTimeout(checkMonday,1200);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(checkMonday,600); });
+  // --- fenêtre « Objectif » : rythmes par jour / semaine / mois, verdict, calories conseillées ---
+  const pl={level:'deb',unit:'weeks',sex:'H'};
+  const durWeeks=()=>{ const v=num($('plDur').value)||0; return pl.unit==='days'?v/7:pl.unit==='months'?v*52/12:v; };
+  function setSeg(id,attr,val){ [...$(id).children].forEach(b=>b.classList.toggle('on',b.dataset[attr]===val)); }
+  function planOptions(cur,target){
+    const L=LEVELS[pl.level]; if(!(cur>0)||!(target>0)||Math.abs(target-cur)<0.05) return [];
+    const diff=target-cur, loss=diff<0, pcts=loss?[0.3,0.5,0.75]:[L.lo,(L.lo+L.hi)/2,L.hi], names=loss?['Doux','Recommandé','Soutenu']:['Prudent','Recommandé','Rapide'];
+    return pcts.map((pc,i)=>{ const rate=pc/100*cur, weeks=Math.max(1,Math.ceil(Math.abs(diff)/rate)); return {name:names[i],star:i===1,rate:rate,weeks:weeks}; });
+  }
+  function renderPlan(){
+    const cur=num($('plCur').value)||0, target=num($('plTarget').value)||0, weeks=durWeeks();
+    setSeg('plLevel','v',pl.level); setSeg('plUnit','u',pl.unit); setSeg('plSex','s',pl.sex); $('plLevelHint').textContent=LEVELS[pl.level].t+' Repère : +'+f2(LEVELS[pl.level].lo)+' à +'+f2(LEVELS[pl.level].hi)+' % du poids par semaine.';
+    const opts=planOptions(cur,target);
+    $('plOpts').innerHTML=opts.length?opts.map((o,i)=>`<button type="button" class="pl-opt${o.star?' star':''}${Math.abs(weeks-o.weeks)<=Math.max(0.5,o.weeks*0.08)?' on':''}" onclick="BBXMeal.plPick(${i})"><b>${o.star?'★ ':''}${o.name}</b><span>${o.rate>=0?'+':'−'}${f2(Math.abs(o.rate))} kg/sem.</span><small>${o.weeks} sem.</small></button>`).join(''):'<div class="pl-note">Indique ton poids actuel et ton poids visé pour voir les rythmes conseillés.</div>';
+    pl.opts=opts;
+    if(!(cur>0&&target>0&&weeks>0)){ $('plSum').innerHTML='<div class="pl-note">Renseigne le poids actuel, le poids visé et la durée.</div>'; return; }
+    const e=evalPlan(cur,target,weeks,pl.level), V=VERD[e.v], perDay=e.rate/7*1000, perMonth=e.rate*52/12, sg=e.rate>=0?'+':'−';
+    let h=`<div class="pl-card"><div class="pl-line"><span>Variation totale</span><b>${e.diff>=0?'+':'−'}${fk(Math.abs(e.diff))} kg</b></div>`;
+    h+=`<div class="pl-rates"><div><b>${sg}${Math.round(Math.abs(perDay))} g</b><span>par jour</span></div><div><b>${sg}${f2(Math.abs(e.rate))} kg</b><span>par semaine</span></div><div><b>${sg}${fk(Math.abs(perMonth))} kg</b><span>par mois</span></div></div>`;
+    h+=`<div class="pl-line"><span>Durée</span><b>${fk(weeks)} sem. · ${f2(weeks*7/30.4)} mois · ${Math.round(weeks*7)} jours</b></div><div class="pl-line"><span>Rythme (% du poids / sem.)</span><b>${f2(e.pct)} %</b></div></div>`;
+    h+=`<div class="pl-verd ${V[3]}"><b>${V[0]} ${V[1]}</b><span>${V[2]}</span></div>`;
+    h+=`<div class="pl-gauge"><span>Risque de prendre du gras</span><div class="g${e.fat}"><i></i><i></i><i></i><i></i></div><b>${FATL[e.fat]}</b></div><div class="pl-fine">Estimation d’après le rythme, pas une mesure de ta composition corporelle.</div>`;
+    const M=maintenance(cur), sur=e.rate*KCAL_KG, prot=Math.round(2*cur);
+    if(M) h+=`<div class="pl-card"><div class="pl-line"><span>Calories d’entretien estimées</span><b>≈ ${M} kcal</b></div><div class="pl-line"><span>${sur>=0?'Surplus':'Déficit'} conseillé</span><b>${sur>=0?'+':'−'}${Math.round(Math.abs(sur))} kcal/jour</b></div><div class="pl-line big"><span>Calories conseillées</span><b>≈ ${round25(M+sur)} kcal/jour</b></div><div class="pl-line"><span>Protéines conseillées (2 g/kg)</span><b>≈ ${prot} g/jour</b></div></div>`;
+    else h+='<div class="pl-note">Renseigne ton profil (âge, taille, activité) pour estimer tes calories.</div>';
+    const best=opts[1]; if(best&&e.v!=='ideal'&&e.v!=='loss'&&e.v!=='same') h+=`<div class="pl-best">★ Meilleur choix pour toi : <b>${best.rate>=0?'+':'−'}${f2(Math.abs(best.rate))} kg/semaine</b>, soit <b>${best.weeks} semaines</b>. <button onclick="BBXMeal.plPick(1)">Utiliser</button></div>`;
+    $('plSum').innerHTML=h;
+  }
+  function openPlan(){
+    const lw=lastWeight(), p=WT.plan, pr=WT.prof||{};
+    $('plInfo').textContent=''; pl.level=(p&&p.level)||pr.level||'deb'; pl.sex=pr.sex||'H';
+    $('plCur').value=lw?fk(lw.kg):(p?fk(p.startKg):''); $('plAge').value=pr.age||''; $('plH').value=pr.h||''; $('plAct').value=String(pr.act||1.55);
+    if(p){ pl.unit=p.unit||'weeks'; $('plTarget').value=fk(p.target); $('plDur').value=String(p.dur||Math.round(p.weeks)); }
+    else{ pl.unit='weeks'; const c=lw?lw.kg:0; $('plTarget').value=WT.goal?fk(WT.goal):(c?fk(Math.round((c+3)*2)/2):''); const o=planOptions(c,num($('plTarget').value)||0); $('plDur').value=o[1]?String(o[1].weeks):'12'; }
+    renderPlan(); $('mealPlan').classList.add('show'); $('mealPlan').scrollTop=0;
+  }
+  function savePlan(){
+    const cur=num($('plCur').value), target=num($('plTarget').value), dur=num($('plDur').value), weeks=durWeeks();
+    const err=t=>{ $('plInfo').textContent=t; };
+    if(!(cur>=20&&cur<=400)) return err('Indique ton poids actuel, en kg.');
+    if(!(target>=20&&target<=400)) return err('Indique le poids que tu vises, en kg.');
+    if(!(weeks>=1)) return err('La durée doit être d’au moins une semaine.');
+    const today0=dkey(new Date()), lw=lastWeight();
+    if(!lw||Math.abs(lw.kg-cur)>=0.05) WT.log[today0]=Math.round(cur*10)/10;
+    WT.goal=Math.round(target*10)/10;
+    WT.prof={sex:pl.sex,age:num($('plAge').value)||0,h:num($('plH').value)||0,act:parseFloat($('plAct').value)||1.55,level:pl.level};
+    const rate=(target-cur)/weeks, apply=$('plApply').checked;
+    WT.plan={start:today0,startKg:Math.round(cur*10)/10,target:WT.goal,weeks:weeks,unit:pl.unit,dur:dur,level:pl.level,rate:rate,applyProt:apply,lastAdj:null};
+    if(apply){
+      const M=maintenance(cur); if(M){ const to=Math.max(1200,Math.min(6000,round25(M+rate*KCAL_KG))); logCal(S.kg,to,'Nouvel objectif de poids'); S.kg=to; }
+      S.pg=Math.round(2*cur); syncGoalInputs();
+    }
+    saveWT(); $('mealPlan').classList.remove('show'); if($('mealHist').classList.contains('show')) renderHist();
+  }
+  function syncGoalInputs(){ $('mlKg').value=S.kg; $('mlPg').value=S.pg; calc(); save(); }
+  function logCal(from,to,why){ if(from===to) return; WT.cal.log.unshift({d:dkey(new Date()),from:from,to:to,why:why}); WT.cal.log.length=Math.min(WT.cal.log.length,20); }
+  // --- coach : compare le rythme réel au plan et corrige les calories ---
+  function analyse(){
+    const p=WT.plan; if(!p) return {state:'noplan'};
+    const now=new Date(), start=addDays(now,-21), L=Object.keys(WT.log).sort().filter(k=>fd(k)>=start).map(k=>({t:fd(k).getTime()/86400000,kg:WT.log[k],k:k}));
+    const days=Object.keys(HIST).filter(k=>fd(k)>=start&&k!==dkey(now)).map(k=>HIST[k]).filter(h=>h.k>=h.kg*0.6);
+    const since=p.lastAdj||p.start, wait=Math.ceil(14-(now.getTime()-fd(since).getTime())/86400000), need=[];
+    if(L.length<3||(L[L.length-1].t-L[0].t)<10) need.push('au moins 3 pesées espacées de 10 jours ou plus (tu en as '+L.length+')');
+    if(days.length<7) need.push('au moins 7 jours de repas cochés (tu en as '+days.length+')');
+    if(wait>0) need.push('encore '+wait+' jour'+(wait>1?'s':'')+' depuis '+(p.lastAdj?'le dernier réglage':'le début du plan'));
+    const base={state:'wait',need:need,nW:L.length,nD:days.length,wait:wait};
+    if(need.length) return base;
+    const n=L.length, mt=L.reduce((a,x)=>a+x.t,0)/n, mk=L.reduce((a,x)=>a+x.kg,0)/n; let sxy=0,sxx=0; L.forEach(x=>{ sxy+=(x.t-mt)*(x.kg-mk); sxx+=(x.t-mt)*(x.t-mt); });
+    const rObs=sxx>0?sxy/sxx*7:0, rT=p.rate, I=days.reduce((a,x)=>a+x.k,0)/days.length, tdee=I-rObs*KCAL_KG, ideal=tdee+rT*KCAL_KG;
+    let delta=ideal-S.kg; delta=Math.max(-250,Math.min(250,delta)); const newK=Math.max(1200,Math.min(6000,round25(S.kg+delta))), tol=Math.max(0.07,Math.abs(rT)*0.3), err=rObs-rT;
+    const under=rT>=0?err<-tol:err>tol, over=rT>=0?err>tol:err<-tol, stall=Math.abs(rObs)<0.05&&Math.abs(rT)>=0.1;
+    let st=under?(stall?'stall':'low'):(over?'high':'ok'); if(st!=='ok'&&Math.abs(newK-S.kg)<75) st='ok';
+    // tour de taille : indice de gras (facultatif)
+    let waist=null; const W=Object.keys(WT.waist).sort().filter(k=>fd(k)>=start);
+    if(W.length>=2){ const a=W[0], b=W[W.length-1], dw=WT.waist[b]-WT.waist[a], dk=(WT.log[b]!=null?WT.log[b]:null)-(WT.log[a]!=null?WT.log[a]:null); if(dk>0.4) waist={dw:dw,dk:dk,ratio:dw/dk}; }
+    return {state:st,rObs:rObs,rT:rT,I:I,tdee:tdee,newK:newK,delta:newK-S.kg,waist:waist,nW:n,nD:days.length};
+  }
+  function coachMsg(a){
+    const o=a.rObs, t=a.rT, sg=v=>(v>=0?'+':'−')+f2(Math.abs(v));
+    if(a.state==='ok') return '✅ Tu avances au bon rythme : '+sg(o)+' kg/sem. pour '+sg(t)+' visé. Garde tes calories.';
+    if(a.state==='stall') return '⏸ Ton poids stagne ('+sg(o)+' kg/sem. pour '+sg(t)+' visé). Il faut manger un peu plus : +'+Math.abs(a.delta)+' kcal.';
+    if(a.state==='low') return '🐢 Tu progresses trop lentement ('+sg(o)+' kg/sem. pour '+sg(t)+' visé). '+(a.delta>0?'Ajoute '+a.delta+' kcal.':'Retire '+Math.abs(a.delta)+' kcal.');
+    return '⚠️ Tu '+(t>=0?'prends':'perds')+' trop vite ('+sg(o)+' kg/sem. pour '+sg(t)+' visé) : '+(t>=0?'risque de gras. ':'risque de perdre du muscle. ')+(a.delta<0?'Retire '+Math.abs(a.delta)+' kcal.':'Ajoute '+a.delta+' kcal.');
+  }
+  function applyCoach(why){
+    const a=analyse(); if(!['stall','low','high'].includes(a.state)) return false;
+    const from=S.kg; logCal(from,a.newK,why||coachMsg(a)); S.kg=a.newK; WT.plan.lastAdj=dkey(new Date());
+    if(WT.plan.applyProt){ const lw=lastWeight(); if(lw) S.pg=Math.round(2*lw.kg); }
+    saveWT(); syncGoalInputs(); return {from:from,to:a.newK};
+  }
+  function autoAdjust(){
+    if(!WT.plan||WT.cal.auto===false) return;
+    const a=analyse(); if(!['stall','low','high'].includes(a.state)) return;
+    const r=applyCoach('Ajustement automatique : '+coachMsg(a));
+    if(r) showToast('Calories ajustées : '+r.from+' → '+r.to+' kcal',()=>undoCoach());
+  }
+  function undoCoach(){
+    const l=WT.cal.log[0]; if(!l||l.to!==S.kg) return; S.kg=l.from; WT.cal.log.shift(); if(WT.plan) WT.plan.lastAdj=null; saveWT(); syncGoalInputs(); if($('mealHist').classList.contains('show')) renderHist();
+  }
+  function coachHTML(){
+    const p=WT.plan; let h='<div class="ht-card cc"><div class="ht-title" style="margin-bottom:10px">🧠 Coach<small>s’adapte à tes résultats</small></div>';
+    if(!p){ return h+'<div class="wg-empty">Définis un objectif de poids : l’appli comparera ton rythme réel au plan et ajustera tes calories si ton poids n’évolue pas comme prévu.</div><div class="wg-btns"><button onclick="BBXMeal.goalWeigh()" style="background:#E5173A;border-color:#E5173A;color:#fff">🎯 Définir un objectif</button></div></div>'; }
+    const a=analyse();
+    if(a.state==='wait'){
+      h+='<div class="cc-msg wait">Pas encore assez de données pour juger ton évolution. Il faut :</div><ul class="cc-need">'+a.need.map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="cc-note">Le coach compare le poids de tes pesées et ta moyenne de calories sur 3 semaines, puis corrige.</div>';
+    }else{
+      const cls=a.state==='ok'?'good':(a.state==='high'?'bad':'warn');
+      h+='<div class="cc-tiles"><div><b>'+(a.rObs>=0?'+':'−')+f2(Math.abs(a.rObs))+'</b><span>kg/sem. réel</span></div><div><b>'+(a.rT>=0?'+':'−')+f2(Math.abs(a.rT))+'</b><span>kg/sem. visé</span></div><div><b>'+Math.round(a.I)+'</b><span>kcal/jour mangés</span></div></div>';
+      h+='<div class="cc-msg '+cls+'">'+coachMsg(a)+'</div>';
+      if(a.state!=='ok') h+='<div class="cc-calc">Ton entretien réel est estimé à <b>≈ '+Math.round(a.tdee)+' kcal</b> (ce que tu manges, corrigé de ton évolution). Nouvel objectif : <b>'+a.newK+' kcal</b>.</div><div class="wg-btns"><button onclick="BBXMeal.coachApply()" style="background:#E5173A;border-color:#E5173A;color:#fff">Appliquer '+a.newK+' kcal</button></div>';
+      if(a.waist){ const r=a.waist.ratio; h+='<div class="cc-waist '+(r>1.2?'bad':r<=0.5?'good':'warn')+'">📏 Tour de taille : '+(a.waist.dw>=0?'+':'−')+fk(Math.abs(a.waist.dw))+' cm pour '+(a.waist.dk>=0?'+':'−')+fk(Math.abs(a.waist.dk))+' kg. '+(r>1.2?'La taille grossit vite : la prise est plutôt du gras. Réduis un peu les calories.':r<=0.5?'Bon signe : la prise semble surtout du muscle.':'Prise mixte : continue de surveiller.')+'</div>'; }
+    }
+    h+='<label class="cc-auto"><input type="checkbox" id="ccAuto" '+(WT.cal.auto!==false?'checked':'')+' onchange="BBXMeal.ccAuto(this.checked)"><span>Ajuster mes calories automatiquement (au plus toutes les 2 semaines)</span></label>';
+    if(WT.cal.log.length) h+='<div class="ht-sub">Derniers réglages</div>'+WT.cal.log.slice(0,4).map((l,i)=>`<div class="cc-log"><span>${shortDate(l.d)} · ${esc(l.why).slice(0,90)}</span><b>${l.from} → ${l.to}</b>${i===0&&l.to===S.kg?'<button onclick="BBXMeal.coachUndo()">Annuler</button>':''}</div>`).join('');
+    return h+'<div class="cc-note">Repères généraux (≈ 7 700 kcal par kg), pas un avis médical.</div></div>';
+  }
   // ---------- habitudes : produits que je mange d'habitude, repas par repas ----------
   const HABKEY='bb9-habits';
   let HAB=null; try{ HAB=JSON.parse(localStorage.getItem(HABKEY)||'null'); }catch(e){}
@@ -3661,7 +3870,11 @@ document.addEventListener('click', function(e){
     add:m=>openForm('add',m), edit:(m,i)=>openForm('edit',m,i), del:delItem, move:moveItem, resetDef:resetDef,
     saveForm:saveForm, closeForm:()=>$('mealForm').classList.remove('show'),
     scan:scanOpen, closeScan:closeScan, manual:manual, scanMode:setScanMode, photoMode:photoMode,
-    addWeigh:()=>openWeigh('add'), goalWeigh:()=>openWeigh('goal'), saveWeigh:saveWeigh, closeWeigh:closeWeigh, wstep:wstep, delWeigh:delWeigh,
+    addWeigh:()=>openWeigh('add'), goalWeigh:openPlan, closePlan:()=>$('mealPlan').classList.remove('show'), savePlan:savePlan, plRender:renderPlan,
+    plLevel:v=>{ pl.level=v; renderPlan(); }, plSex:v=>{ pl.sex=v; renderPlan(); }, plUnit:u=>{ const w=durWeeks(); pl.unit=u; $('plDur').value=String(Math.max(1,Math.round(u==='days'?w*7:u==='months'?w*12/52:w))); renderPlan(); },
+    plTarget:d=>{ const v=num($('plTarget').value)||num($('plCur').value)||70; $('plTarget').value=fk(Math.max(20,Math.round((v+d)*10)/10)); renderPlan(); }, plDur:d=>{ const v=num($('plDur').value)||0; $('plDur').value=String(Math.max(1,Math.round(v+d))); renderPlan(); },
+    plPick:i=>{ const o=pl.opts&&pl.opts[i]; if(!o) return; pl.unit='weeks'; $('plDur').value=String(o.weeks); renderPlan(); },
+    coachApply:()=>{ const r=applyCoach(); if(r) showToast('Calories ajustées : '+r.from+' → '+r.to+' kcal',()=>undoCoach()); renderHist(); }, coachUndo:undoCoach, ccAuto:v=>{ WT.cal.auto=!!v; saveWT(); }, saveWeigh:saveWeigh, closeWeigh:closeWeigh, wstep:wstep, delWeigh:delWeigh,
     habits:openHabits, closeHabits:()=>$('mealHabits').classList.remove('show'), quick:quickAdd, habitsSearch:()=>{ $('mealHabits').classList.remove('show'); srOpen(hb.m); },
     srScan:()=>scanOpen(sr.target), srManual:()=>openForm('add',sr.target),
     openHist:openHist, closeHist:()=>$('mealHist').classList.remove('show'), histDay:histDay, clearHist:clearHist,
